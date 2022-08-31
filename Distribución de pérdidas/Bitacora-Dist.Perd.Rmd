@@ -48,7 +48,9 @@ opts_knit$set(width=75)
 
 \section{Objetivo General:}
 
-Comer
+Comercio exterior 
+
+$\alpha$
 
 
 \section{Objetivos Específicos:}
