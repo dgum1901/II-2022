@@ -1,0 +1,65 @@
+---
+output:
+  pdf_document: 
+    toc_depth: 0
+    includes:
+      in_header: preambulo.tex
+      before_body: titulo.tex
+documentclass: memoir
+classoption: oneside
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(tidyverse)
+require("knitcitations")
+require("bibtex")
+library(rmdformats)
+library(readxl)
+library(dplyr)
+library(plyr)
+library(fOptions)
+library(ggplot2)
+library(kableExtra)
+library(extrafont)
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+
+```
+
+\fancyhead[LE,RO]{\slshape \rightmark}
+\fancyhead[LO,RE]{\slshape \leftmark}
+\lhead{CA-404 Modelos Lineales}
+\rhead{\thepage}
+\fancyfoot[C]{\thepage}
+
+\tableofcontents*
+
+\newpage
+\chapter{Bitácora 1}
+
+\section{Objetivo General:}
+
+Comer
+
+
+\section{Objetivos Específicos:}
+ \begin{itemize} 
+ \item Dormir
+
+\item Culiar \citep{pinga}
+
+\end{itemize}
+
+
+
+
+\printbibliography

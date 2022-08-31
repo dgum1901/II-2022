@@ -1,0 +1,63 @@
+\usepackage[left=15mm, inner=3cm, outer=3cm, top=3cm,bottom=3cm ]{geometry}
+\usepackage{mathpazo}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics,graphicx}
+\usepackage{wallpaper}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\nonzeroparskip
+\setlength{\parindent}{12pt}
+\setlength{\baselineskip}{5mm}
+\pagestyle{fancy}
+%\usepackage{parskip}
+%\setcounter{secnumdepth}{1}
+
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\footrulewidth{0.4pt} % tamanno de la regla abajo
+
+\copypagestyle{headerwchap}{myheadings}
+\chapterstyle{bianchi}
+\makeevenhead{headerwchap}{\thepage}{}{}
+\makeoddhead{headerwchap}{}{}{\thepage}
+\makeoddfoot{headerwchap}{}{}{}
+\makeevenfoot{headerwchap}{}{}{}
+\makeheadrule{headerwchap}{\textwidth}{0.5pt}
+
+
+
+\usepackage[ %
+style=authoryear, % 
+natbib = true, %
+dashed = false, %
+firstinits = true, 
+url =false, %
+isbn = false, %
+backend = bibtex]{biblatex}
+\addbibresource{referencias_proyecto.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EDITAR SOLO EL SEGUNDO %%%%%%%
+%%%% CONJUNTO DE PARENTESIS %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Titulo del proyecto
+\newcommand{\TituloProy}{Ac\'a se pone un buen t\'itulo}  % ACA SE CAMBIA EL TITULO
+ 
+% Nombre de Estudiantes y Carnet
+\newcommand{\EstudianteUno}{Maria Jos\'e Corea}
+\newcommand{\EstudianteDos}{Cassandra Ram\'irez}
+\newcommand{\EstudianteTres}{Daniel Ulate}
+
+\newcommand{\ds}[1]{\ensuremath{\displaystyle{#1}}}
+
+
+\def\bitcoinB{\leavevmode
+  {\setbox0=\hbox{\textsf{C}}%
+    \dimen0\ht0 \advance\dimen0 0.2ex
+    \ooalign{\hfil \box0\hfil\cr
+      \hfil\vrule height \dimen0 depth.2ex\hfil\cr
+    }%
+  }%
+}
