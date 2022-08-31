@@ -48,7 +48,7 @@ opts_knit$set(width=75)
 
 \section{Objetivo General:}
 
-Comercio exterior 
+Comercio exterior de nuevo
 
 $\alpha$
 
