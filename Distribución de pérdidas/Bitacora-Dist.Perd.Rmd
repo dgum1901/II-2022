@@ -53,9 +53,11 @@ Comercio exterior de nuevo
 $\alpha$
 
 
+
 \section{Objetivos Específicos:}
  \begin{itemize} 
  \item Dormir
+ \item holis daniiii
 
 \item Culiar \citep{pinga}
 
