@@ -72,7 +72,7 @@ una base de datos cerrada y contextualizada en los Estados Unidos de América, a
 \item $waterfront:$ Vista al mar, característica dicotómica.
 \item $view:$ Vista, en la escala del 0 al 4.
 \item $condition:$ Condición de la casa. en la escala del 1 al 5.
-\item $sqft_above:$ Supercie de la casa.
+\item $sqft_above:$ Superficie de la casa.
 \item $sqft_basement:$ Superficie del sótano, en caso de que posean uno.
 \item $yr_built:$ Año de construcción.
 \item $yr_renovation:$ Año de renovación, en caso de que hubiese.
