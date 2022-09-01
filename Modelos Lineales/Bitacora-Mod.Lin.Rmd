@@ -33,6 +33,7 @@ opts_chunk$set(echo=FALSE,
                warning=FALSE)
 opts_knit$set(width=75)
 
+options(tinytex.verbose = TRUE)
 ```
 
 \fancyhead[LE,RO]{\slshape \rightmark}
@@ -43,23 +44,45 @@ opts_knit$set(width=75)
 
 \tableofcontents*
 
+```{r}
+library(readr)
+data <- read_csv("data.csv")
+```
+
 \newpage
 \chapter{Bitácora 1}
 
-\section{Objetivo General:}
+Se conoce a los mercados inmobiliarios como el conjunto de las acciones de oferta y demanda de bienes inmuebles, no obstante, la promoción inmobilaria, la inversión que se puede realizar por instituciones y compañias, así como individuos, y por último la financiación, la adquisión inmobilaria.
 
-Comer
+  El presente proyecto de investigación tiene como objetivo analizar con herramientas estadísticas
+una base de datos cerrada y contextualizada en los Estados Unidos de América, analizar y predecir hacia donde se están movilizando los precios de las propiedades. La base de datos fue encontrada en Kaggle. Esta base toma en cuenta observaciones desde el 2 de mayo del 2014, hasta el 10 de julio del mismo año, sin embargo, la base fue publicada en el 2018. En total se encuentran 4600 observaciones.
 
+  Sobre la base de datos, la población de estudio está determinada por las casas ubicadas en ciudades de los Estados Unidos de América. La muestra de estudio es el conjunto de datos que contiene una serie de características que describen los parámetros de las casas ubicadas en las distintas ciudades de los Estados Unidos. Es decir, la muestra se refiere al comportamiento del precio de las propiedades. Dado lo anterior, la unidad elemental de estudio son los datos que favorecen el precio de la propiedad inmobiliaria, observados de manera diaria por los dos meses de estudio.
 
-\section{Objetivos Específicos:}
- \begin{itemize} 
- \item Dormir
+  El presente compilado de datos posee algunas variables que se procede a nombrar y explicar:
 
-\item Culiar \citep{pinga}
-
+\begin{itemize}
+\item $date:$ La fecha en la cual se obtuvo los datos.
+\item $price:$ El precio de la casa, expresado en dólares.
+\item $bedrooms:$ Número de dormitorios.
+\item $bathrooms:$ Número de baños
+\item $sqft_living:$ Superficie habitable.
+\item $sqft_lot:$ Tamaño del lote.
+\item $floors:$ Número de pisos, entrepisos aceptables.
+\item $waterfront:$ Vista al mar, característica dicotómica.
+\item $view:$ Vista, en la escala del 0 al 4.
+\item $condition:$ Condición de la casa. en la escala del 1 al 5.
+\item $sqft_above:$ Superficie de la casa.
+\item $sqft_basement:$ Superficie del sótano, en caso de que posean uno.
+\item $yr_built:$ Año de construcción.
+\item $yr_renovation:$ Año de renovación, en caso de que hubiese.
+\item $street:$ Dirección 
+\item $city:$ Ciudad 
+\item $staetzip:$ Código postal.
+\item $country:$ País.
 \end{itemize}
 
-
+*\textbf{Las características del área se expresan en pies cuadrados.}
 
 
 \printbibliography

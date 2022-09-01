@@ -55,10 +55,10 @@ t(base[1:3,])
 
 \begin{itemize}
   \item months-as-customer: Se refiere al número de meses para los cuales el cliente está asociado con la compañía de seguros.
-  \item age: Extresada de forma continua. Se refiere al número de años
-  \item policy-number: El número de póliza
-  \item policy-bind-date: Fecha de inicio de la póliza
-  \item policy-state: El estado donde la póliza fue registrada
+  \item age: Expresada de forma continua. Se refiere al número de años.
+  \item policy-number: El número de póliza.
+  \item policy-bind-date: Fecha de inicio de la póliza.
+  \item policy-state: El estado donde la póliza fue registrada.
   \item policy-csl-combined single limits: Se refiere al Límite único combinado, por sus siglas en inglés, y es cuánto de la lesión corporal se cubrirá del daño total.
   \item  policy-deductable: Se refiere al deducible, es decir, la cantidad pagada del bolsillo del titular de la póliza antes de que un proveedor de seguros pague los gastos.
   \item policy-annual-premium: La prima anual de la póliza.
@@ -106,9 +106,9 @@ $\alpha$
 \section{Objetivos Específicos:}
 
  \begin{itemize} 
- \item Dormir
- \item holis daniiii
- \item Culiar \citep{pinga}
+ \item 
+ \item 
+ \item \citep{}
 
 \end{itemize}
 
