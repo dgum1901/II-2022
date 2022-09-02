@@ -1,0 +1,86 @@
+Columna,	Descripcion
+X_id, Identificador único del suceso
+
+Area_of_Origin, Area de origen con código y descripción
+
+Building_Status,	Código con el estado del edificio y descripción
+
+Business_Impact,	Código con el impacto al negocio y descripción
+
+Civilian_Casualties,	Civiles víctimas en la escena
+
+Count_of_Persons_Rescued,	Cantidad de personas rescatadas
+
+Est_Dollar_Loss,	Pérdida estimada en dólares
+
+Est_Number_Of_Persons_Displaced,	Número estimado de personas desplazadas
+
+Exposures,	Número de incendios de exposición asociados con este incendio
+
+Ext_agent_app_or_defer_time,	Marca de tiempo del agente que se aplicó por primera vez o decisión de diferir
+
+Extent_Of_Fire,	Cógigo de extensión del fuego y descripción
+
+Final_Incident_Type,	Tipo de incidente final
+
+Fire_Alarm_System_Impact_on_Evacuation,	Código de impacto del sistema de alarma contra incendios y descripción
+
+Fire_Alarm_System_Operation,	Código de operación del sistema de alarma contra incendios y descripción 
+
+Fire_Alarm_System_Presence,	Código de presencia del sistema de alarma contra incendios y descripción
+
+Fire_Under_Control_Time,	Marca de tiempo del fuego bajo control
+
+Ignition_Source,	Código sobre la fuente del incendio y despcripción
+
+Incident_Number,	Número de incidente de acuerdo al sistema de bomberos de Toronto (TFS)
+
+Incident_Station_Area,	Area de la estación de ocurrencia según TFS
+
+Incident_Ward,	Lugar donde ocurrió el incidente
+
+Initial_CAD_Event_Type,	Tipo de evento que dio origen
+
+Intersection,	Intersección mayor o menor más cercana en el barrio del incidente
+
+Last_TFS_Unit_Clear_Time,	Marca de tiempo de la última unidad en el incidente
+
+Latitude,	Latitud de la intersección más cercana al incidente
+
+Level_Of_Origin,	Nivel de origen
+
+Longitude,	Longitud de la intersección más cercana al incidente
+
+Material_First_Ignited,	Código del material donde inició y descripción
+
+Method_Of_Fire_Control,	Código del método de control del fuego y descripción
+
+Number_of_responding_apparatus,	Número de aparatos del TFS que atendió la emergencia
+
+Number_of_responding_personnel,	Número de personal del TFS que atendió la emergencia
+
+Possible_Cause,	Código de la posible causa y descripción
+
+Property_Use,	Código de la propiedad y descripción
+
+Sk_Alarm_at_Fire_Origin,	Código de la alarma de incendios en el lugar y descripción
+
+Smoke_Alarm_Failure,	Código de fallo en la alarma de incendios y descripción
+
+Smoke_Type,	Código del tipo de detector de humo y descripción
+
+Smoke_Alarm_Impact_on_Evacuation,	Código de impacto de la alarma contra incendios en la evacuación y descripción
+
+Smoke_Spread,	Código de expansión del humo y descripción
+
+Sprinkler_System_Operation,	Código de funcionamiento de sistema de rociadores y descripción
+
+Sprinkler_System_Presence,	Código de presencia de sistema de rociadores y descripción
+
+Status_of_Fire_On_Arrival,	Código de estado del incendio a la llegada y descripción
+
+TFS_Alarm_Time,	Marca de tiempo cuando el TFS fue notificado
+
+TFS_Arrival_Time,	Marca de tiempo cuando el TFS llegó a la escena
+
+TFS_Firefighter_Casualties,	Cantidad de víctimas en el cuerpo de bomberos 
