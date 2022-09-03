@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.30)  2 SEP 2022 17:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  3 SEP 2022 03:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **Bitacora-Dist.Perd.tex
 (./Bitacora-Dist.Perd.tex
 LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-08-23> (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/memoir/memoir.cls
+L3 programming layer <2022-08-30> (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/memoir/memoir.cls
 Document Class: memoir 2022/07/29 v3.7r configurable book, report, article document class
 (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
@@ -873,14 +873,14 @@ Package biblatex Warning: 'firstinits' option is deprecated.
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Document encoding is UTF8 ....
 (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2022-08-23 L3 programming layer (loader) 
+Package: expl3 2022-08-30 L3 programming layer (loader) 
 (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-08-23 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count467
 \l__pdf_internal_box=\box103
 ))
 Package biblatex Info: ... and expl3
-(biblatex)             2022-08-23 L3 programming layer (loader) 
+(biblatex)             2022-08-30 L3 programming layer (loader) 
 (biblatex)             is new enough (at least 2020/04/06),
 (biblatex)             setting 'casechanger=expl3'.
 (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
@@ -1227,17 +1227,17 @@ LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 1
 (c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
-<./images/ucr_marca_de_agua.png, id=20, 180.675pt x 68.255pt>
+<./images/ucr_marca_de_agua.png, id=32, 180.675pt x 68.255pt>
 File: ./images/ucr_marca_de_agua.png Graphic file (type png)
 <use ./images/ucr_marca_de_agua.png>
 Package pdftex.def Info: ./images/ucr_marca_de_agua.png  used on input line 189.
 (pdftex.def)             Requested size: 150.63287pt x 56.90575pt.
-<./images/EMat_escuela_matematica_horizontal_1.png, id=22, 128.8815pt x 23.1264pt>
+<./images/EMat_escuela_matematica_horizontal_1.png, id=34, 128.8815pt x 23.1264pt>
 File: ./images/EMat_escuela_matematica_horizontal_1.png Graphic file (type png)
 <use ./images/EMat_escuela_matematica_horizontal_1.png>
 Package pdftex.def Info: ./images/EMat_escuela_matematica_horizontal_1.png  used on input line 190.
 (pdftex.def)             Requested size: 128.88707pt x 23.1274pt.
-<./images/granosgirasol.png, id=23, 623.32875pt x 620.3175pt>
+<./images/granosgirasol.png, id=35, 623.32875pt x 620.3175pt>
 File: ./images/granosgirasol.png Graphic file (type png)
 <use ./images/granosgirasol.png>
 Package pdftex.def Info: ./images/granosgirasol.png  used on input line 203.
@@ -1279,14 +1279,17 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 220.
 [2
 
-] [3]
+]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 316.
+(c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [3] [4]
 
-LaTeX Warning: Citation '' on page 4 undefined on input line 353.
+LaTeX Warning: Citation '' on page 5 undefined on input line 454.
 
+[5] [6
 
-LaTeX Warning: Empty bibliography on input line 357.
-
-[4]
+]
 \tf@toc=\write6
 \openout6 = `Bitacora-Dist.Perd.toc'.
 
@@ -1296,24 +1299,24 @@ LaTeX Info: Redefining \. on input line 27.
 LaTeX Info: Redefining \% on input line 27.
 )
 Package rerunfilecheck Info: File `Bitacora-Dist.Perd.out' has not changed.
-(rerunfilecheck)             Checksum: CE986DD0652339E84E3C63F063292D11;587.
+(rerunfilecheck)             Checksum: ED5ED6B2C3E0B81EF0F1D23C881225F5;872.
 Package logreq Info: Writing requests to 'Bitacora-Dist.Perd.run.xml'.
 \openout1 = `Bitacora-Dist.Perd.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 25057 strings out of 479471
- 425685 string characters out of 5872390
- 996692 words of memory out of 5000000
- 43395 multiletter control sequences out of 15000+600000
- 510155 words of font info for 95 fonts, out of 8000000 for 9000
+ 25151 strings out of 477017
+ 427427 string characters out of 5825792
+ 1035110 words of memory out of 5000000
+ 45925 multiletter control sequences out of 15000+600000
+ 513751 words of font info for 100 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  60i,13n,68p,1905b,1974s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Bitacora-Dist.Perd.pdf (5 pages, 187984 bytes).
+{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on Bitacora-Dist.Perd.pdf (7 pages, 222766 bytes).
 PDF statistics:
- 93 PDF objects out of 1000 (max. 8388607)
- 67 compressed objects within 1 object stream
- 12 named destinations out of 1000 (max. 500000)
- 48 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 133 PDF objects out of 1000 (max. 8388607)
+ 102 compressed objects within 2 object streams
+ 22 named destinations out of 1000 (max. 500000)
+ 72 words of extra memory for PDF output out of 10000 (max. 10000000)
 

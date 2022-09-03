@@ -44,12 +44,76 @@ opts_knit$set(width=75)
 \tableofcontents*
 
 \newpage
-\chapter{Bitácora 1}
+\chapter{Bitácora I}
+
+\section{Integrantes}
+\begin{itemize}
+  \item María José Corea Chinchilla - B82352
+  \item Cassandra Paola Ramirez - B76199
+  \item Daniel Gustavo Ulate Montero - B67212
+\end{itemize}
+
+\section{Primera aproximación}
+
+
+Resulta trascendente para las sociedades modernas entender la importancia de prevenir los incendios, dado el alto costo económico y social que estos conllevan cada año. Una gran parte de las pérdidas generadas en incendios, ocurren en un pequeño número de eventos de mayor magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y los gobernantes es tratar de establecer las condiciones adecuadas para limitar o contener los eventos más catastróficos.
+
+Un enfoque primordial que puede tomar la investigación es delimitar de forma adecuada las condiciones que puedan aumentar el riesgo de incendio en primer lugar, por lo que se debe tratar de predecir posibles incendios y su gravedad, intentando identificar patrones en su ocurrencia, particularmente sobre lo que hace que un incendio se convierta en uno con altas pérdidas.
+
+Varias investigaciones en el pasado han intentado responder esta pregunta sobre qué puede determinar la severidad de un siniestro de este estilo, en términos forestales Juan Torres \citep{rojo} desarrolla un índice de ocurrencia de incendios forestales en superficies extensas, denominado superficie en riesgo de incendio (SeR). Este autor realiza distintos modelos y señala que un problema para ello es que las colas de estas distribuciones tienden a ser muy pesadas.
+
+Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan un resumen de trabajos en el area de modelaje de la distribución en probabilidad de pérdidas en incendio, e incluso lo presenta como un proceso estocástico. Este papel compara las pérdidas con distintos tipos de distribuciones, lo que puede servir a forma de guía en el modelaje de la misma.
+
+\section{Replanteo}
+
+Con esta idea, replantéenla de 4 maneras distintas en modo pregunta:
+
+Por ejemplo, si mi idea es "Quisiera saber la temperatura promedio en un día en Costa Rica".
+
+Entonces reformulen esta idea como
+- ¿Cómo se puede calcular la temperatura promedio en un día en Costa Rica?
+- ¿Qué es la temperatura promedio en Costa Rica?
+- ¿Cuáles son los factores que afectan la temperatura promedio en Costa Rica?
+- ¿Por qué es importante conocer la temperatura promedio en Costa Rica?
+
+En este punto pueden escribir cualquier pregunta que sea relevante para el estudio.
+
+\section{Argumentación}
+
+Toda pregunta debe tener una posible respuesta o argumentación. Claramente en esta etapa no se tiene que tener todo claro, pero al menos si se tiene que tener un objetivo en la mente.
+Planteen una posible argumentación para responder cada pregunta del punto anterior. La argumentación tiene que tener estos tres elementos:
+
+- Lógica: Es decir, que sea una respuesta basada en criterio científico o racional.
+- Ética: Que la respuesta o los datos provengan de fuentes confiables y que los análisis que ustedes harán no serán alterados para mostrar algo falso.
+- Emocional: No se refiere lo que ustedes han visto en textos de ficción, romance, etc. Como esto es un trabajo científico, la emoción se refiere a poner el resultado de su trabajo en un contexto que apele a las emociones o que el lector identifique una solución real al problema que se está planteando.
+
+En el ejemplo anterior se podría poner algo así:
+
+¿Cómo se puede calcular la temperatura promedio en un día en Costa Rica?
+
+La temperatura se puede estimar usando los datos observados que arroja el IMN cada hora y luego tomando el promedio de estos valores (Lógica). Para efectos de completitud se deben revisar si existen datos faltantes o estaciones cuya medición fue errónea (Ética). Esto ayudará al IMN a tener una mejor medición diaria de la temperatura (Emoción).
+
+Repitan este mismo procedimiento para cada una de las preguntas.  
 
 \section{Sobre la base de datos}
 
 ```{r}
 base <- read.csv('~/GitHub/II-2022/Distribución de pérdidas/Fire Incidents Data.csv')
+
+perd <- base$Estimated_Dollar_Loss
+#Los elementos de la base donde no se cuantificaron perdidas no interesan
+base <- base[!is.na(perd),]
+perd <- perd[!is.na(perd)]
+
+
+#hist(perd,xlim = c(0, 5e5), breaks = 200)
+#out <- mean(perd) + sd(perd)
+out<- quantile(perd, 0.95) #cuantil del 90 por ciento
+
+sum(perd[perd<out])
+sum(perd[perd>=out])
+
+base.perd <- base[perd >= out,]
 ```
 
 La base seleccionada fue obtenida de la página oficial de la ciudad de Toronto, y corresponde a información de los siniestros de tipo incendio.
@@ -63,21 +127,22 @@ La base de datos es de formato 'tabla' y se actualiza de manera anual. Su últim
 
 ```{r}
 p <- read.csv('~/GitHub/II-2022/Distribución de pérdidas/columnas.txt',sep = ',', fileEncoding = "UTF-8")
-knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE)%>%
-  column_spec(2, width = "7cm")
+
+knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE) %>%
+  column_spec(2, width = "7cm") %>% footnote(general = 'Fuente: Elaboración propia', general_title = '')
 
 ```
 
 De todas las variables anteriores, que pueden funcionar para futuros objetivos, se seleccionad de primera mano el  estimado de pérdidas en dólares, y el momento en el cuál el sistema de bomberos de toronto fue notificado
 
 
-\section{Objetivo General:}
+\subsection{Objetivo General:}
 
 Comercio exterior de nuevo
 
 $\alpha$
 
-\section{Objetivos Específicos:}
+\subsection{Objetivos Específicos:}
 
  \begin{itemize} 
  \item 
