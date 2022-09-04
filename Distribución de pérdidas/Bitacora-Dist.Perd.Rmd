@@ -57,7 +57,7 @@ opts_knit$set(width=75)
 \section{Primera aproximación}
 
 
-Resulta trascendente para las sociedades modernas entender la importancia de prevenir los incendios, dado el alto costo económico y social que estos conllevan cada año. Una gran parte de las pérdidas generadas en incendios, ocurren en un pequeño número de eventos de mayor magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y los gobernantes es tratar de establecer las condiciones adecuadas para limitar o contener los eventos más catastróficos.
+Resulta trascendente para las sociedades modernas, entender la importancia de prevenir los incendios, dado el alto costo económico y social que estos conllevan cada año. Una gran parte de las pérdidas generadas en incendios, ocurren en un pequeño número de eventos de mayor magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y los gobernantes es tratar de establecer las condiciones adecuadas para limitar o contener los eventos más catastróficos.
 
 Un enfoque primordial que puede tomar la investigación es delimitar de forma adecuada las condiciones que puedan aumentar el riesgo de incendio en primer lugar, por lo que se debe tratar de predecir posibles incendios y su gravedad, intentando identificar patrones en su ocurrencia, particularmente sobre lo que hace que un incendio se convierta en uno con altas pérdidas.
 
@@ -83,7 +83,7 @@ Con base en lo anterior se plantea la siguiente pregunta de investigación.
 \begin{itemize}
   \item ¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
   
-  Intuitivamente se podría definir el origen del fuego, así como su duración, como variables queinfluyen más fuertemente en la severidad del incendio, sin embargo, pueden existir factores menos corrientes y más fáciles de atender para disminuir el costo del incidente, esto permitirá otorgar herramientas para la atención de desastres y reducir las pérdidas.
+  Intuitivamente se podría definir el origen del fuego, así como su duración, como variables que influyen fuertemente en la severidad del incendio, sin embargo, pueden existir factores menos corrientes y más fáciles de atender para disminuir el costo del incidente, esto permitirá otorgar herramientas para la atención de desastres y reducir las pérdidas.
   
   \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
   
@@ -96,11 +96,11 @@ Con base en lo anterior se plantea la siguiente pregunta de investigación.
   
   \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
   
-  En términos de modelaje es posible intentar ajustar cada distribución que existe con cada parámetro permitido y muy probablemente se encuentre uno que funcione a la perfección, sin embargo, dados los costos computacionales y limitaciones informativas es una opción inviable, por lo que apoyándose de la distribución empírica de los datos se puede intentar ajustar a distribuciones conocidas, y tratar de medir el peso de las colas con su probabilidad para cuantificar los llamados outliers, esto pretende aportar mediciones más precisas a los eventos de mayor pérdida con el fin de preparar mejor los planes contingentes.
+  En términos de modelaje es posible intentar ajustar cada distribución que existe con cada parámetro permitido, donde probablemente se encuentre uno que funcione a la perfección, sin embargo, dados los costos computacionales y limitaciones informativas es una opción inviable, por lo que apoyándose de la distribución empírica de los datos se puede intentar ajustar a distribuciones conocidas, y tratar de medir el peso de las colas con su probabilidad para cuantificar los llamados outliers, esto pretende aportar mediciones más precisas a los eventos de mayor pérdida con el fin de preparar mejor los planes contingentes.
   
   \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
   
-  Un siniestro de tipo incendio puede ocurrir en cualquier momento y lugar, el objetivo de una aseguradora es cuantificar las pérdidas de sus clientes e indemnizar, esto es un reto importante considerando la variabilidad de cada siniestro y los compromisos financieron preexistentes de la entidad, por lo que se debe de preparar para esos eventos. Utilizando la frecuencia, así como la pérdida esperada, es posible predecir cuánto capital se debe provisionar para no comprometer las finanzas de la aseguradora.
+  Un siniestro de tipo incendio puede ocurrir en cualquier momento y lugar, el objetivo de una aseguradora es cuantificar las pérdidas de sus clientes e indemnizar, esto es un reto importante considerando la variabilidad de cada siniestro y los compromisos financieros preexistentes de la entidad, por lo que se debe de preparar para esos eventos. Utilizando la frecuencia, así como la pérdida esperada, es posible predecir cuánto capital se debe provisionar para no comprometer las finanzas de la aseguradora.
   
 \end{itemize}
 
@@ -133,7 +133,7 @@ Este conjunto de datos proporciona información similar a la que se le envía al
 
 Por motivos de privacidad, no se proporciona información personal, ni la dirección exacta, sino un aproximado del sitio de ocurrencia. Se menciona también que algunos incidentes han sido excluidos conforme a las exenciones bajo la Sección 8 de la Ley Municipal de Libertad de Información y Protección de la Privacidad (MFIPPA).
 
-Se define a la población de estudio como el conjunto de todos los siniestros de tipo incendio cuantificados por el cuerpo de bomberos en el cuál hubo una correcta cuantificación de los datos. La muestra consta de 15.627 observaciones en la ciudad de Toronto, Canadá. Con una unidad estadística definida por cada incendio, su pérdida y otras variables de interés de manera individual.
+Se define a la población de estudio como el conjunto de todos los siniestros de tipo incendio cuantificados por el cuerpo de bomberos en el cual hubo una correcta cuantificación de los datos. La muestra consta de 15.627 observaciones en la ciudad de Toronto, Canadá. Con una unidad estadística definida por cada incendio, su pérdida y otras variables de interés de manera individual.
 
 La base de datos es de formato 'tabla' y se actualiza de manera anual. Su última actualización se dio en agosto 29 de 2022. Fue publicada por la sección de servicios administrativos de la unidad de bomberos, y posee 17.536 observaciones con 42 variables. Para efectos de la investigación y entendiendo que la variable fundamental es la que cuantifica la pérdida estimada, se recortan las observaciones que no cuentan con este valor, dando la cantidad de observaciones mencionada en el párrafo anterior (15.627). 
 
@@ -151,21 +151,71 @@ knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE) 
 
 ```
 
+\section{Objeto de estudio}
+
+El objeto de estudio de la investigación sería buscar sentar las bases que permitan
+delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio en la ciudad de Toronto, Canadá, en el periodo de 2011 al 2019.
 
 
-\subsection{Objetivo General:}
+\section{Conceptos básicos}
+\begin{itemize}
 
-Comercio exterior de nuevo
+\item Severidad: Según la \citet{RAE1} el término severidad significa trato o castigo duro o rígido en la observación de una norma. 
 
-$\alpha$
+\item Extraordinario: Según la \citet{RAE2} significa fuera de orden o regla natural o común.
 
-\subsection{Objetivos Específicos:}
+\item Siniestro: Un siniestro es un suceso que ha quedado estipulado en el contrato del seguro ya que se preveé que pueda pasar causando daños a la persona asegurada o a sus bienes. \citep{Allianz}
 
- \begin{itemize} 
- \item 
- \item 
- \item \citep{}
+\item Incendio: Fuego de grandes proporciones que se desarrolla sin control, el cual puede presentarse de manera instantánea o gradual, pudiendo provocar daños materiales, interrupción de los procesos de producción, pérdida de vidas humanas y afectación al ambiente. \citep{UNAM}
 
+\end{itemize}
+\section{Descripción detallada de la tabla de datos}
+
+Como la pregunta de investigación busca delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio, entonces para efectos de la investigación las variables claves para ésta van a ser:
+
+\begin{itemize}
+\item Area of Origin: Area de origen con código y descripción.
+
+\item Building Status: Código con el estado del edificio y descripción.
+
+\item Business Impact: Código con el impacto al negocio y descripción.
+
+\item Civilian Casualties: Civiles víctimas en la escena.
+
+\item Count of Persons Rescued: Cantidad de personas rescatadas.
+
+\item Est Dollar Loss: Pérdida estimada en dólares.
+
+\item Exposures: Número de incendios de exposición asociados con este incendio.
+
+\item Extent Of Fire: Cógigo de extensión del fuego y descripción.
+
+\item Final Incident Type: Tipo de incidente final.
+
+\item Fire Under Control Time: Marca de tiempo del fuego bajo control.
+
+\item Incident Ward: Lugar donde ocurrió el incidente.
+
+\item Initial CAD Event Type: Tipo de evento que dio origen.
+
+\item Intersection: Intersección mayor o menor más cercana en el barrio del incidente.
+
+\item Last TFS Unit Clear Time: Marca de tiempo de la última unidad en el
+incidente.
+
+\item Material First Ignited: Código del material donde inició y descripción.
+
+\item Smoke Alarm Impact on Evacuation: Código de impacto de la alarma contra incendios en la evacuación y descripción.
+
+\item Sprinkler System Operation: Código de funcionamiento de sistema de rociadores y descripción.
+
+\item Status of Fire On Arrival: Código de estado del incendio a la llegada y descripción.
+
+\item TFS Alarm Time: Marca de tiempo cuando el TFS fue notificado.
+
+\item TFS Arrival Time: Marca de tiempo cuando el TFS llegó a la escena.
+
+\item TFS Firefighter Casualties: Cantidad de víctimas en el cuerpo de bomberos.
 \end{itemize}
 
 

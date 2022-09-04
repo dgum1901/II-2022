@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  3 SEP 2022 03:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  4 SEP 2022 10:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1227,17 +1227,17 @@ LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 1
 (c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
-<./images/ucr_marca_de_agua.png, id=8, 180.675pt x 68.255pt>
+<./images/ucr_marca_de_agua.png, id=20, 180.675pt x 68.255pt>
 File: ./images/ucr_marca_de_agua.png Graphic file (type png)
 <use ./images/ucr_marca_de_agua.png>
 Package pdftex.def Info: ./images/ucr_marca_de_agua.png  used on input line 189.
 (pdftex.def)             Requested size: 150.63287pt x 56.90575pt.
-<./images/EMat_escuela_matematica_horizontal_1.png, id=10, 128.8815pt x 23.1264pt>
+<./images/EMat_escuela_matematica_horizontal_1.png, id=22, 128.8815pt x 23.1264pt>
 File: ./images/EMat_escuela_matematica_horizontal_1.png Graphic file (type png)
 <use ./images/EMat_escuela_matematica_horizontal_1.png>
 Package pdftex.def Info: ./images/EMat_escuela_matematica_horizontal_1.png  used on input line 190.
 (pdftex.def)             Requested size: 128.88707pt x 23.1274pt.
-<./images/granosgirasol.png, id=11, 623.32875pt x 620.3175pt>
+<./images/granosgirasol.png, id=23, 623.32875pt x 620.3175pt>
 File: ./images/granosgirasol.png Graphic file (type png)
 <use ./images/granosgirasol.png>
 Package pdftex.def Info: ./images/granosgirasol.png  used on input line 203.
@@ -1281,9 +1281,11 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 
 ]
 
-LaTeX Warning: Empty bibliography on input line 305.
+LaTeX Warning: Citation 'pinga' on page 3 undefined on input line 311.
 
-[3]
+[3] [4
+
+]
 \tf@toc=\write6
 \openout6 = `Bitacora-Mod.Lin.toc'.
 
@@ -1292,25 +1294,33 @@ LaTeX Info: Redefining \sptext on input line 27.
 LaTeX Info: Redefining \. on input line 27.
 LaTeX Info: Redefining \% on input line 27.
 )
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `Bitacora-Mod.Lin.out' has not changed.
-(rerunfilecheck)             Checksum: 9DF73B1DCA1B552BB8A19C8F1252EA17;99.
+(rerunfilecheck)             Checksum: FFCD640A39CBEBB4E65A09046166FAB0;601.
+
+Package biblatex Warning: Please (re)run BibTeX on the file(s):
+(biblatex)                Bitacora-Mod.Lin
+(biblatex)                and rerun LaTeX afterwards.
+
 Package logreq Info: Writing requests to 'Bitacora-Mod.Lin.run.xml'.
 \openout1 = `Bitacora-Mod.Lin.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24869 strings out of 477017
- 421937 string characters out of 5825792
- 1015854 words of memory out of 5000000
- 45657 multiletter control sequences out of 15000+600000
- 512656 words of font info for 101 fonts, out of 8000000 for 9000
+ 25138 strings out of 477017
+ 427503 string characters out of 5825792
+ 1018290 words of memory out of 5000000
+ 45911 multiletter control sequences out of 15000+600000
+ 515803 words of font info for 104 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  60i,13n,68p,1903b,1974s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/Maria/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Bitacora-Mod.Lin.pdf (4 pages, 187456 bytes).
+Output written on Bitacora-Mod.Lin.pdf (5 pages, 196324 bytes).
 PDF statistics:
- 68 PDF objects out of 1000 (max. 8388607)
- 45 compressed objects within 1 object stream
- 7 named destinations out of 1000 (max. 500000)
- 24 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 120 PDF objects out of 1000 (max. 8388607)
+ 96 compressed objects within 1 object stream
+ 20 named destinations out of 1000 (max. 500000)
+ 48 words of extra memory for PDF output out of 10000 (max. 10000000)
 

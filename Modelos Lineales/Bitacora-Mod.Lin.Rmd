@@ -49,6 +49,8 @@ data <- read_csv("data.csv")
 \newpage
 \chapter{Bitácora 1}
 
+\section{Características de la Tabla de datos}
+
 Se conoce a los mercados inmobiliarios como el conjunto de las acciones de oferta y demanda de bienes inmuebles, no obstante, la promoción inmobilaria, la inversión que se puede realizar por instituciones y compañias, así como individuos, y por último la financiación, la adquisión inmobilaria.
 
   El presente proyecto de investigación tiene como objetivo analizar con herramientas estadísticas
@@ -84,27 +86,30 @@ una base de datos cerrada y contextualizada en los Estados Unidos de América, a
   La pregúnta de la investigación sería:
 
  ¿Cuál es el impacto en el precio de las casas, tomando  en cuenta el número de dormitorios, el precio de la casa, número de baños, tamaño del lote, número de pisos, estado de la casa, año de construcción, superficie de la casa, año de renovación y la ciudad? 
-    
+
+\section{Base técnica UVE}    
   El objeto de estudio de la investigación sería buscar sentar las bases estadísticas que permitan comprender el precio de las casas
 en los Estados Unidos de América, en el periodo de contrucción de ellas, desde 1900 hasta el 2014.
 
   Algunos conceptos básicos que delimiten teóricamente la pregunta de investigación serían:
 
 \begin{itemize}
-\item Casa: El término significa la construcción de una o pocas plantas que están destinadas a habitarlas familias, caso opuesto con respecto a los edificios de múltiples departamentos o pisos, según la definición de la RAE (2022).
+\item Casa: El término significa la construcción de una o pocas plantas que están destinadas a habitarlas familias, caso opuesto con respecto a los edificios de múltiples departamentos o pisos, según la definición de la \citep{RAE}.
 
-\item Precio de vivienda: Según Rafael Bueno (2021) el precio de una vivienda, el cual no es solo tarifa, si no, que es parte de varios componentes de distintos rango, según el momento del mercado. 
-Superficie construida: Según la revista AD (2018), se le llama de esa forma, a la suma total de los metros cuadrados que están dentrp del perímetro de la casa.
+\item Precio de vivienda: Según \citet{Bueno}
+el precio de una vivienda, el cual no es solo tarifa, si no, que es parte de varios componentes de distintos rango, según el momento del mercado. 
 
-\item Estado físico de vivienda: Según el INEC (2013), se define estado físico de la vivienda al estado de los componentes de la casa, como paredes, techo y el piso.
+\item Superficie construida: Según la revista \citet{AD}, se le llama de esa forma, a la suma total de los metros cuadrados que están dentrp del perímetro de la casa.
 
-\item Dimensión del terreno: Según Echazarreta (2018), el tamaño estánda de este es de 60 y los 84 metros cuadrados de terreno.
+\item Estado físico de vivienda: Según el \citet{INEC}, se define estado físico de la vivienda al estado de los componentes de la casa, como paredes, techo y el piso.
 
-\item Valoración de propiedad: Según la ConsultoriayPeritaciones C\&P (2019) la valoración de bienes muebles o inmuebles es un proceso requerido en diversidad de ámbitos administrativos, empresariales, judiciales, etc.
+\item Dimensión del terreno: Según \citet{Maria}, el tamaño estánda de este es de 60 y los 84 metros cuadrados de terreno.
 
-\item Plusvalía: Karl Marx (1818-1883) lo define como la diferencia entre el valor de uso y el valor de cambio, que resulta en un beneficio para el capitalista y es el motor del capitalismo.
+\item Valoración de propiedad: Según la \citet{Consultoria} la valoración de bienes muebles o inmuebles es un proceso requerido en diversidad de ámbitos administrativos, empresariales, judiciales, etc.
 
-\item Depreciación: La depreciación es la pérdida de valor de un bien como consecuencia de su desgaste con el paso del tiempo. (Vázquez, 2016)
+\item Plusvalía: \citet{Max} lo define como la diferencia entre el valor de uso y el valor de cambio, que resulta en un beneficio para el capitalista y es el motor del capitalismo.
+
+\item Depreciación: La depreciación es la pérdida de valor de un bien como consecuencia de su desgaste con el paso del tiempo. \citep{Roberto}
 \end{itemize}
-
+\citet{pinga}
 \printbibliography
