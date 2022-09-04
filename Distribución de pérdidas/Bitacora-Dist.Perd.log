@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  3 SEP 2022 03:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  4 SEP 2022 03:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1279,15 +1279,11 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 220.
 [2
 
-]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 316.
-(c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
-File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [3] [4]
+] [3] [4] [5]
 
-LaTeX Warning: Citation '' on page 5 undefined on input line 454.
+LaTeX Warning: Citation '' on page 6 undefined on input line 446.
 
-[5] [6
+[6] [7
 
 ]
 \tf@toc=\write6
@@ -1305,18 +1301,18 @@ Package logreq Info: Writing requests to 'Bitacora-Dist.Perd.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 25151 strings out of 477017
- 427427 string characters out of 5825792
- 1035110 words of memory out of 5000000
- 45925 multiletter control sequences out of 15000+600000
- 513751 words of font info for 100 fonts, out of 8000000 for 9000
+ 25111 strings out of 477017
+ 426738 string characters out of 5825792
+ 1039114 words of memory out of 5000000
+ 45888 multiletter control sequences out of 15000+600000
+ 513432 words of font info for 99 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  60i,13n,68p,1905b,1974s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Bitacora-Dist.Perd.pdf (7 pages, 222766 bytes).
+{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/danie/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on Bitacora-Dist.Perd.pdf (8 pages, 204299 bytes).
 PDF statistics:
  133 PDF objects out of 1000 (max. 8388607)
- 102 compressed objects within 2 object streams
- 22 named destinations out of 1000 (max. 500000)
+ 103 compressed objects within 2 object streams
+ 23 named destinations out of 1000 (max. 500000)
  72 words of extra memory for PDF output out of 10000 (max. 10000000)
 

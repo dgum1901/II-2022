@@ -38,7 +38,7 @@ opts_knit$set(width=75)
 \fancyhead[LE,RO]{\slshape \rightmark}
 \fancyhead[LO,RE]{\slshape \leftmark}
 \lhead{CA-409 Distribución de Pérdidas}
-\rhead{\thepage}
+\rhead{Bitácora \thechapter}
 \fancyfoot[C]{\thepage}
 
 \tableofcontents*
@@ -47,6 +47,7 @@ opts_knit$set(width=75)
 \chapter{Bitácora I}
 
 \section{Integrantes}
+
 \begin{itemize}
   \item María José Corea Chinchilla - B82352
   \item Cassandra Paola Ramirez - B76199
@@ -62,38 +63,48 @@ Un enfoque primordial que puede tomar la investigación es delimitar de forma ad
 
 Varias investigaciones en el pasado han intentado responder esta pregunta sobre qué puede determinar la severidad de un siniestro de este estilo, en términos forestales Juan Torres \citep{rojo} desarrolla un índice de ocurrencia de incendios forestales en superficies extensas, denominado superficie en riesgo de incendio (SeR). Este autor realiza distintos modelos y señala que un problema para ello es que las colas de estas distribuciones tienden a ser muy pesadas.
 
-Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan un resumen de trabajos en el area de modelaje de la distribución en probabilidad de pérdidas en incendio, e incluso lo presenta como un proceso estocástico. Este papel compara las pérdidas con distintos tipos de distribuciones, lo que puede servir a forma de guía en el modelaje de la misma.
+Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan un resumen de trabajos en el area de modelaje de la distribución en probabilidad de pérdidas en incendio, e incluso lo presenta como un proceso estocástico. Este papel compara las pérdidas con distintos tipos de distribuciones, lo que puede servir a forma de guía en el modelaje en el presente proyecto. 
+Con base en lo anterior se plantea la siguiente pregunta de investigación.
+
+¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
 
 \section{Replanteo}
 
-Con esta idea, replantéenla de 4 maneras distintas en modo pregunta:
+\begin{itemize}
+  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
+  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
+  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
+  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
+\end{itemize}
 
-Por ejemplo, si mi idea es "Quisiera saber la temperatura promedio en un día en Costa Rica".
-
-Entonces reformulen esta idea como
-- ¿Cómo se puede calcular la temperatura promedio en un día en Costa Rica?
-- ¿Qué es la temperatura promedio en Costa Rica?
-- ¿Cuáles son los factores que afectan la temperatura promedio en Costa Rica?
-- ¿Por qué es importante conocer la temperatura promedio en Costa Rica?
-
-En este punto pueden escribir cualquier pregunta que sea relevante para el estudio.
 
 \section{Argumentación}
 
-Toda pregunta debe tener una posible respuesta o argumentación. Claramente en esta etapa no se tiene que tener todo claro, pero al menos si se tiene que tener un objetivo en la mente.
-Planteen una posible argumentación para responder cada pregunta del punto anterior. La argumentación tiene que tener estos tres elementos:
+\begin{itemize}
+  \item ¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
+  
+  Intuitivamente se podría definir el origen del fuego, así como su duración, como variables queinfluyen más fuertemente en la severidad del incendio, sin embargo, pueden existir factores menos corrientes y más fáciles de atender para disminuir el costo del incidente, esto permitirá otorgar herramientas para la atención de desastres y reducir las pérdidas.
+  
+  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
+  
+  Las fiestas de fin de año se caracterizan por los fuegos artificiales y el clásico árbol navideño, muchos de los siniestros ocurren por cortos circuitos o accidentes con pólvora, por lo que es una época de alto riesgo para incendios, en general se pueden obtener resultado sesgados para fechas festivas si se desean estudiar otras variables. Con el objetivo de estudiar la distribución de la severidad y tratar de minimizar las pérdidas, se pretende realizar un estudio que contextualice de manera temporal los incendios.
+  
+  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
+  
+  Existen diversas medidas de pérdidas en el caso de los incendios forestales, generalmente asociados al área de impacto y biodiversidad afectada, de hecho \citet{rojo} menciona superficie máxima en riesgo de incendio (SeR), análogo al VaR, entre otras variables relacionadas al riesgo de un terreno, por lo que es posible estimar distribuciones de probabilidad en cuanto a susceptibilidad a incendios en áreas urbanas, el mayor obstáculo es encontrar los elementos análogos que permitan establecer los parámetros y aplicarlo en términos generales. Lo anterior permitiría establecer mediante el modelo zonas de mayor riesgo para preparar planes de contingencia para mitigar las pérdidas.
+  
+  
+  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
+  
+  En términos de modelaje es posible intentar ajustar cada distribución que existe con cada parámetro permitido y muy probablemente se encuentre uno que funcione a la perfección, sin embargo, dados los costos computacionales y limitaciones informativas es una opción inviable, por lo que apoyándose de la distribución empírica de los datos se puede intentar ajustar a distribuciones conocidas, y tratar de medir el peso de las colas con su probabilidad para cuantificar los llamados outliers, esto pretende aportar mediciones más precisas a los eventos de mayor pérdida con el fin de preparar mejor los planes contingentes.
+  
+  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
+  
+  Un siniestro de tipo incendio puede ocurrir en cualquier momento y lugar, el objetivo de una aseguradora es cuantificar las pérdidas de sus clientes e indemnizar, esto es un reto importante considerando la variabilidad de cada siniestro y los compromisos financieron preexistentes de la entidad, por lo que se debe de preparar para esos eventos. Utilizando la frecuencia, así como la pérdida esperada, es posible predecir cuánto capital se debe provisionar para no comprometer las finanzas de la aseguradora.
+  
+\end{itemize}
 
-- Lógica: Es decir, que sea una respuesta basada en criterio científico o racional.
-- Ética: Que la respuesta o los datos provengan de fuentes confiables y que los análisis que ustedes harán no serán alterados para mostrar algo falso.
-- Emocional: No se refiere lo que ustedes han visto en textos de ficción, romance, etc. Como esto es un trabajo científico, la emoción se refiere a poner el resultado de su trabajo en un contexto que apele a las emociones o que el lector identifique una solución real al problema que se está planteando.
 
-En el ejemplo anterior se podría poner algo así:
-
-¿Cómo se puede calcular la temperatura promedio en un día en Costa Rica?
-
-La temperatura se puede estimar usando los datos observados que arroja el IMN cada hora y luego tomando el promedio de estos valores (Lógica). Para efectos de completitud se deben revisar si existen datos faltantes o estaciones cuya medición fue errónea (Ética). Esto ayudará al IMN a tener una mejor medición diaria de la temperatura (Emoción).
-
-Repitan este mismo procedimiento para cada una de las preguntas.  
 
 \section{Sobre la base de datos}
 
@@ -106,14 +117,14 @@ base <- base[!is.na(perd),]
 perd <- perd[!is.na(perd)]
 
 
-#hist(perd,xlim = c(0, 5e5), breaks = 200)
-#out <- mean(perd) + sd(perd)
-out<- quantile(perd, 0.95) #cuantil del 90 por ciento
-
-sum(perd[perd<out])
-sum(perd[perd>=out])
-
-base.perd <- base[perd >= out,]
+# hist(perd,xlim = c(0, 5e5), breaks = 200)
+# out <- mean(perd) + sd(perd)
+# out <- quantile(perd, 0.95) #cuantil del 90 por ciento
+# 
+# sum(perd[perd < out])
+# sum(perd[perd >= out])
+# 
+# base.perd <- base[perd >= out, ]
 ```
 
 La base seleccionada fue obtenida de la página oficial de la ciudad de Toronto, y corresponde a información de los siniestros de tipo incendio.
@@ -122,18 +133,24 @@ Este conjunto de datos proporciona información similar a la que se le envía al
 
 Por motivos de privacidad, no se proporciona información personal, ni la dirección exacta, sino un aproximado del sitio de ocurrencia. Se menciona también que algunos incidentes han sido excluidos conforme a las exenciones bajo la Sección 8 de la Ley Municipal de Libertad de Información y Protección de la Privacidad (MFIPPA).
 
-La base de datos es de formato 'tabla' y se actualiza de manera anual. Su última actualización se dio en agosto 29 de 2022. Fue publicada por la sección de servicios administrativos de la unidad de bomberos, y posee 17.536 observaciones con 42 variables. En la siguiente tabla se describe la totalidad de ellos.
+Se define a la población de estudio como el conjunto de todos los siniestros de tipo incendio cuantificados por el cuerpo de bomberos en el cuál hubo una correcta cuantificación de los datos. La muestra consta de 15.627 observaciones en la ciudad de Toronto, Canadá. Con una unidad estadística definida por cada incendio, su pérdida y otras variables de interés de manera individual.
 
+La base de datos es de formato 'tabla' y se actualiza de manera anual. Su última actualización se dio en agosto 29 de 2022. Fue publicada por la sección de servicios administrativos de la unidad de bomberos, y posee 17.536 observaciones con 42 variables. Para efectos de la investigación y entendiendo que la variable fundamental es la que cuantifica la pérdida estimada, se recortan las observaciones que no cuentan con este valor, dando la cantidad de observaciones mencionada en el párrafo anterior (15.627). 
+
+En la siguiente tabla se describe la totalidad de variables de la base.
 
 ```{r}
 p <- read.csv('~/GitHub/II-2022/Distribución de pérdidas/columnas.txt',sep = ',', fileEncoding = "UTF-8")
 
 knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE) %>%
-  column_spec(2, width = "7cm") %>% footnote(general = 'Fuente: Elaboración propia', general_title = '')
+  column_spec(2, width = "7cm") %>% footnote(general = 'Fuente: Elaboración propia', general_title = '') %>%
+  kable_styling(latex_options = c("repeat_header"),
+                repeat_header_continued = "Continua en siguiente pag",
+                repeat_header_text = "\\textit{(Continuación)}"
+                )
 
 ```
 
-De todas las variables anteriores, que pueden funcionar para futuros objetivos, se seleccionad de primera mano el  estimado de pérdidas en dólares, y el momento en el cuál el sistema de bomberos de toronto fue notificado
 
 
 \subsection{Objetivo General:}
