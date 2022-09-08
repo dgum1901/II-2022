@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  8 SEP 2022 12:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  8 SEP 2022 08:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**Bitacora-Mod.Lin.tex
-(./Bitacora-Mod.Lin.tex
+**pruebabitacora.tex
+(./pruebabitacora.tex
 LaTeX2e <2022-06-01> patch level 5
 L3 programming layer <2022-08-30> (c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/memoir/memoir.cls
 Document Class: memoir 2022/07/29 v3.7r configurable book, report, article document class
@@ -1120,11 +1120,11 @@ Package biblatex Warning: Conflicting options.
 LaTeX Font Info:    Trying to load font information for T1+ppl on input line 143.
 (c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/psnfss/t1ppl.fd
 File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
-) (./Bitacora-Mod.Lin.aux
+) (./pruebabitacora.aux
 LaTeX Info: Redefining \. on input line 27.
 LaTeX Info: Redefining \% on input line 27.
 )
-\openout1 = `Bitacora-Mod.Lin.aux'.
+\openout1 = `pruebabitacora.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 143.
 LaTeX Font Info:    ... okay on input line 143.
@@ -1151,9 +1151,9 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 Package hyperref Info: Link coloring OFF on input line 143.
-(./Bitacora-Mod.Lin.out) (./Bitacora-Mod.Lin.out)
+(./pruebabitacora.out) (./pruebabitacora.out)
 \@outlinefile=\write5
-\openout5 = `Bitacora-Mod.Lin.out'.
+\openout5 = `pruebabitacora.out'.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1202,11 +1202,11 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Data encoding 'utf8' specified.
 (biblatex)             No need to reencode data.
-\openout4 = `Bitacora-Mod.Lin-blx.bib'.
+\openout4 = `pruebabitacora-blx.bib'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'Bitacora-Mod.Lin.bbl' found.
-(./Bitacora-Mod.Lin.bbl)
+Package biblatex Info: ... file 'pruebabitacora.bbl' found.
+(./pruebabitacora.bbl)
 Package biblatex Info: Reference section=0 on input line 143.
 Package biblatex Info: Reference segment=0 on input line 143.
 LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 172.
@@ -1241,17 +1241,17 @@ LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 1
 (c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
-<./images/ucr_marca_de_agua.png, id=20, 180.675pt x 68.255pt>
+<./images/ucr_marca_de_agua.png, id=52, 180.675pt x 68.255pt>
 File: ./images/ucr_marca_de_agua.png Graphic file (type png)
 <use ./images/ucr_marca_de_agua.png>
 Package pdftex.def Info: ./images/ucr_marca_de_agua.png  used on input line 189.
 (pdftex.def)             Requested size: 150.63287pt x 56.90575pt.
-<./images/EMat_escuela_matematica_horizontal_1.png, id=22, 128.8815pt x 23.1264pt>
+<./images/EMat_escuela_matematica_horizontal_1.png, id=54, 128.8815pt x 23.1264pt>
 File: ./images/EMat_escuela_matematica_horizontal_1.png Graphic file (type png)
 <use ./images/EMat_escuela_matematica_horizontal_1.png>
 Package pdftex.def Info: ./images/EMat_escuela_matematica_horizontal_1.png  used on input line 190.
 (pdftex.def)             Requested size: 128.88707pt x 23.1274pt.
-<./images/granosgirasol.png, id=23, 623.32875pt x 620.3175pt>
+<./images/granosgirasol.png, id=55, 623.32875pt x 620.3175pt>
 File: ./images/granosgirasol.png Graphic file (type png)
 <use ./images/granosgirasol.png>
 Package pdftex.def Info: ./images/granosgirasol.png  used on input line 203.
@@ -1269,7 +1269,7 @@ Package fancyhdr Warning: \fancyhead's `E' option without twoside option is usel
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 217.
 (c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) (./Bitacora-Mod.Lin.toc
+) (./pruebabitacora.toc
 LaTeX Info: Redefining \sptext on input line 1.
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
@@ -1293,36 +1293,58 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 220.
 [2
 
-] [3] [4] [5
+] [3] [4] [5] [6]
+
+LaTeX Warning: Citation 'ciifen' on page 7 undefined on input line 510.
+
+
+LaTeX Warning: Citation 'cartografia' on page 7 undefined on input line 515.
+
+[7] [8] [9] [10] [11]
+
+LaTeX Warning: Citation 'ciifen' on page 12 undefined on input line 870.
+
+
+LaTeX Warning: Citation 'cartografia' on page 12 undefined on input line 875.
+
+[12] [13] [14
 
 ]
 \tf@toc=\write6
-\openout6 = `Bitacora-Mod.Lin.toc'.
+\openout6 = `pruebabitacora.toc'.
 
-(./Bitacora-Mod.Lin.aux
+(./pruebabitacora.aux
 LaTeX Info: Redefining \sptext on input line 27.
 LaTeX Info: Redefining \. on input line 27.
 LaTeX Info: Redefining \% on input line 27.
 )
-Package rerunfilecheck Info: File `Bitacora-Mod.Lin.out' has not changed.
-(rerunfilecheck)             Checksum: FFCD640A39CBEBB4E65A09046166FAB0;601.
-Package logreq Info: Writing requests to 'Bitacora-Mod.Lin.run.xml'.
-\openout1 = `Bitacora-Mod.Lin.run.xml'.
+
+LaTeX Warning: There were undefined references.
+
+Package rerunfilecheck Info: File `pruebabitacora.out' has not changed.
+(rerunfilecheck)             Checksum: 3F2CB26291D86FB42FC8B12FFD53618A;1817.
+
+Package biblatex Warning: Please (re)run BibTeX on the file(s):
+(biblatex)                pruebabitacora
+(biblatex)                and rerun LaTeX afterwards.
+
+Package logreq Info: Writing requests to 'pruebabitacora.run.xml'.
+\openout1 = `pruebabitacora.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 25305 strings out of 477035
- 430744 string characters out of 5826727
- 1019226 words of memory out of 5000000
- 46066 multiletter control sequences out of 15000+600000
- 516060 words of font info for 105 fonts, out of 8000000 for 9000
+ 25315 strings out of 477035
+ 430648 string characters out of 5826727
+ 1040290 words of memory out of 5000000
+ 46069 multiletter control sequences out of 15000+600000
+ 512673 words of font info for 96 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,13n,77p,1903b,1940s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Bitacora-Mod.Lin.pdf (6 pages, 222459 bytes).
+ 72i,13n,77p,1901b,1940s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on pruebabitacora.pdf (15 pages, 226317 bytes).
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
- 108 compressed objects within 2 object streams
- 21 named destinations out of 1000 (max. 500000)
- 48 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 201 PDF objects out of 1000 (max. 8388607)
+ 166 compressed objects within 2 object streams
+ 37 named destinations out of 1000 (max. 500000)
+ 112 words of extra memory for PDF output out of 10000 (max. 10000000)
 

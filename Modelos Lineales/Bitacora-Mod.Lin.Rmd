@@ -111,5 +111,33 @@ el precio de una vivienda, el cual no es solo tarifa, si no, que es parte de var
 
 \item Depreciación: La depreciación es la pérdida de valor de un bien como consecuencia de su desgaste con el paso del tiempo. \citep{Roberto}
 \end{itemize}
-\citet{pinga}
+
+Algunas teorías o principios que respaldan la pregunta de investigación son:
+
+Precios hedónicos: 
+
+Los precios hedónicos consisten en identificar factores de precio conforme la base de que el precio de un bien se determina por medio de las características internas del bien vendido y por los factores externos que lo afectan. En general, suelen usarse para estimar los valores cuantitativos de los servicios ambientales o ecosistemas que influyen en los precios del mercado de las viviendas. Estos precios, identifican los factores y las características tanto internas como externas que afectan el precio de un producto del mercado. 
+
+
+Regresiones aditivas generalizadas (GAM) :
+
+Las regresiones generalizadas aditivas son una extensión tanto del Modelo Lineal Múltiple como de los Modelos Aditivos, dicho modelo es propuesto por Hastie y Tibshirani(1986,1990). En el caso de los Modelos de Regresión Lineal Múltiple se tiene que la media de la variable Y (variable respuesta), con k covariables está dada por la forma lineal:
+
+$$E[Y|X]= \beta _0 + \beta _1 X_1 + ... + \beta _k X_k$$
+De forma que, para los modelos Aditivos, se tienen $X_i$ covariables, mediante unas funciones $h_i$, con el fin de lograr mayor flexibilidad en el modelo y que sea capaz de adaptarse a datos más complejos, que no presenten incluso linealidad extricta entre las covariables.Sin embargo se agregan siempre manteniendo la linealidad, de forma que viene dada por:
+
+$$E[Y|X] = h_0 + h_1(X_1) + ... + h_k (X_k)$$
+Es importante aclarar que los modelos aditivos, siempre deben cumplir todas las suposiciones que piden verificar los modelos de regresión lineal. También la variable Y debe cumplir con tener distribución normal. De forma que los modelos aditivos generalizados GAM, generalizan los Modelos Aditivos, anteriormente mencionados, permitiendo que la variable de respuesta Y tenga una distribución exponencial. Así este tipo de modelos son buenos cuando no se cumple el supuesto de tener distribución normal para la variable Y.
+
+Cabe resaltar que son de los modelos más flexibles ya que también generalizan a los modelos lineales, solo basta que las funciones $h_i$ correspondan a la función identidad y por lo tanto sean todas iguales. 
+
+A continuación se presenta el siguiente estudios previo, que respalda y podría ser de apoyo para la presente investigación:
+
+La investigación se titula Precios de vivienda hedónicos no paramétricos y se llevó a cabo por Carl Mason y John M.Quigley. En el cual hacen uso de los precios hedónicos para modelar el precio de la vivienda, sin embargo este método puede ser complejo ya que los resultados de los modelos hedónicos dependen de la inclusión de las adecuadas variables independientes y también de una buena especificación de la forma funciona. Sin embargo, este último punto suele ser un poco difícil en el contexto de viviendas debido a que la función de precio hedónico resume, además de la tecnología de producción y las preferencias del consumidor, las cantidades históricamente determinadas. Por lo cual, para dicha investigación se decide estimar la funcióon del precio hedónico por el Modelo Aditivo General (GAM). Siendo este modelo el que se usará para el análisis de la disminución sustancial del valor de las viviendas en condominio en Los Ángeles, en la década de los 80's, años en los cuales el precop de los apartamentos perdieron aproximadamente un 40% de su valor original.
+
+
+
+
+
+
 \printbibliography

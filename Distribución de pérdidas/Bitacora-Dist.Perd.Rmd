@@ -24,7 +24,7 @@ library(ggplot2)
 library(kableExtra)
 library(extrafont)
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
+opts_chunk$set(echo=FALSE, 
 	             cache=TRUE,
                prompt=FALSE,
                tidy=TRUE,
@@ -217,7 +217,6 @@ incidente.
 
 \item TFS Firefighter Casualties: Cantidad de víctimas en el cuerpo de bomberos.
 \end{itemize}
-
 
 
 
