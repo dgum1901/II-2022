@@ -1,0 +1,377 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  oneside]{memoir}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage[left=15mm, inner=3cm, outer=3cm, top=3cm,bottom=3cm ]{geometry}
+\usepackage{mathpazo}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics,graphicx}
+\usepackage{wallpaper}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\nonzeroparskip
+\setlength{\parindent}{12pt}
+\setlength{\baselineskip}{5mm}
+\pagestyle{fancy}
+%\usepackage{parskip}
+%\setcounter{secnumdepth}{1}
+
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\footrulewidth{0.4pt} % tamanno de la regla abajo
+
+\copypagestyle{headerwchap}{myheadings}
+\chapterstyle{bianchi}
+\makeevenhead{headerwchap}{\thepage}{}{}
+\makeoddhead{headerwchap}{}{}{\thepage}
+\makeoddfoot{headerwchap}{}{}{}
+\makeevenfoot{headerwchap}{}{}{}
+\makeheadrule{headerwchap}{\textwidth}{0.5pt}
+
+
+
+\usepackage[ %
+style=authoryear, % 
+natbib = true, %
+dashed = false, %
+firstinits = true, 
+url =false, %
+isbn = false, %
+backend = bibtex]{biblatex}
+\addbibresource{referencias_proyecto.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EDITAR SOLO EL SEGUNDO %%%%%%%
+%%%% CONJUNTO DE PARENTESIS %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Titulo del proyecto
+\newcommand{\TituloProy}{Ac\'a se pone un buen t\'itulo}  % ACA SE CAMBIA EL TITULO
+ 
+% Nombre de Estudiantes y Carnet
+\newcommand{\EstudianteUno}{Maria Jos\'e Corea}
+\newcommand{\EstudianteDos}{Cassandra Ram\'irez}
+\newcommand{\EstudianteTres}{Daniel Ulate}
+
+\newcommand{\ds}[1]{\ensuremath{\displaystyle{#1}}}
+
+
+\def\bitcoinB{\leavevmode
+  {\setbox0=\hbox{\textsf{C}}%
+    \dimen0\ht0 \advance\dimen0 0.2ex
+    \ooalign{\hfil \box0\hfil\cr
+      \hfil\vrule height \dimen0 depth.2ex\hfil\cr
+    }%
+  }%
+}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\frontmatter
+
+\begin{titlingpage}
+  \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+  \begin{center}
+
+    {\Huge \textbf{UNIVERSIDAD DE COSTA RICA}}\\[0.2cm] 
+    {\Large ESCUELA DE MATEM\'ATICA\\[0.2cm]
+DEPARTAMENTO DE MATEMÁTICA PURA Y CIENCIAS ACTUARIALES\\[0.2cm] 
+MODELOS LINEALES\\[0cm]
+} %
+
+   
+
+    \HRule \\[0.6cm]
+    \Large \textbf{\TituloProy}
+    \HRule \\[0.6cm]
+
+    \vfill
+      
+    {\Large{\textbf{Bit\'acora I}}}
+   
+    \vfill
+    \begin{center}
+      Realizado por %
+      \linebreak %
+      \linebreak %
+      \begin{tabular}{c}
+        \hline  \\
+        \EstudianteUno  \\ \\
+        \EstudianteDos  \\ \\
+        \EstudianteTres  \\ \\
+        \hline 
+      \end{tabular}
+    \end{center}
+
+    \vfill
+    
+
+    
+
+    % Bottom of the page
+    \begin{center}
+    \begin{tabular}{l @{\hskip 2in} r}
+    \includegraphics[height=2cm]{./images/ucr_marca_de_agua}
+  & \includegraphics[height=4cm]{./images/EMat_escuela_matematica_horizontal_1} 
+    \end{tabular}
+    \end{center}
+
+ %\\[0.1in]
+%     \Large{Escuela de Matemática}\\
+%     \Large{\textsc{Universidad de Costa Rica}}\\
+
+
+    \ThisURCornerWallPaper{0.5}{./images/granosgirasol.png}
+ 
+  \end{center}
+
+\end{titlingpage}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "plantilla_proyecto"
+%%% End:
+
+\mainmatter
+\fancyhead[LE,RO]{\slshape \rightmark}
+\fancyhead[LO,RE]{\slshape \leftmark}
+\lhead{CA-404 Modelos Lineales}
+\rhead{\thepage}
+\fancyfoot[C]{\thepage}
+
+\tableofcontents*
+
+\newpage
+\chapter{Bitácora 1}
+
+\section{Características de la Tabla de datos}
+
+Se conoce a los mercados inmobiliarios como el conjunto de las acciones
+de oferta y demanda de bienes inmuebles, no obstante, la promoción
+inmobilaria, la inversión que se puede realizar por instituciones y
+compañias, así como individuos, y por último la financiación, la
+adquisión inmobilaria.
+
+El presente proyecto de investigación tiene como objetivo analizar con
+herramientas estadísticas una base de datos cerrada y contextualizada en
+los Estados Unidos de América, analizar y predicir hacia donde se están
+movilizando los precios de las propiedades. La base de datos fue
+encontrada en Kaggle. Esta base toma en cuenta observaciones desde el 2
+de mayo del 2014, hasta el 10 de julio del mismo año, sin embargo, la
+base fue publicada en el 2018. En total se encuentran 4600
+observaciones.
+
+Sobre la base de datos, la población de estudio está determinada las
+casas ubicadas en ciudades de los Estados Unidos de América. La muestra
+de estudio es el conjunto de datos que contiene una serie de
+características que describen los parámetros de las casas ubicadas en
+las distintas ciudades de los Estados Unidos. Es decir, la muestra se
+refiere al comportamiento del precio de las propiedades. Ante lo
+anterior la unidad elemental de estudio son los datos que favorecen el
+precio de la propiedad inmobiliaria, observados de manera diaria por los
+dos meses de estudio.
+
+El presente compilado de datos posee algunas variables que se procede a
+nombrar y explicar:
+
+\begin{itemize}
+\item $date:$ La fecha en la cual se obtuvo los datos.
+\item $price:$ El precio de la casa, expresado en dólares.
+\item $bedrooms:$ Número de dormitorios.
+\item $bathrooms:$ Número de baños
+\item $sqft_living:$ Superficie habitable.
+\item $sqft_lot:$ Tamaño del lote.
+\item $floors:$ Número de pisos, entrepisos aceptables.
+\item $waterfront:$ Vista al mar, característica dicotómica.
+\item $view:$ Vista, en la escala del 0 al 4.
+\item $condition:$ Condición de la casa. en la escala del 1 al 5.
+\item $sqft_above:$ Superficie de la casa.
+\item $sqft_basement:$ Superficie del sótano, en caso de que posean uno.
+\item $yr_built:$ Año de construcción.
+\item $yr_renovation:$ Año de renovación, en caso de que hubiese.
+\item $street:$ Dirección 
+\item $city:$ Ciudad 
+\item $staetzip:$ Código postal.
+\item $country:$ País.
+\end{itemize}
+
+*\textbf{Las características del área se expresan en pies cuadrados.}
+
+La pregúnta de la investigación sería:
+
+¿Cuál es el impacto en el precio de las casas, tomando en cuenta el
+número de dormitorios, el precio de la casa, número de baños, tamaño del
+lote, número de pisos, estado de la casa, año de construcción,
+superficie de la casa, año de renovación y la ciudad?
+
+\section{Base técnica UVE}
+
+El objeto de estudio de la investigación sería buscar sentar las bases
+estadísticas que permitan comprender el precio de las casas en los
+Estados Unidos de América, en el periodo de contrucción de ellas, desde
+1900 hasta el 2014.
+
+Algunos conceptos básicos que delimiten teóricamente la pregunta de
+investigación serían:
+
+\begin{itemize}
+\item Casa: El término significa la construcción de una o pocas plantas que están destinadas a habitarlas familias, caso opuesto con respecto a los edificios de múltiples departamentos o pisos, según la definición de la \citep{RAE}.
+
+\item Precio de vivienda: Según \citet{Bueno}
+el precio de una vivienda, el cual no es solo tarifa, si no, que es parte de varios componentes de distintos rango, según el momento del mercado. 
+
+\item Superficie construida: Según la revista \citet{AD}, se le llama de esa forma, a la suma total de los metros cuadrados que están dentrp del perímetro de la casa.
+
+\item Estado físico de vivienda: Según el \citet{INEC}, se define estado físico de la vivienda al estado de los componentes de la casa, como paredes, techo y el piso.
+
+\item Dimensión del terreno: Según \citet{Maria}, el tamaño estánda de este es de 60 y los 84 metros cuadrados de terreno.
+
+\item Valoración de propiedad: Según la \citet{Consultoria} la valoración de bienes muebles o inmuebles es un proceso requerido en diversidad de ámbitos administrativos, empresariales, judiciales, etc.
+
+\item Plusvalía: \citet{Max} lo define como la diferencia entre el valor de uso y el valor de cambio, que resulta en un beneficio para el capitalista y es el motor del capitalismo.
+
+\item Depreciación: La depreciación es la pérdida de valor de un bien como consecuencia de su desgaste con el paso del tiempo. \citep{Roberto}
+\end{itemize}
+
+Algunas teorías o principios que respaldan la pregunta de investigación
+son:
+
+Precios hedónicos:
+
+Los precios hedónicos consisten en identificar factores de precio
+conforme la base de que el precio de un bien se determina por medio de
+las características internas del bien vendido y por los factores
+externos que lo afectan. En general, suelen usarse para estimar los
+valores cuantitativos de los servicios ambientales o ecosistemas que
+influyen en los precios del mercado de las viviendas. Estos precios,
+identifican los factores y las características tanto internas como
+externas que afectan el precio de un producto del mercado
+
+Regresiones aditivas generalizadas (GAM) :
+
+Las regresiones generalizadas aditivas son una extensión tanto del
+Modelo Lineal Múltiple como de los Modelos Aditivos, dicho modelo es
+propuesto por Hastie y Tibshirani(1986,1990). En el caso de los Modelos
+de Regresión Lineal Múltiple se tiene que la media de la variable Y
+(variable respuesta), con k covariables está dada por la forma lineal:
+
+\[E[Y|X]= \beta _0 + \beta _1 X_1 + ... + \beta _k X_k\] De forma que,
+para los modelos Aditivos, se tienen \(X_i\) covariables, mediante unas
+funciones \(h_i\), con el fin de lograr mayor flexibilidad en el modelo
+y que sea capaz de adaptarse a datos más complejos, que no presenten
+incluso linealidad extricta entre las covariables.Sin embargo se agregan
+siempre manteniendo la linealidad, de forma que viene dada por:
+
+\[E[Y|X] = h_0 + h_1(X_1) + ... + h_k (X_k)\] Es importante aclarar que
+los modelos aditivos, siempre deben cumplir todas las suposiciones que
+piden verificar los modelos de regresión lineal. También la variable Y
+debe cumplir con tener distribución normal. De forma que los modelos
+aditivos generalizados GAM, generalizan los Modelos Aditivos,
+anteriormente mencionados, permitiendo que la variable de respuesta Y
+tenga una distribución exponencial. Así este tipo de modelos son buenos
+cuando no se cumple el supuesto de tener distribución normal para la
+variable Y.
+
+Cabe resaltar que son de los modelos más flexibles ya que también
+generalizan a los modelos lineales, solo basta que las funciones \(h_i\)
+correspondan a la función identidad y por lo tanto sean todas iguales.
+
+A continuación se presenta el siguiente estudios previo, que respalda y
+podría ser de apoyo para la presente investigación:
+
+La investigación se titula Precios de vivienda hedónicos no paramétricos
+y se llevó a cabo por Carl Mason y John M.Quigley. En el cual hacen uso
+de los precios hedónicos para modelar el precio de la vivienda, sin
+embargo este método puede ser complejo ya que los resultados de los
+modelos hedónicos dependen de la inclusión de las adecuadas variables
+independientes y también de una buena especificación de la forma
+funciona. Sin embargo, este último punto suele ser un poco difícil en el
+contexto de viviendas debido a que la función de precio hedónico resume,
+además de la tecnología de producción y las preferencias del consumidor,
+las cantidades históricamente determinadas. Por lo cual, para dicha
+investigación se decide estimar la funcióon del precio hedónico por el
+Modelo Aditivo General (GAM). Siendo este modelo el que se usará para el
+análisis de la disminución sustancial del valor de las viviendas en
+condominio en Los Ángeles, en la década de los 80's, años en los cuales
+el precop de los apartamentos perdieron aproximadamente un 40\% de su
+valor original
+
+\printbibliography
+
+\backmatter
+\end{document}
