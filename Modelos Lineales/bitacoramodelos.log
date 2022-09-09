@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  8 SEP 2022 16:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.3)  8 SEP 2022 20:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1293,7 +1293,13 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 220.
 [2
 
-] [3] [4] [5
+] [3]
+<UVEModelosLineales.png, id=76, 359.09157pt x 459.21562pt>
+File: UVEModelosLineales.png Graphic file (type png)
+<use UVEModelosLineales.png>
+Package pdftex.def Info: UVEModelosLineales.png  used on input line 385.
+(pdftex.def)             Requested size: 359.10712pt x 459.2355pt.
+[4] [5 <./UVEModelosLineales.PNG>] [6
 
 ]
 \tf@toc=\write6
@@ -1311,18 +1317,18 @@ Package logreq Info: Writing requests to 'bitacoramodelos.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 25335 strings out of 477035
- 431447 string characters out of 5826727
+ 25346 strings out of 477035
+ 431724 string characters out of 5826727
  1019407 words of memory out of 5000000
- 46093 multiletter control sequences out of 15000+600000
+ 46103 multiletter control sequences out of 15000+600000
  516991 words of font info for 106 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,13n,77p,1902b,1940s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso12.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/50684/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on bitacoramodelos.pdf (6 pages, 225380 bytes).
+Output written on bitacoramodelos.pdf (7 pages, 246638 bytes).
 PDF statistics:
- 150 PDF objects out of 1000 (max. 8388607)
- 118 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 48 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 159 PDF objects out of 1000 (max. 8388607)
+ 124 compressed objects within 2 object streams
+ 25 named destinations out of 1000 (max. 500000)
+ 53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

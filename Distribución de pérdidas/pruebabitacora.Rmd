@@ -345,7 +345,7 @@ Gestión del riesgo en los incendios: En general, el riesgo se define como una c
 \item \textbf{Teoría:} Pérdidas de vidas y a propiedades originadas por incendios en Canadá.
 \end{itemize}
 
-\textbf{Resumen en una oración:} Estudio que analiza las pérdidas generadas por incendios domésticos entre el 2007 y otros años seleccionados, en Candá (2003-2007).
+\textbf{Resumen en una oración:} Estudio que analiza las pérdidas generadas por incendios domésticos entre el 2007 y otros años seleccionados, en Canadá (2003-2007).
 
 \textbf{Argumento central:} Pérdidas por incendios domésticos en diversos años en Canadá.
 
@@ -376,7 +376,7 @@ Gestión del riesgo en los incendios: En general, el riesgo se define como una c
 
 \textbf{Problemas con el argumento o el tema:} Por su metodología explicativa, descriptiva no se presentan problemas..
 
-\textbf{Resumen en un párrafo:} Según estadísticas sobre incidentes de incendios obtenidos de Statistics Canada , los incendios estructurales conforman el tipo de incendio más común, representando un promedio del 60 % de todos los incendios. Siendo los incendios residenciales, el más común de incendio estructural con más de 11 000 incendiosreportados en 2014. De donde se obtiene que el 87 % de descensos ocasionados por incendios se debieron a los estructurales y entre el 87% -95% resultan de un incendio en el hogar.Sin embargo, aunque según Un estudio sobre las tendencias de incendios en Ontario de 2009 a 2018, los incendios residenciales han disminuido de manera constante, aún representan una alta cifra de pérdidas en las estructuras debido a los incendios (74%).
+\textbf{Resumen en un párrafo:} Según estadísticas sobre incidentes de incendios obtenidos de Statistics Canada , los incendios estructurales conforman el tipo de incendio más común, representando un promedio del 60 % de todos los incendios. Siendo los incendios residenciales, el más común de incendio estructural con más de 11 000 incendiosreportados en 2014. De donde se obtiene que el 87 % de descensos ocasionados por incendios se debieron a los estructurales y entre el 87% -95% resultan de un incendio en el hogar.Sin embargo, aunque según un estudio sobre las tendencias de incendios en Ontario de 2009 a 2018, los incendios residenciales han disminuido de manera constante, aún representan una alta cifra de pérdidas en las estructuras debido a los incendios (74%).
 
 \textbf{ 7. Título:}  Evaluación del riesgo de cola de pérdidas agregadas multivariantes.
 
@@ -458,5 +458,16 @@ Dado lo anterior, en la presente investigación se desea determinar la severidad
 Además tentativamente, se pretende encontrar una distribución que se ajuste a los datos encontrados con el fin de obtener la severidad de los incendios dadas sus características en el momento de reporte y las pérdidas que generaron. Dicho lo anterior, se tiene como referencia los estudio de Wo-Chiang Lee, sobre el ajuste de la distribución generalizada de Pareto a la severidad de pérdidas por incendios comerciales: evidencia de Taiwán, en el que  se describen métodos paramétricos de ajuste de curvas con el fin de modelar pérdidas históricas extremas haciendo uso de un LDA y donde se concluye que el GPD se puede adaptar a la severidad de pérdidas del siniestro de incendios. De manera que, cuando los datos de pérdida sobrepasan los umbrales altos, el GPD resulta ser útil para estimar las colas de las distribuciones de severidad de pérdida.Lo cual implica que el GPD es una técnica respaldada para ajustar una distribución paramétrica a la cola de una distribución subyacente no conocida \citep{wo}. También, se encuentra el estudio de Wenjun Jiang y Jiandong Ren, sobre evaluación del riesgo de cola de pérdidas agregadas multivariantes, en el que se estudian las medidas de riesgo de cola para varios modelos de pérdida agregada multivariante de uso común. Además, se presentan las fórmulas para calcular el TCE y TV multivariados para distribuciones compuestas multivariadas donde las frecuencias de siniestros son dependientes y los tamaños de siniestros son independientes\citep{jiang}
 
 
+\textbf{Diagrama UVE }
+
+\begin{center}
+    Diagrama UVE
+\end{center}
+
+$$\includegraphics{UVEDistribucionperdidas}$$
+\begin{center}
+    \textit{Fuente: Elaboración propia}
+
+\end{center}
 
 \printbibliography

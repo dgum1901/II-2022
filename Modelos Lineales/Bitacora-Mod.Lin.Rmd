@@ -137,7 +137,17 @@ La investigación se titula Precios de vivienda hedónicos no paramétricos y se
 
 
 
+\textbf{Diagrama UVE }
 
+\begin{center}
+    Diagrama UVE
+\end{center}
+
+$$\includegraphics{UVEDistribucionperdidas}$$
+\begin{center}
+    \textit{Fuente: Clasificación del IMC según OMS, 1998 obtenido por  \citep{24}}
+
+\end{center}
 
 
 \printbibliography
