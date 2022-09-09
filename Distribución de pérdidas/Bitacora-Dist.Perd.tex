@@ -1,0 +1,509 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  oneside]{memoir}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage[left=15mm, inner=3cm, outer=3cm, top=3cm,bottom=3cm ]{geometry}
+\usepackage{mathpazo}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics,graphicx}
+\usepackage{wallpaper}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\nonzeroparskip
+\setlength{\parindent}{12pt}
+\setlength{\baselineskip}{5mm}
+\pagestyle{fancy}
+%\usepackage{parskip}
+%\setcounter{secnumdepth}{1}
+
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\footrulewidth{0.4pt} % tamanno de la regla abajo
+
+\copypagestyle{headerwchap}{myheadings}
+\chapterstyle{bianchi}
+\makeevenhead{headerwchap}{\thepage}{}{}
+\makeoddhead{headerwchap}{}{}{\thepage}
+\makeoddfoot{headerwchap}{}{}{}
+\makeevenfoot{headerwchap}{}{}{}
+\makeheadrule{headerwchap}{\textwidth}{0.5pt}
+
+
+
+\usepackage[ %
+style=authoryear, % 
+natbib = true, %
+dashed = false, %
+firstinits = true, 
+url =false, %
+isbn = false, %
+backend = bibtex]{biblatex}
+\addbibresource{referencias_proyecto.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EDITAR SOLO EL SEGUNDO %%%%%%%
+%%%% CONJUNTO DE PARENTESIS %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Titulo del proyecto
+\newcommand{\TituloProy}{Ac\'a se pone un buen t\'itulo}  % ACA SE CAMBIA EL TITULO
+ 
+% Nombre de Estudiantes y Carnet
+\newcommand{\EstudianteUno}{Maria Jos\'e Corea}
+\newcommand{\EstudianteDos}{Cassandra Ram\'irez}
+\newcommand{\EstudianteTres}{Daniel Ulate}
+
+\newcommand{\ds}[1]{\ensuremath{\displaystyle{#1}}}
+
+
+\def\bitcoinB{\leavevmode
+  {\setbox0=\hbox{\textsf{C}}%
+    \dimen0\ht0 \advance\dimen0 0.2ex
+    \ooalign{\hfil \box0\hfil\cr
+      \hfil\vrule height \dimen0 depth.2ex\hfil\cr
+    }%
+  }%
+}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\frontmatter
+
+\begin{titlingpage}
+  \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+  \begin{center}
+
+    {\Huge \textbf{UNIVERSIDAD DE COSTA RICA}}\\[0.2cm] 
+    {\Large ESCUELA DE MATEM\'ATICA\\[0.2cm]
+DEPARTAMENTO DE MATEMÁTICA PURA Y CIENCIAS ACTUARIALES\\[0.2cm] 
+DISTRIBUCI\'ON DE P\'ERDIDAS\\[0cm]
+} %
+
+   
+
+    \HRule \\[0.6cm]
+    \Large \textbf{\TituloProy}
+    \HRule \\[0.6cm]
+
+    \vfill
+      
+    {\Large{\textbf{Bit\'acora I}}}
+   
+    \vfill
+    \begin{center}
+      Realizado por %
+      \linebreak %
+      \linebreak %
+      \begin{tabular}{c}
+        \hline  \\
+        \EstudianteUno  \\ \\
+        \EstudianteDos  \\ \\
+        \EstudianteTres  \\ \\
+        \hline 
+      \end{tabular}
+    \end{center}
+
+    \vfill
+    
+
+    
+
+    % Bottom of the page
+    \begin{center}
+    \begin{tabular}{l @{\hskip 2in} r}
+    \includegraphics[height=2cm]{./images/ucr_marca_de_agua}
+  & \includegraphics[height=4cm]{./images/EMat_escuela_matematica_horizontal_1} 
+    \end{tabular}
+    \end{center}
+
+ %\\[0.1in]
+%     \Large{Escuela de Matemática}\\
+%     \Large{\textsc{Universidad de Costa Rica}}\\
+
+
+    \ThisURCornerWallPaper{0.5}{./images/granosgirasol.png}
+ 
+  \end{center}
+
+\end{titlingpage}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "plantilla_proyecto"
+%%% End:
+
+\mainmatter
+\fancyhead[LE,RO]{\slshape \rightmark}
+\fancyhead[LO,RE]{\slshape \leftmark}
+\lhead{CA-409 Distribución de Pérdidas}
+\rhead{Bitácora \thechapter}
+\fancyfoot[C]{\thepage}
+
+\tableofcontents*
+
+\newpage
+\chapter{Bitácora I}
+
+\section{Integrantes}
+
+\begin{itemize}
+  \item María José Corea Chinchilla - B82352
+  \item Cassandra Paola Ramirez - B76199
+  \item Daniel Gustavo Ulate Montero - B67212
+\end{itemize}
+
+\section{Primera aproximación}
+
+Resulta trascendente para las sociedades modernas, entender la
+importancia de prevenir los incendios, dado el alto costo económico y
+social que estos conllevan cada año. Una gran parte de las pérdidas
+generadas en incendios, ocurren en un pequeño número de eventos de mayor
+magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y
+los gobernantes es tratar de establecer las condiciones adecuadas para
+limitar o contener los eventos más catastróficos.
+
+Un enfoque primordial que puede tomar la investigación es delimitar de
+forma adecuada las condiciones que puedan aumentar el riesgo de incendio
+en primer lugar, por lo que se debe tratar de predecir posibles
+incendios y su gravedad, intentando identificar patrones en su
+ocurrencia, particularmente sobre lo que hace que un incendio se
+convierta en uno con altas pérdidas.
+
+Varias investigaciones en el pasado han intentado responder esta
+pregunta sobre qué puede determinar la severidad de un siniestro de este
+estilo, en términos forestales Juan Torres \citep{rojo} desarrolla un
+índice de ocurrencia de incendios forestales en superficies extensas,
+denominado superficie en riesgo de incendio (SeR). Este autor realiza
+distintos modelos y señala que un problema para ello es que las colas de
+estas distribuciones tienden a ser muy pesadas.
+
+Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan
+un resumen de trabajos en el area de modelaje de la distribución en
+probabilidad de pérdidas en incendio, e incluso lo presenta como un
+proceso estocástico. Este papel compara las pérdidas con distintos tipos
+de distribuciones, lo que puede servir a forma de guía en el modelaje en
+el presente proyecto. Con base en lo anterior se plantea la siguiente
+pregunta de investigación.
+
+¿Cómo delimitar y definir las variables que provocan una severidad
+extraordinaria en un siniestro de incendio?
+
+\section{Replanteo}
+
+\begin{itemize}
+  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
+  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
+  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
+  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
+\end{itemize}
+
+\section{Argumentación}
+
+\begin{itemize}
+  \item ¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
+  
+  Intuitivamente se podría definir el origen del fuego, así como su duración, como variables que influyen fuertemente en la severidad del incendio, sin embargo, pueden existir factores menos corrientes y más fáciles de atender para disminuir el costo del incidente, esto permitirá otorgar herramientas para la atención de desastres y reducir las pérdidas.
+  
+  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
+  
+  Las fiestas de fin de año se caracterizan por los fuegos artificiales y el clásico árbol navideño, muchos de los siniestros ocurren por cortos circuitos o accidentes con pólvora, por lo que es una época de alto riesgo para incendios, en general se pueden obtener resultado sesgados para fechas festivas si se desean estudiar otras variables. Con el objetivo de estudiar la distribución de la severidad y tratar de minimizar las pérdidas, se pretende realizar un estudio que contextualice de manera temporal los incendios.
+  
+  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
+  
+  Existen diversas medidas de pérdidas en el caso de los incendios forestales, generalmente asociados al área de impacto y biodiversidad afectada, de hecho \citet{rojo} menciona superficie máxima en riesgo de incendio (SeR), análogo al VaR, entre otras variables relacionadas al riesgo de un terreno, por lo que es posible estimar distribuciones de probabilidad en cuanto a susceptibilidad a incendios en áreas urbanas, el mayor obstáculo es encontrar los elementos análogos que permitan establecer los parámetros y aplicarlo en términos generales. Lo anterior permitiría establecer mediante el modelo zonas de mayor riesgo para preparar planes de contingencia para mitigar las pérdidas.
+  
+  
+  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
+  
+  En términos de modelaje es posible intentar ajustar cada distribución que existe con cada parámetro permitido, donde probablemente se encuentre uno que funcione a la perfección, sin embargo, dados los costos computacionales y limitaciones informativas es una opción inviable, por lo que apoyándose de la distribución empírica de los datos se puede intentar ajustar a distribuciones conocidas, y tratar de medir el peso de las colas con su probabilidad para cuantificar los llamados outliers, esto pretende aportar mediciones más precisas a los eventos de mayor pérdida con el fin de preparar mejor los planes contingentes.
+  
+  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
+  
+  Un siniestro de tipo incendio puede ocurrir en cualquier momento y lugar, el objetivo de una aseguradora es cuantificar las pérdidas de sus clientes e indemnizar, esto es un reto importante considerando la variabilidad de cada siniestro y los compromisos financieros preexistentes de la entidad, por lo que se debe de preparar para esos eventos. Utilizando la frecuencia, así como la pérdida esperada, es posible predecir cuánto capital se debe provisionar para no comprometer las finanzas de la aseguradora.
+  
+\end{itemize}
+
+\section{Sobre la base de datos}
+
+La base seleccionada fue obtenida de la página oficial de la ciudad de
+Toronto, y corresponde a información de los siniestros de tipo incendio.
+
+Este conjunto de datos proporciona información similar a la que se le
+envía al Jefe de Bomberos de Ontario en relación a los incidentes en los
+cuales el departamento de bomberos de Toronto intervino, con bastantes
+detalles.
+
+Por motivos de privacidad, no se proporciona información personal, ni la
+dirección exacta, sino un aproximado del sitio de ocurrencia. Se
+menciona también que algunos incidentes han sido excluidos conforme a
+las exenciones bajo la Sección 8 de la Ley Municipal de Libertad de
+Información y Protección de la Privacidad (MFIPPA).
+
+Se define a la población de estudio como el conjunto de todos los
+siniestros de tipo incendio cuantificados por el cuerpo de bomberos en
+el cual hubo una correcta cuantificación de los datos. La muestra consta
+de 15.627 observaciones en la ciudad de Toronto, Canadá. Con una unidad
+estadística definida por cada incendio, su pérdida y otras variables de
+interés de manera individual.
+
+La base de datos es de formato `tabla' y se actualiza de manera anual.
+Su última actualización se dio en agosto 29 de 2022. Fue publicada por
+la sección de servicios administrativos de la unidad de bomberos, y
+posee 17.536 observaciones con 42 variables. Para efectos de la
+investigación y entendiendo que la variable fundamental es la que
+cuantifica la pérdida estimada, se recortan las observaciones que no
+cuentan con este valor, dando la cantidad de observaciones mencionada en
+el párrafo anterior (15.627).
+
+En la siguiente tabla se describe la totalidad de variables de la base.
+
+\begin{longtable}[t]{l|>{\raggedright\arraybackslash}p{7cm}}
+\caption{\label{tab:unnamed-chunk-2}Descripción completa de la base}\\
+\hline
+Columna & Descripcion\\
+\hline
+\endfirsthead
+\caption[]{Descripción completa de la base \textit{(Continuación)}}\\
+\hline
+Columna & Descripcion\\
+\hline
+\endhead
+X\_id & Identificador único del suceso\\
+\hline
+Area\_of\_Origin & Area de origen con código y descripción\\
+\hline
+Building\_Status & Código con el estado del edificio y descripción\\
+\hline
+Business\_Impact & Código con el impacto al negocio y descripción\\
+\hline
+Civilian\_Casualties & Civiles víctimas en la escena\\
+\hline
+Count\_of\_Persons\_Rescued & Cantidad de personas rescatadas\\
+\hline
+Est\_Dollar\_Loss & Pérdida estimada en dólares\\
+\hline
+Est\_Number\_Of\_Persons\_Displaced & Número estimado de personas desplazadas\\
+\hline
+Exposures & Número de incendios de exposición asociados con este incendio\\
+\hline
+Ext\_agent\_app\_or\_defer\_time & Marca de tiempo del agente que se aplicó por primera vez o decisión de diferir\\
+\hline
+Extent\_Of\_Fire & Cógigo de extensión del fuego y descripción\\
+\hline
+Final\_Incident\_Type & Tipo de incidente final\\
+\hline
+Fire\_Alarm\_System\_Impact\_on\_Evacuation & Código de impacto del sistema de alarma contra incendios y descripción\\
+\hline
+Fire\_Alarm\_System\_Operation & Código de operación del sistema de alarma contra incendios y descripción\\
+\hline
+Fire\_Alarm\_System\_Presence & Código de presencia del sistema de alarma contra incendios y descripción\\
+\hline
+Fire\_Under\_Control\_Time & Marca de tiempo del fuego bajo control\\
+\hline
+Ignition\_Source & Código sobre la fuente del incendio y despcripción\\
+\hline
+Incident\_Number & Número de incidente de acuerdo al sistema de bomberos de Toronto (TFS)\\
+\hline
+Incident\_Station\_Area & Area de la estación de ocurrencia según TFS\\
+\hline
+Incident\_Ward & Lugar donde ocurrió el incidente\\
+\hline
+Initial\_CAD\_Event\_Type & Tipo de evento que dio origen\\
+\hline
+Intersection & Intersección mayor o menor más cercana en el barrio del incidente\\
+\hline
+Last\_TFS\_Unit\_Clear\_Time & Marca de tiempo de la última unidad en el incidente\\
+\hline
+Latitude & Latitud de la intersección más cercana al incidente\\
+\hline
+Level\_Of\_Origin & Nivel de origen\\
+\hline
+Longitude & Longitud de la intersección más cercana al incidente\\
+\hline
+Material\_First\_Ignited & Código del material donde inició y descripción\\
+\hline
+Method\_Of\_Fire\_Control & Código del método de control del fuego y descripción\\
+\hline
+Number\_of\_responding\_apparatus & Número de aparatos del TFS que atendió la emergencia\\
+\hline
+Number\_of\_responding\_personnel & Número de personal del TFS que atendió la emergencia\\
+\hline
+Possible\_Cause & Código de la posible causa y descripción\\
+\hline
+Property\_Use & Código de la propiedad y descripción\\
+\hline
+Sk\_Alarm\_at\_Fire\_Origin & Código de la alarma de incendios en el lugar y descripción\\
+\hline
+Smoke\_Alarm\_Failure & Código de fallo en la alarma de incendios y descripción\\
+\hline
+Smoke\_Type & Código del tipo de detector de humo y descripción\\
+\hline
+Smoke\_Alarm\_Impact\_on\_Evacuation & Código de impacto de la alarma contra incendios en la evacuación y descripción\\
+\hline
+Smoke\_Spread & Código de expansión del humo y descripción\\
+\hline
+Sprinkler\_System\_Operation & Código de funcionamiento de sistema de rociadores y descripción\\
+\hline
+Sprinkler\_System\_Presence & Código de presencia de sistema de rociadores y descripción\\
+\hline
+Status\_of\_Fire\_On\_Arrival & Código de estado del incendio a la llegada y descripción\\
+\hline
+TFS\_Alarm\_Time & Marca de tiempo cuando el TFS fue notificado\\
+\hline
+TFS\_Arrival\_Time & Marca de tiempo cuando el TFS llegó a la escena\\
+\hline
+TFS\_Firefighter\_Casualties & Cantidad de víctimas en el cuerpo de bomberos\\
+\hline
+\multicolumn{2}{l}{\rule{0pt}{1em}Fuente: Elaboración propia}\\
+\end{longtable}
+
+\section{Objeto de estudio}
+
+El objeto de estudio de la investigación sería buscar sentar las bases
+que permitan delimitar y definir las variables que provocan una
+severidad extraordinaria en un siniestro de incendio en la ciudad de
+Toronto, Canadá, en el periodo de 2011 al 2019.
+
+\section{Conceptos básicos}
+\begin{itemize}
+
+\item Severidad: Según la \citet{RAE1} el término severidad significa trato o castigo duro o rígido en la observación de una norma. 
+
+\item Extraordinario: Según la \citet{RAE2} significa fuera de orden o regla natural o común.
+
+\item Siniestro: Un siniestro es un suceso que ha quedado estipulado en el contrato del seguro ya que se preveé que pueda pasar causando daños a la persona asegurada o a sus bienes. \citep{Allianz}
+
+\item Incendio: Fuego de grandes proporciones que se desarrolla sin control, el cual puede presentarse de manera instantánea o gradual, pudiendo provocar daños materiales, interrupción de los procesos de producción, pérdida de vidas humanas y afectación al ambiente. \citep{UNAM}
+
+\end{itemize}
+\section{Descripción detallada de la tabla de datos}
+
+Como la pregunta de investigación busca delimitar y definir las
+variables que provocan una severidad extraordinaria en un siniestro de
+incendio, entonces para efectos de la investigación las variables claves
+para ésta van a ser:
+
+\begin{itemize}
+\item Area of Origin: Area de origen con código y descripción.
+
+\item Building Status: Código con el estado del edificio y descripción.
+
+\item Business Impact: Código con el impacto al negocio y descripción.
+
+\item Civilian Casualties: Civiles víctimas en la escena.
+
+\item Count of Persons Rescued: Cantidad de personas rescatadas.
+
+\item Est Dollar Loss: Pérdida estimada en dólares.
+
+\item Exposures: Número de incendios de exposición asociados con este incendio.
+
+\item Extent Of Fire: Cógigo de extensión del fuego y descripción.
+
+\item Final Incident Type: Tipo de incidente final.
+
+\item Fire Under Control Time: Marca de tiempo del fuego bajo control.
+
+\item Incident Ward: Lugar donde ocurrió el incidente.
+
+\item Initial CAD Event Type: Tipo de evento que dio origen.
+
+\item Intersection: Intersección mayor o menor más cercana en el barrio del incidente.
+
+\item Last TFS Unit Clear Time: Marca de tiempo de la última unidad en el
+incidente.
+
+\item Material First Ignited: Código del material donde inició y descripción.
+
+\item Smoke Alarm Impact on Evacuation: Código de impacto de la alarma contra incendios en la evacuación y descripción.
+
+\item Sprinkler System Operation: Código de funcionamiento de sistema de rociadores y descripción.
+
+\item Status of Fire On Arrival: Código de estado del incendio a la llegada y descripción.
+
+\item TFS Alarm Time: Marca de tiempo cuando el TFS fue notificado.
+
+\item TFS Arrival Time: Marca de tiempo cuando el TFS llegó a la escena.
+
+\item TFS Firefighter Casualties: Cantidad de víctimas en el cuerpo de bomberos.
+\end{itemize}
+
+\printbibliography
+
+\backmatter
+\end{document}
