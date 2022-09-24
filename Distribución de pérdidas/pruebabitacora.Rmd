@@ -23,6 +23,7 @@ library(fOptions)
 library(ggplot2)
 library(kableExtra)
 library(extrafont)
+library(scales)
 options(max.print="75")
 opts_chunk$set(echo=FALSE, 
 	             cache=TRUE,
@@ -46,65 +47,6 @@ opts_knit$set(width=75)
 \newpage
 \chapter{Bitácora I}
 
-\section{Integrantes}
-
-\begin{itemize}
-  \item María José Corea Chinchilla - B82352
-  \item Cassandra Paola Ramirez - B76199
-  \item Daniel Gustavo Ulate Montero - B67212
-\end{itemize}
-
-\section{Primera aproximación}
-
-
-Resulta trascendente para las sociedades modernas, entender la importancia de prevenir los incendios, dado el alto costo económico y social que estos conllevan cada año. Una gran parte de las pérdidas generadas en incendios, ocurren en un pequeño número de eventos de mayor magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y los gobernantes es tratar de establecer las condiciones adecuadas para limitar o contener los eventos más catastróficos.
-
-Un enfoque primordial que puede tomar la investigación es delimitar de forma adecuada las condiciones que puedan aumentar el riesgo de incendio en primer lugar, por lo que se debe tratar de predecir posibles incendios y su gravedad, intentando identificar patrones en su ocurrencia, particularmente sobre lo que hace que un incendio se convierta en uno con altas pérdidas.
-
-Varias investigaciones en el pasado han intentado responder esta pregunta sobre qué puede determinar la severidad de un siniestro de este estilo, en términos forestales Juan Torres \citep{rojo} desarrolla un índice de ocurrencia de incendios forestales en superficies extensas, denominado superficie en riesgo de incendio (SeR). Este autor realiza distintos modelos y señala que un problema para ello es que las colas de estas distribuciones tienden a ser muy pesadas.
-
-Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan un resumen de trabajos en el area de modelaje de la distribución en probabilidad de pérdidas en incendio, e incluso lo presenta como un proceso estocástico. Este papel compara las pérdidas con distintos tipos de distribuciones, lo que puede servir a forma de guía en el modelaje en el presente proyecto. 
-Con base en lo anterior se plantea la siguiente pregunta de investigación.
-
-¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
-
-\section{Replanteo}
-
-\begin{itemize}
-  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
-  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
-  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
-  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
-\end{itemize}
-
-
-\section{Argumentación}
-
-\begin{itemize}
-  \item ¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
-  
-  Intuitivamente se podría definir el origen del fuego, así como su duración, como variables que influyen fuertemente en la severidad del incendio, sin embargo, pueden existir factores menos corrientes y más fáciles de atender para disminuir el costo del incidente, esto permitirá otorgar herramientas para la atención de desastres y reducir las pérdidas.
-  
-  \item Estableciendo una temporalidad definida por meses, ¿en qué periodos del mes y del año ocurren los incidentes con mayor valor de pérdida?
-  
-  Las fiestas de fin de año se caracterizan por los fuegos artificiales y el clásico árbol navideño, muchos de los siniestros ocurren por cortos circuitos o accidentes con pólvora, por lo que es una época de alto riesgo para incendios, en general se pueden obtener resultado sesgados para fechas festivas si se desean estudiar otras variables. Con el objetivo de estudiar la distribución de la severidad y tratar de minimizar las pérdidas, se pretende realizar un estudio que contextualice de manera temporal los incendios.
-  
-  \item ¿Se puede delimitar la severidad de un incidente en términos más generales como tamaño, intensidad y duración en lugar de pérdidas? Y qué correlación se podría establecer con ambas delimitaciones.
-  
-  Existen diversas medidas de pérdidas en el caso de los incendios forestales, generalmente asociados al área de impacto y biodiversidad afectada, de hecho \citet{rojo} menciona superficie máxima en riesgo de incendio (SeR), análogo al VaR, entre otras variables relacionadas al riesgo de un terreno, por lo que es posible estimar distribuciones de probabilidad en cuanto a susceptibilidad a incendios en áreas urbanas, el mayor obstáculo es encontrar los elementos análogos que permitan establecer los parámetros y aplicarlo en términos generales. Lo anterior permitiría establecer mediante el modelo zonas de mayor riesgo para preparar planes de contingencia para mitigar las pérdidas.
-  
-  
-  \item ¿Se puede encontrar una distribución que se ajuste a los datos encontrados para modelar de manera óptima los eventos extremos (outliers) mediante su frecuencia y severidad?
-  
-  En términos de modelaje es posible intentar ajustar cada distribución que existe con cada parámetro permitido, donde probablemente se encuentre uno que funcione a la perfección, sin embargo, dados los costos computacionales y limitaciones informativas es una opción inviable, por lo que apoyándose de la distribución empírica de los datos se puede intentar ajustar a distribuciones conocidas, y tratar de medir el peso de las colas con su probabilidad para cuantificar los llamados outliers, esto pretende aportar mediciones más precisas a los eventos de mayor pérdida con el fin de preparar mejor los planes contingentes.
-  
-  \item ¿Cuál es la importancia en términos económicos y humanos de cuantificar la distribución adecuada de las pérdidas en los incendios?
-  
-  Un siniestro de tipo incendio puede ocurrir en cualquier momento y lugar, el objetivo de una aseguradora es cuantificar las pérdidas de sus clientes e indemnizar, esto es un reto importante considerando la variabilidad de cada siniestro y los compromisos financieros preexistentes de la entidad, por lo que se debe de preparar para esos eventos. Utilizando la frecuencia, así como la pérdida esperada, es posible predecir cuánto capital se debe provisionar para no comprometer las finanzas de la aseguradora.
-  
-\end{itemize}
-
-
 
 \section{Sobre la base de datos}
 
@@ -117,70 +59,8 @@ base <- base[!is.na(perd),]
 perd <- perd[!is.na(perd)]
 
 
-hist(perd,xlim = c(0, 5e5), breaks = 200)
-out <- mean(perd) + sd(perd)
-
-out <- quantile(perd, 0.95) #cuantil del 90 por ciento
-
-
-
-base.perd <- base[perd >= out, ]
-
-hist(log(perd))
-
-base$Extremo <- perd>=out
-
-grafico2 <-
-  ggplot(data = base) + geom_bar(
-    mapping = aes(x = Extremo),
-    fill = c('blue', 'red'),
-    width = 0.5,
-    na.rm = TRUE
-  ) + theme_bw() +
-  labs(
-    y = "Frecuencia",
-    x = "Cuantil",
-    title = "Gráfico 2: Frecuencia del estimado de pérdidas de acuerdo al cuantil 0.95",
-caption = "Fuente: Elaboración propia"
-  ) +
-  scale_x_discrete(labels = c("Menor 95%", "Mayor o igual 95%"))
-grafico2
-
-
-library(scales)
-#library(ggplot2)
-df <- data.frame(Name=c("Masa cuantil menor a .95", "Masa cuantil mayor o igual a .95"), Amount=c(sum(perd[perd < out]),sum(perd[perd >= out])))
-
-
-
-df$Amount <- factor(df$Amount)
-
-grafico3<-ggplot(df, aes(x=Name, y=Amount)) + geom_bar(stat="identity",fill = c('blue', 'red'),
-    width = 0.5,
-    na.rm = TRUE
-  ) + theme_bw() +
-  labs(
-    y = "Masa de la pérdida",
-    x = "Cuantil",
-    title = "Gráfico 3: Masa del estimado de pérdidas de acuerdo al cuantil 0.95",
-caption = "Fuente: Elaboración propia"
-  )+ scale_y_continuous(labels = comma)+scale_x_discrete(limits = df$Name)
-grafico3
-
-
 ```
 
-La base seleccionada fue obtenida de la página oficial de la ciudad de Toronto, y corresponde a información de los siniestros de tipo incendio.
-
-Este conjunto de datos proporciona información similar a la que se le envía al Jefe de Bomberos de Ontario en relación a los incidentes en los cuales el departamento de bomberos de Toronto intervino, con bastantes detalles.
-
-Por motivos de privacidad, no se proporciona información personal, ni la dirección exacta, sino un aproximado del sitio de ocurrencia. Se menciona también que algunos incidentes han sido excluidos conforme a las exenciones bajo la Sección 8 de la Ley Municipal de Libertad de Información y Protección de la Privacidad (MFIPPA).
-
-Se define a la población de estudio como el conjunto de todos los siniestros de tipo incendio cuantificados por el cuerpo de bomberos en el cual hubo una correcta cuantificación de los datos. La muestra consta de 15.627 observaciones en la ciudad de Toronto, Canadá. Con una unidad estadística definida por cada incendio, su pérdida y otras variables de interés de manera individual.
-
-La base de datos es de formato 'tabla' y se actualiza de manera anual. Su última actualización se dio en agosto 29 de 2022. Fue publicada por la sección de servicios administrativos de la unidad de bomberos, y posee 17.536 observaciones con 42 variables. Para efectos de la investigación y entendiendo que la variable fundamental es la que cuantifica la pérdida estimada, se recortan las observaciones que no cuentan con este valor, dando la cantidad de observaciones mencionada en el párrafo anterior (15.627). 
-
-En la siguiente tabla se describe la totalidad de variables de la base.
 
 ```{r}
 p <- read.csv('~/GitHub/II-2022/Distribución de pérdidas/columnas.txt',sep = ',', fileEncoding = "UTF-8")
@@ -194,345 +74,67 @@ knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE) 
 
 ```
 
-\section{Objeto de estudio}
-
-El objeto de estudio de la investigación sería buscar sentar las bases que permitan
-delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio en la ciudad de Toronto, Canadá, en el periodo de 2011 al 2019.
-
-
-\section{Conceptos básicos}
-\begin{itemize}
-
-\item Severidad: Según la \citet{RAE1} el término severidad significa trato o castigo duro o rígido en la observación de una norma. 
-
-\item Extraordinario: Según la \citet{RAE2} significa fuera de orden o regla natural o común.
-
-\item Siniestro: Un siniestro es un suceso que ha quedado estipulado en el contrato del seguro ya que se preveé que pueda pasar causando daños a la persona asegurada o a sus bienes. \citep{Allianz}
-
-\item Incendio: Fuego de grandes proporciones que se desarrolla sin control, el cual puede presentarse de manera instantánea o gradual, pudiendo provocar daños materiales, interrupción de los procesos de producción, pérdida de vidas humanas y afectación al ambiente. \citep{UNAM}
-
-\end{itemize}
-\section{Descripción detallada de la tabla de datos}
-
-Como la pregunta de investigación busca delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio, entonces para efectos de la investigación las variables claves para ésta van a ser:
-
-\begin{itemize}
-\item Area of Origin: Area de origen con código y descripción.
-
-\item Building Status: Código con el estado del edificio y descripción.
-
-\item Business Impact: Código con el impacto al negocio y descripción.
-
-\item Civilian Casualties: Civiles víctimas en la escena.
-
-\item Count of Persons Rescued: Cantidad de personas rescatadas.
-
-\item Est Dollar Loss: Pérdida estimada en dólares.
-
-\item Exposures: Número de incendios de exposición asociados con este incendio.
-
-\item Extent Of Fire: Cógigo de extensión del fuego y descripción.
-
-\item Final Incident Type: Tipo de incidente final.
-
-\item Fire Under Control Time: Marca de tiempo del fuego bajo control.
-
-\item Incident Ward: Lugar donde ocurrió el incidente.
-
-\item Initial CAD Event Type: Tipo de evento que dio origen.
-
-\item Intersection: Intersección mayor o menor más cercana en el barrio del incidente.
-
-\item Last TFS Unit Clear Time: Marca de tiempo de la última unidad en el
-incidente.
-
-\item Material First Ignited: Código del material donde inició y descripción.
-
-\item Smoke Alarm Impact on Evacuation: Código de impacto de la alarma contra incendios en la evacuación y descripción.
-
-\item Sprinkler System Operation: Código de funcionamiento de sistema de rociadores y descripción.
-
-\item Status of Fire On Arrival: Código de estado del incendio a la llegada y descripción.
-
-\item TFS Alarm Time: Marca de tiempo cuando el TFS fue notificado.
-
-\item TFS Arrival Time: Marca de tiempo cuando el TFS llegó a la escena.
-
-\item TFS Firefighter Casualties: Cantidad de víctimas en el cuerpo de bomberos.
-\end{itemize}
-
-\section{Teorías, principios o metodologías}
-
-Gestión del riesgo en los incendios: En general, el riesgo se define como una combinación de probabilidad de que ocurra un evento y sus respectivas consecuencias, las cuáles son negativas \citep{ciifen}. Además, se compone de amenaza y vulnerabilidad. Para el caso de riesgo por incendios, se define como la probabilidad de que se produzca un incendio en determinado lugar. Donde la vulnerabilidad también es uno de sus componentes y es importante entender que hace referencia al daño potencial que puede producir el fuego en un lugar.\citep{cartografia}
-
-
-
-\textbf{Fichas de literatura:} 
-
-\textbf{ 1. Título:} Impacto de los desastres en la salud pública.
-
-\textbf{Autor(es):}Lee M. Sanderson
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2000
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Antecedentes de desastres por incendio
-
-\item \textbf{Teoría:} Incendios 
-
-\end{itemize}
-
-\textbf{Resumen en una oración:} Trata sobre la naturaleza de desastres producidos por los incendios y su naturaleza.
-
-\textbf{Argumento central:} Los desastres o catástrofes producidas por los incendios y su efecto en la salud pública.
-
-\textbf{Problemas con el argumento o el tema:} Ya que es explicativo, no presenta problemas.
-
-\textbf{Resumen en un párrafo:} Se trata sobre el hecho de apartir de cúantas personas fallecidas se considera un evento como desastre o catástrofe y cuántas contempla un desastre por incendio. Además, de la importancia relativa de dichos desastres .Actualmente, el mayor riesgo producto de incendios, en cuanto a salud pública, se presenta en viviendas uni o bifamiliares.Cabe resaltar, que los desastres naturales pueden ser desencadenantes de los incendios, como terremotos o erupciones volcánicas.
-
-\textbf{ 2. Título:} Fire prevention and safety
-
-\textbf{Autor(es):} SGI Canadá
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} sin fecha 
-
-\item \textbf{Metodológico:} Explicativo.
-
-\item \textbf{Temático:} Prevención contra incendios
-
-\item \textbf{Teoría:} Incendios
-\end{itemize}
-
-\textbf{Resumen en una oración:} Trata sobre las medidas para evitar el inicio de incendios en diversos aspectos de la vida cotidiana..
-
-\textbf{Argumento central:} Prevención de incendios y seguridad.
-
-\textbf{Problemas con el argumento o el tema:} Ya que es explicativo, no presenta problemas.
-
-\textbf{Resumen en un párrafo:} En Canadá, los incendios que pasan como prevenibles pueden terminar convirtiendose en fatales (sucede en 1 de cada 100 desastres por incendios residenciales). También, un poco más de un tercio de los hogares no cuentan con detectores de humo en óptimas condiciones. Normalmente, la mayoría de dichos incendios dan inicio en la cocina, la sala o las habitaciones. Además, de medidas de protección para sus familiares.Provee también las recomendaciones en caso de encontrarse involucrado en un desastre por incendio.
-
-\textbf{ 3. Título:} Fire and at risk populations in Canada Analysis of the Canadian National Fire Information Database
-
-\textbf{Autor(es):} Joe Clare y Hannah Kelly
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2017
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Incendio y las poblaciones en riesgo de Canadá.
-
-\item \textbf{Teoría:} Incendios y población en riesgo.
-\end{itemize}
-
-\textbf{Resumen en una oración:} Análisis de la respectiva base de dataos de Canadá de información sobre incendios para determinar las poblaciones en riesgo.
-
-\textbf{Argumento central:} Poblaciones en riesgo en Canadá por incendios.
-
-\textbf{Problemas con el argumento o el tema:} Ya que es explicativo, no presenta problemas.
-
-\textbf{Resumen en un párrafo:} Innvestigación centrada en la base de datos de información nacional sobre incendios de Canadá (NFID) con el fin, de comprender acerca de las poblaciones de riesgo.El estudio se enfocó en los incendios de estructuras residenciales informados al NFID entre 2005 y 2015, considerando a las víctimas que no eran bomberos. Donde la muestra, de dichos incendios, incluyó 830 fallecidos y 4656 heridos. El enfoque consiste en estudiar la información brindada acerca de las víctimas asociadas a los incendios y en las influencias protectoras brindadas por los sistemas de seguridad laboral.Cabe resaltar, que el estudio también toma en cuenta aspectos como dónde se inició y se mantuvo el incendio (área de la residencia), la activación de las alarmas de humo y protección de rociadores. Finalmente se recomienda, a los cuerpos de bomberos canadienses a tomar un enfoque de prevención proactivo y dirigido a maximizar el potencial de los residentes de edad avanzada con el fin de que vivan seguros en sus hogares por un mayor tiempo.
-
-
-\textbf{ 4. Título:} Cartografía y gestión del riesgo de incendios forestales e interfase en la localidad de Salsipuedes, Sierras Chicas, Córdoba.
-
-\textbf{Autor(es):} Raúl Nicolás Francisco
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2016 
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Gestión de riesgo contra incendios
-
-\item \textbf{Teoría:} Gestión de riesgo
-\end{itemize}
-
-\textbf{Resumen en una oración:} Riesgo de incendios, más específicamente, el potencial de inicio de un incendio y su respectivo riesgo de propagación.
-
-\textbf{Argumento central:} Gestión de riesgo de incendio y propagación del mismo.
-
-\textbf{Problemas con el argumento o el tema:} Ya que es explicativo, no presenta problemas.
-
-\textbf{Resumen en un párrafo:} En el primer capítulo, se explican los aspectos teóricos relacionados a los incendios. El fuego, se define como un fenómeno físico-químico caracterizado por desprendimiento de luz y calor, producto de la combustión de un cuerpo.Los incendios, además se dividen en clases, dependiendo del contexto geográfico donde se inician: urbanos, de interfase, forestales y rurales. Por otro lado, el comportamiento de los incendios depende de tres factores, los cuales son: la topografía, meteorología y el combustible.
-
-\textbf{ 5. Título:} Fire Losses in Canada  Year 2007 and Selected Years 
-
-\textbf{Autor(es):} Mahendra Wijayasinghe, PhD.
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2011
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Pérdidas por incendios
-
-\item \textbf{Teoría:} Pérdidas de vidas y a propiedades originadas por incendios en Canadá.
-\end{itemize}
-
-\textbf{Resumen en una oración:} Estudio que analiza las pérdidas generadas por incendios domésticos entre el 2007 y otros años seleccionados, en Canadá (2003-2007).
-
-\textbf{Argumento central:} Pérdidas por incendios domésticos en diversos años en Canadá.
-
-\textbf{Problemas con el argumento o el tema:} Cabe resaltar que el análisis no fue exhaustivo sino mas bien fue preliminar.
-
-\textbf{Resumen en un párrafo:} Estudio de pérdidas por incendios en Canadá en el año 2007 y otros años seleccionados, en el cual se toma mas bien en cuenta la cantidad de muertes de civiles, muerte de bomberos y las pérdidas en daños a la propiedad en términos de dólares. Establece que en promedio el 30% de los incendios corresponde a incendios residenciales y se les atribuye el 73 % de todas las muertes por incendios según los datos obtenidos por las jurisdicciones. Se estudia, donde se inició el incendio, su causa principal y se establece que se tienen grandes similitudes con las causas reportadas en los Estados Unidos. Las variables utilizadas fueron: año, clasificación de la propiedad, fuente de ignición/objeto de ignición, material que se encendió por primera vez, acción u omisión/causa posible, área de origen, muertes, lesiones y $ pérdidas
-
-\textbf{ 6. Título:}  Canadian Home Fire Statistics \& Trends
-
-\textbf{Autor(es):} Acccomsure, ALE Management Solutions.
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2020
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Estadísticas de incendios domésticos
-
-\item \textbf{Teoría:} Estadísticas y tendencios sobre los incendios residenciales en Canadá.
-\end{itemize}
-
-\textbf{Resumen en una oración:} Se brindan estadísticas sobre incendios domésticos, además de sus principales causas y como prevenirlos, en Canadá. 
-
-\textbf{Argumento central:} Incendios domésticos en Canadá.
-
-\textbf{Problemas con el argumento o el tema:} Por su metodología explicativa, descriptiva no se presentan problemas..
-
-\textbf{Resumen en un párrafo:} Según estadísticas sobre incidentes de incendios obtenidos de Statistics Canada , los incendios estructurales conforman el tipo de incendio más común, representando un promedio del 60 % de todos los incendios. Siendo los incendios residenciales, el más común de incendio estructural con más de 11 000 incendiosreportados en 2014. De donde se obtiene que el 87 % de descensos ocasionados por incendios se debieron a los estructurales y entre el 87% -95% resultan de un incendio en el hogar.Sin embargo, aunque según un estudio sobre las tendencias de incendios en Ontario de 2009 a 2018, los incendios residenciales han disminuido de manera constante, aún representan una alta cifra de pérdidas en las estructuras debido a los incendios (74%).
-
-\textbf{ 7. Título:}  Evaluación del riesgo de cola de pérdidas agregadas multivariantes.
-
-\textbf{Autor(es):}  Wenjunjiang y Jiandongren.
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2022
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Riesgo de pérdidas multivariantes
-
-\item \textbf{Teoría:} Pérdidas agregadas multivariantes.
-\end{itemize}
-
-\textbf{Resumen en una oración:} Se evaluan métodos para obtener el riesgo de cola de pérdidas agregadas multivariantes.
-
-\textbf{Argumento central:} Riesgo de colas de pérdidas multivariantes.
-
-\textbf{Problemas con el argumento o el tema:} Se recomienda investigar si la metodología funciona para el cálculo de las medidas de riesgo de variables compuestas con dependencias más complejas.
-
-\textbf{Resumen en un párrafo:} Se analizan medidas de riesgo de cola para diversos modelos de pérdida agregada multivariante con un uso común. Además, se explican fórmulas para calcular el TCE y TV multivariados para el caso de distribuciones compuestas multivariadas para el caso en que las frecuencias de siniestros son dependientes pero los tamaños de siniestros independientes. Una vez explicadas, se procede a aplicarlas en cálculos de medidas de riesgo más conocidas con el fin de realizar los análisis de asignación de capital.Cabe resaltar, que para las compañías de seguros es muy importante evaluar la distribución conjunta de las diferentes pérdidas a las que se enfrentar a riesgos. Las cuales en general, podrían ser descritas por medio de modelos de pérdidas agregadas.
-
-
-\textbf{ 8. Título:}  Fitting the generalized Pareto distribution to commercial fire loss severity: evidence from Taiwan.
-
-\textbf{Autor(es):}  Wo-Chiang Lee.
-
-\textbf{Forma de organizarlo:}
-
-\begin{itemize}
-
-\item \textbf{Cronológico:} 2012
-
-\item \textbf{Metodológico:} Explicativo, descriptivo.
-
-\item \textbf{Temático:} Ajuste de colas de distribución.
-
-\item \textbf{Teoría:} Colas y distribución de Pareto.
-\end{itemize}
-
-\textbf{Resumen en una oración:} Se ajusta curvas para lograr modelar pérdidas históricas extremas.
-
-\textbf{Argumento central:} Ajuste de colas de la distribución generalizada de Pareto.
-
-\textbf{Problemas con el argumento o el tema:} Se deberá modelar distribuciones de pérdidas de cola para otro tipo de seguros.
-
-\textbf{Resumen en un párrafo:} Se presentan métodos paramétricos de ajuste de curvas para modelar pérdidas históricas extremas, mediante el uso de un LDA. Se concluye que el GPD es adaptable a la severidad de pérdidas del siniestro de incendios. De manera que, cuando los datos de pérdida sobrepasan los umbrales altos, el GPD resulta ser útil para estimar las colas de las distribuciones de severidad de pérdida.Lo cual implica que el GPD es una técnica respaldada para ajustar una distribución paramétrica a la cola de una distribución subyacente no conocida. 
-
-\section{Parte escrita:}
-
-\textbf{Pregunta elegida y argumentación}
-
-Se elige la pregunta de investigación: ¿Cómo delimitar y definir las variables que provocan una severidad extraordinaria en un siniestro de incendio?
-
-Resulta trascendente para las sociedades modernas, entender la importancia de prevenir los incendios, dado el alto costo económico y social que estos conllevan cada año. Una gran parte de las pérdidas generadas en incendios, ocurren en un pequeño número de eventos de mayor magnitud, por lo que un reto para los diferentes cuerpos de bomberos, y los gobernantes es tratar de establecer las condiciones adecuadas para limitar o contener los eventos más catastróficos.
-
-Un enfoque primordial que puede tomar la investigación es delimitar de forma adecuada las condiciones que puedan aumentar el riesgo de incendio en primer lugar, por lo que se debe tratar de predecir posibles incendios y su gravedad, intentando identificar patrones en su ocurrencia, particularmente sobre lo que hace que un incendio se convierta en uno con altas pérdidas.
-
-Varias investigaciones en el pasado han intentado responder esta pregunta sobre qué puede determinar la severidad de un siniestro de este estilo, en términos forestales Juan Torres \citep{rojo} desarrolla un índice de ocurrencia de incendios forestales en superficies extensas, denominado superficie en riesgo de incendio (SeR). Este autor realiza distintos modelos y señala que un problema para ello es que las colas de estas distribuciones tienden a ser muy pesadas.
-
-Otros estudios como el de David C. Shpilberg \citep{shpilberg} presentan un resumen de trabajos en el area de modelaje de la distribución en probabilidad de pérdidas en incendio, e incluso lo presenta como un proceso estocástico. Este papel compara las pérdidas con distintos tipos de distribuciones, lo que puede servir a forma de guía en el modelaje en el presente proyecto. 
-
-\textbf{Resumen en una o dos páginas}
-
-El riesgo se define como una combinación de probabilidad de que ocurra un evento y sus respectivas consecuencias, las cuáles son negativas \citep{ciifen}. Además, se compone de amenaza y vulnerabilidad. Para el caso de riesgo por incendios, se define como la probabilidad de que se produzca un incendio en determinado lugar. Donde la vulnerabilidad también es uno de sus componentes y es importante entender que hace referencia al daño potencial que puede producir el fuego en un lugar.\citep{cartografia}. Según la Compañía Metropolitana de Seguros de Vida, Metropolitan Life Insurance (MLIC) y la Administración de Salud y Seguridad Ocupacional, Occupational Safety and Health Administration (OSHA), cuando un evento provoque al menos 5 víctimas o más, entonces el mismo se considera un desastre o catástrofe. Para el caso de CMSV deben ser 5 muertos y para OSHA se toman en cuenta también 5, ya sean muertos u hospitalizados. Cabe destacar, que para las catástrofes se toman en cuenta muchos criterios, como la causa, magnitud del daño y el número de personas afectadas. Por otro lado, se considera un desastre por incendios, según la National Fire Protection Agency, Agencia Nacional de Protección contra Incendios (NFPA), como fuegos residenciales que provoquen o más fallecidos y las no residenciales, como las que provocan 3 o más descensos.\citep(lee)
-
-En el caso de Canadá, cada año aproximadamente se producen 24000 incendios residenciales, de donde resultan alrededor de 377 muertes y 3,048 lesiones por año \citep{SGI}. Además, según estadísticas sobre incidentes de incendios obtenidos de Statistics Canada , los incendios estructurales conforman el tipo de incendio más común, representando un promedio del 60 % de todos los incendios. Siendo los incendios residenciales, el más común de incendio estructural con más de 11 000 incendios reportados en 2014. De donde se obtiene que el 87 % de descensos ocasionados por incendios se debieron a los estructurales y entre el 87% -95% resultan de un incendio en el hogar.Sin embargo, aunque según Un estudio sobre las tendencias de incendios en Ontario de 2009 a 2018, los incendios residenciales han disminuido de manera constante, aún representan una alta cifra de pérdidas en las estructuras debido a los incendios (74%) \citep{ALE}.
-
-En el caso de los incendio, se tienen diversos estudios que analizan los determinantes de los mismos y en algunos casos su riesgo asociado o gravedad, como por ejemplo se tiene el estudio del Dr Joe Clare y Hannah Kelly, en el cual se determina la población mayormente en riesgo debido a incendios de este tipo, en Canadá. El enfoque consiste en estudiar la información brindada acerca de las víctimas asociadas a los incendios y en las influencias protectoras brindadas por los sistemas de seguridad laboral.Cabe resaltar, que el estudio también toma en cuenta aspectos como dónde se inició y se mantuvo el incendio (área de la residencia), la activación de las alarmas de humo y protección de rociadores. 
-
-Por otro lado, se tiene el estudio de pérdidas por incendios en Canadá en el año 2007 y otros años seleccionados, en el cual se toma mas bien en cuenta la cantidad de muertes de civiles, muertes de bomberos y las pérdidas en daños a la propiedad en términos de dólares. Establece que en promedio el 30% de los incendios corresponde a incendios residenciales y se les atribuye el 73 % de todas las muertes por incendios según los datos obtenidos por las jurisdicciones. Se estudia, donde se inició el incendio, su causa principal y se establece que se tienen grandes similitudes con las causas reportadas en los Estados Unidos. Las variables utilizadas fueron: año, clasificación de la propiedad, fuente de ignición/objeto de ignición, material que se encendió por primera vez, acción u omisión/causa posible, área de origen, muertes, lesiones y $ pérdidas \citep{si}
-
-Dado lo anterior, en la presente investigación se desea determinar la severidad de los incendios no tomando en cuenta las variables sobre las condiciones de las residencias donde se llevaron a cabo los incendios o las características de las personas víctimas, sino ahora enfocándose las pérdidas de vidas y económicas, así como la información que se registró en el momento del incendio, como por ejemplo el estado del edificio,el impacto al negocio, cantidad de personas rescatadas, número de incendios de exposición asociados con este incendio ,extensión del fuego, tipo de incidente final, marca de tiempo del fuego bajo control, lugar donde ocurrió el incidente., tipo de evento que dio origen, intersección mayor o menor más cercana en el barrio del incidente, marca de tiempo de la última unidad en el incidente, material donde inició, impacto de la alarma contra incendios en la evacuación, funcionamiento de sistema de rociadores, estado del incendio a la llegada marca de tiempo cuando el TFS fue notificado y marca de tiempo cuando el TFS llegó a la escena.
-
-Además tentativamente, se pretende encontrar una distribución que se ajuste a los datos encontrados con el fin de obtener la severidad de los incendios dadas sus características en el momento de reporte y las pérdidas que generaron. Dicho lo anterior, se tiene como referencia los estudio de Wo-Chiang Lee, sobre el ajuste de la distribución generalizada de Pareto a la severidad de pérdidas por incendios comerciales: evidencia de Taiwán, en el que  se describen métodos paramétricos de ajuste de curvas con el fin de modelar pérdidas históricas extremas haciendo uso de un LDA y donde se concluye que el GPD se puede adaptar a la severidad de pérdidas del siniestro de incendios. De manera que, cuando los datos de pérdida sobrepasan los umbrales altos, el GPD resulta ser útil para estimar las colas de las distribuciones de severidad de pérdida.Lo cual implica que el GPD es una técnica respaldada para ajustar una distribución paramétrica a la cola de una distribución subyacente no conocida \citep{wo}. También, se encuentra el estudio de Wenjun Jiang y Jiandong Ren, sobre evaluación del riesgo de cola de pérdidas agregadas multivariantes, en el que se estudian las medidas de riesgo de cola para varios modelos de pérdida agregada multivariante de uso común. Además, se presentan las fórmulas para calcular el TCE y TV multivariados para distribuciones compuestas multivariadas donde las frecuencias de siniestros son dependientes y los tamaños de siniestros son independientes\citep{jiang}
-
-
-\textbf{Diagrama UVE }
-
-\begin{center}
-    Diagrama UVE
-\end{center}
-
-$$\includegraphics{UVEDistribucionperdidas}$$
-\begin{center}
-    \textit{Fuente: Elaboración propia}
-
-\end{center}
-
-
 \chapter{Bitácora II}
 
-\section{1erdx}
+\section{Graficos}
+
 ```{r}
-base <- tibble(base)
-t1<-head(base[1:5,1:7])
-t2<-head(base[1:5,8:14])
-t3<-head(base[1:5,15:21])
-t4<-head(base[1:5,22:28])
-t5<-head(base[1:5,29:35])
-t6<-head(base[1:5,36:43])
+out <- quantile(perd, 0.95) #cuantil del 95 por ciento
 
-library(xtable)
-print.xtable(xtable(t2), file = "t1.txt")
+grafico1 <-
+  ggplot(base, aes(x = log(Estimated_Dollar_Loss))) + 
+  geom_histogram(color =
+                   "darkblue", fill = "lightblue") + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Pérdida en escala logarítmica",
+    title = "Gráfico 1: Histograma en escala logarítmica de las pérdidas",
+    caption = "Fuente: Elaboración propia"
+  )
 
-tabla <- head(base[1:5,])
+grafico1
+
+base$Extremo <- perd >= out
+
+grafico2 <-
+  ggplot(data = base) + geom_bar(
+    mapping = aes(x = Extremo),
+    color = c('blue', 'red'),
+    fill = c('lightblue', 'pink'),
+    width = 0.5,
+    na.rm = TRUE
+  ) + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Cuantil",
+    title = "Gráfico 1: Frecuencia del estimado de pérdidas de acuerdo al cuantil 0.95",
+    caption = "Fuente: Elaboración propia"
+  ) +
+  scale_x_discrete(labels = c("Menor 95%", "Mayor o igual 95%"))
+grafico2
 
 
-xtable(tabla[1:5,41:43])
+df <-
+  data.frame(
+    Name = c("Masa cuantil menor a .95", "Masa cuantil mayor o igual a .95"),
+    Amount = c(sum(perd[perd < out]), sum(perd[perd >= out]))
+  )
+
+grafico3 <- ggplot(df, aes(x = Name, y = Amount)) + geom_bar(
+  stat = "identity",
+  color = c('blue', 'red'),
+  fill = c('lightblue', 'pink'),
+  width = 0.5,
+  na.rm = TRUE
+) + theme_bw() +
+  labs(
+    y = "Masa de la pérdida",
+    x = "Cuantil",
+    title = "Gráfico 3: Masa del estimado de pérdidas de acuerdo al cuantil 0.95",
+    caption = "Fuente: Elaboración propia"
+  ) + scale_y_continuous(labels = comma) + scale_x_discrete(limits = df$Name)
+grafico3
+
 ```
 
 
