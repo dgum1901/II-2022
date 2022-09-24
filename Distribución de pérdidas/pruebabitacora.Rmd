@@ -117,14 +117,57 @@ base <- base[!is.na(perd),]
 perd <- perd[!is.na(perd)]
 
 
-# hist(perd,xlim = c(0, 5e5), breaks = 200)
-# out <- mean(perd) + sd(perd)
-# out <- quantile(perd, 0.95) #cuantil del 90 por ciento
-# 
-# sum(perd[perd < out])
-# sum(perd[perd >= out])
-# 
-# base.perd <- base[perd >= out, ]
+hist(perd,xlim = c(0, 5e5), breaks = 200)
+out <- mean(perd) + sd(perd)
+
+out <- quantile(perd, 0.95) #cuantil del 90 por ciento
+
+
+
+base.perd <- base[perd >= out, ]
+
+hist(log(perd))
+
+base$Extremo <- perd>=out
+
+grafico2 <-
+  ggplot(data = base) + geom_bar(
+    mapping = aes(x = Extremo),
+    fill = c('blue', 'red'),
+    width = 0.5,
+    na.rm = TRUE
+  ) + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Cuantil",
+    title = "Gráfico 2: Frecuencia del estimado de pérdidas de acuerdo al cuantil 0.95",
+caption = "Fuente: Elaboración propia"
+  ) +
+  scale_x_discrete(labels = c("Menor 95%", "Mayor o igual 95%"))
+grafico2
+
+
+library(scales)
+#library(ggplot2)
+df <- data.frame(Name=c("Masa cuantil menor a .95", "Masa cuantil mayor o igual a .95"), Amount=c(sum(perd[perd < out]),sum(perd[perd >= out])))
+
+
+
+df$Amount <- factor(df$Amount)
+
+grafico3<-ggplot(df, aes(x=Name, y=Amount)) + geom_bar(stat="identity",fill = c('blue', 'red'),
+    width = 0.5,
+    na.rm = TRUE
+  ) + theme_bw() +
+  labs(
+    y = "Masa de la pérdida",
+    x = "Cuantil",
+    title = "Gráfico 3: Masa del estimado de pérdidas de acuerdo al cuantil 0.95",
+caption = "Fuente: Elaboración propia"
+  )+ scale_y_continuous(labels = comma)+scale_x_discrete(limits = df$Name)
+grafico3
+
+
 ```
 
 La base seleccionada fue obtenida de la página oficial de la ciudad de Toronto, y corresponde a información de los siniestros de tipo incendio.
@@ -482,6 +525,7 @@ t3<-head(base[1:5,15:21])
 t4<-head(base[1:5,22:28])
 t5<-head(base[1:5,29:35])
 t6<-head(base[1:5,36:43])
+
 library(xtable)
 print.xtable(xtable(t2), file = "t1.txt")
 
