@@ -1,0 +1,776 @@
+---
+output:
+  pdf_document: 
+    toc_depth: 0
+    includes:
+      in_header: preambulo.tex
+      before_body: titulo.tex
+documentclass: memoir
+classoption: oneside
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(tidyverse)
+require("knitcitations")
+require("bibtex")
+library(rmdformats)
+library(readxl)
+library(dplyr)
+library(fOptions)
+library(ggplot2)
+library(kableExtra)
+#tinytex::install_tinytex()
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+
+#Base y sus arreglos de variables
+base <- read.csv("Vaccine consequences on reproductibility.csv", header=TRUE)
+base<- as_tibble(base) %>% select(-n_cum_dose1, -n_cum_complet)
+
+#Variable categorica de aumento de tasa hospitalaria, es de tipo booleano
+AumentoTasaHospitalaria <- 1:length(base$taux_occupation_sae)
+for(i in 1:(length(AumentoTasaHospitalaria)-1)){
+  if(base$taux_occupation_sae[i]<base$taux_occupation_sae[i+1]){
+    AumentoTasaHospitalaria[i+1]<- 'Verdadero'
+  }else{
+    AumentoTasaHospitalaria[i+1]<- 'Falso'
+  }
+}
+base<- cbind(base, AumentoTasaHospitalaria)
+base$AumentoTasaHospitalaria[1]<-'Verdadero'
+
+base1<-base
+#Arreglos de tipos de variable
+base$extract_date <- as.Date(base$extract_date, "%d/%m/%Y")
+base$R <- as.numeric(base$R)
+base$taux_occupation_sae <- as.numeric(base$taux_occupation_sae)
+base$n_dose1<- as.numeric(base$n_dose1)
+base$n_complet <- as.numeric(base$n_complet)
+base$tx_incid <- as.numeric(base$tx_incid)
+
+#Cuadros
+
+dispersion <- rbind(c("Tasa hospitalaria", 30.61, 47.67), c("I dosis aplicada", 137001.8, 236354.05), c("Dosis completadas", 166039.7, 260446))
+dispersion<-as.data.frame(dispersion)
+
+#Graficos
+
+############################################3
+grafico1 <- ggplot(base, aes(x=nullfile(), base$taux_occupation_sae)) + geom_boxplot(width =0.12, fill= "#4271AE", color="black", outlier.colour = "red") +
+  labs(
+    y= "Ocupación Hospitalaria",
+    x="Distribución de ocupación hospitalaria", 
+    title= "Gráfico 1: Diagrama para la Ocupación Hospitalaria por COVID-19",
+    color = "Legend",
+    caption = "Fuente: Kaggle")+ 
+  theme(plot.title = element_text(hjust = .5),
+        legend.position = "top",
+        legend.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.line = element_line(size= 0.1, colour= "red", linetype=1.98),
+        axis.ticks = element_line(size= 0.3, color= "black"),
+        axis.ticks.length = unit(.1, "cm"),
+        panel.background = element_rect(fill = "white")) + stat_summary(fun.y = mean, geom= "point" , shape=18, size=2, color="red")
+##########################################
+
+graf<-data.frame(Fechas=(base$extract_date),
+                 Tasa_R=base$R,
+                  Ocupacion=base$taux_occupation_sae)
+
+grafico2 <- ggplot(graf, aes(y =Tasa_R, x=Ocupacion)) + 
+  geom_point() + stat_smooth()+
+  theme_bw() +
+  labs(
+    title = "Gráfico 2: Relación de la tasa R con respecto a la hospitalizacion",
+    caption = "Fuente: Elaboración propia") 
+##############################################################
+
+graf4<-data.frame(Hospitalizacion=(base$taux_occupation_sae),
+                  Esquema=base$n_dose1,
+                  Esquema_completo=base$n_complet)
+grafico3 <- ggplot(graf4, aes(y= Esquema, x = Hospitalizacion, color ="Esquema_incompleto")) +
+  geom_point()+
+  stat_smooth()+ geom_point(mapping = aes(y = Esquema_completo, x = Hospitalizacion, color="Esquema_completo")) + stat_smooth(aes(y = Esquema_completo, x = Hospitalizacion), colour = "red") +
+  scale_color_manual(name = "Esquema",  values = c("Esquema_incompleto" = "blue", "Esquema_completo" = "red"))+
+   theme_bw() +
+  labs(
+    title = "Gráfico 3: Relación esquema completo e incompleto con hospitalización",
+    caption = "Fuente: Elaboración propia") 
+
+################################
+grafico4<- ggplot(data = base) + geom_bar(mapping = aes(x = AumentoTasaHospitalaria), fill = c('blue','red'), width = 0.5)+ theme_bw()+labs(y = "Cantidad", x = "Aumento tasa hospitalaria", title = "Gráfico 4: Distribución de variable aumento tasa hospitalaria",
+                                                                                                                                            caption = "Fuente: Elaboración propia")
+###################################
+
+
+grafico5<- ggplot(data = base[117:234,]) + geom_bar(mapping = aes(x = AumentoTasaHospitalaria[117:234]), fill = c('blue','red'), width = 0.5, na.rm = TRUE) + theme_bw()+
+labs(y = "Cantidad", x = "Aumento tasa hospitalaria", title = "Gráfico 5: Distribución de variable aumento tasa hospitalaria a partir del
+segundo cuartil", 
+caption = "Fuente: Elaboración propia") +
+scale_x_discrete(labels=c("Verdadero", "Falso"))
+#############################################################################
+velocidad<-data.frame(Fechas = base$extract_date[-1], velocidad = diff(base$n_complet)/base$n_complet[-length(base$n_complet)])
+
+grafico6<-ggplot(velocidad)+geom_line(mapping = aes(x = Fechas,y= velocidad))+ theme_bw()+
+labs(y = "Velocidad vacunacion", x = "Tiempo", title = "Gráfico 6: Velocidad de la vacunación a lo largo del tiempo", 
+caption = "Fuente: Elaboración propia")
+##############################################################################
+grafico7<-ggplot(base, aes( base$n_complet,base$taux_occupation_sae)) + theme_bw() +
+  geom_point() +
+  stat_smooth()+ xlab("Vacunacion completa")+ylab("Ocupacion hospitalaria")+
+  labs(title = "Gráfico 7: Dispersión ocupación con vacunación", caption="Fuente: Elaboracion propia")
+
+###################################################################################
+basepb <- data.frame(v = seq(0,6e5,100), o = 87.5/2*sin( pi/2-((8e-6) * seq(0,6e5,100) + 5 ) ) + 87.5/2 )
+
+grafico8 <- ggplot(basepb, aes( x = v , y = o)) + theme_bw() +
+  geom_point() +
+  stat_smooth()+ xlab("Vacunacion completa")+ylab("Ocupacion hospitalaria")+
+  labs(title = "Gráfico 8: Asociacion independiente al tiempo", caption="Fuente: Elaboracion propia")
+################################################################################
+
+grafico9 <- ggplot(basepb, aes( x = v , y = o)) + theme_bw() +
+  geom_point() + geom_point( aes(x = v, y = 87.5/2*( pi/2-((8e-6) * v + (5-2*pi) )-((pi/2-((8e-6) * v + (5-2*pi) ))^3) /6 ) + 87.5/2  ) )+
+  stat_smooth()+ xlab("Vacunacion completa")+ylab("Ocupacion hospitalaria")+
+  labs(title = "Gráfico 9: Regresión cúbica", caption="Fuente: Elaboracion propia")
+
+###############################################################################
+grafico10<-ggplot(base, aes( base$n_complet,base$taux_occupation_sae)) + theme_bw() +
+  geom_point() +  xlab("Vacunación completa")+ylab("Ocupación hospitalaria")+ geom_smooth(method = "lm", formula= y~x, se=FALSE, col="red")+
+  labs(title = "Gráfico 10: Regresión Lineal", caption="Fuente: Elaboración propia")
+##################################################################################
+
+grafico13 <- ggplot(basepb, aes( x = v , y = o)) + theme_bw() +
+  geom_point() + geom_point( aes(x = v, y = 87.5/2*(1-(( -((8e-6) * v + (5-2*pi) ))^2)/2 + (( -((8e-6) * v + (5-2*pi) ))^4)/24) + 87.5/2   ))+
+  stat_smooth()+ xlab("Vacunacion completa")+ylab("Ocupacion hospitalaria")+
+  labs(title = "Gráfico 11: Regresión de orden 4", caption="Fuente: Elaboracion propia")
+
+###############################################################################3
+
+
+
+tablaDatos <- function(datos, columna){
+  x <- as.numeric(datos[[columna]]) #Acá tira warning por NA en el vector, pero no afecta
+  x <- x[!is.na(x)] #Aca se arregla
+  
+  breaks <- seq(from = min(x), to = max(x), by = (max(x)-min(x))/9) #9 subintervalos
+  breaks[1] <- breaks[1]-0.01 #Para que incluya al primer elemento
+  
+  x<-data.frame(variable = x)
+  
+  tabla <- x %>% group_by(variable) %>% 
+    mutate(
+      variable = cut(variable, breaks  = breaks)
+    ) %>% 
+    summarise(frequency = n()) %>% 
+    mutate(cum_frequency = cumsum(frequency))
+  
+  tabla$rf <- tabla$frequency/sum(tabla$frequency)
+  tabla$'crf(%)' <- cumsum(tabla$rf)*100
+  tabla$'rf(%)' <- tabla$rf*100
+  colnames(tabla)[1:3]<- c("Intervalo","f","cf")
+  tabla<-tabla %>% mutate_if(is.numeric, ~round(., 2))
+  
+  tabla
+}
+
+baset<- cbind(base$taux_occupation_sae,base$n_complet)
+baset <- as.data.frame.table(baset)
+lmTasaHospitalaria <- lm(base$taux_occupation_sae~base$n_complet, data = base) #Create the linear regression
+summary(lmTasaHospitalaria) #Review the results
+
+
+
+########################### errores empiricos de los modelos #################################
+
+lmTasaHospitalaria$residuals
+errlineales <- base$taux_occupation_sae - (lmTasaHospitalaria$coefficients[1]-lmTasaHospitalaria$coefficients[2]*base$n_complet)
+
+
+errcubicos <- base$taux_occupation_sae - (87.5/2*sin( pi/2-((8e-6) * base$n_complet + 5 ) ) + 87.5/2)
+
+
+errcuartos <- base$taux_occupation_sae - 87.5/2*(1-(( -((8e-6) * base$n_complet + (5-2*pi) ))^2)/2 + (( -((8e-6) * base$n_complet + (5-2*pi) ))^4)/24) + 87.5/2 
+
+
+
+
+errlineales<- abs(errlineales)
+                                                  
+errcubicos<- abs(errcubicos)
+
+errcuartos<- abs(errcuartos)
+dt14<- data.frame("Lineal" =abs(errlineales), "Cubico" = abs(errcubicos), "Cuarto" = abs(errcuartos))
+
+grafico15 <- ggplot(dt14, aes(x = base$taux_occupation_sae, color = "Simbologia" ))  +
+  geom_point(aes( y = Lineal, color = "Lineal" )) + 
+  geom_point( aes( y = Cubico, color = "Cubico" ))+
+  geom_point( aes( y = Cuarto, color = "Cuarto" ))+ theme_bw() +
+   xlab("Tasa ocupación hospitalaria")+ylab("Error asociado") +
+  labs(title = "Gráfico 12: Comparación de errores para las regresiones",
+       caption="Fuente: Elaboracion propia")+
+  scale_color_manual(name = "Simbologia",  values = c("Lineal" = "blue", "Cubico" = "red", "Cuarto" = "green"))
+
+# ggplot(graf4, aes(y= Esquema, x = Hospitalizacion, color ="Esquema_incompleto")) +
+#   geom_point()+
+#   stat_smooth()+ geom_point(mapping = aes(y = Esquema_completo, x = Hospitalizacion, color="Esquema_completo")) + stat_smooth(aes(y = Esquema_completo, x = Hospitalizacion), colour = "red") +
+#   scale_color_manual(name = "Esquema",  values = c("Esquema_incompleto" = "blue", "Esquema_completo" = "red"))+
+#    theme_bw() +
+#   labs(
+#     title = "Gráfico 3: Relación esquema completo e incompleto con hospitalización",
+#     caption = "Fuente: Elaboración propia") 
+
+```
+
+
+\fancyhead[LE,RO]{\slshape \rightmark}
+\fancyhead[LO,RE]{\slshape \leftmark}
+\lhead{CA-303 Estadística Actuarial}
+\rhead{\thepage}
+\fancyfoot[C]{\thepage}
+
+\tableofcontents*
+
+\chapter{Bitácora 6}
+
+\section{Impacto de la vacunación en los indicadores COVID-19}
+
+Es evidente que la pandemia ha traído cambios en muchos niveles y estructuras a nivel mundial. Hemos visto la importancia de buenos hábitos higiénicos y un cambio radical en el estilo de vida de la gran mayoría de personas. La vacunación masiva llegó como el inicio del fin de la pandemia de la cual se va saliendo lentamente. Resulta importante interiorizar todo lo que se ha vivido y tratar de cuantificar la mayor información posible para comprender mejor este tipo de fenómenos.
+
+El presente proyecto de investigación tiene como objetivo analizar con herramientas estadísticas una base de datos cerrada y contextualizada en Francia, seguir su evolución, así que se toman las vacunas que se colocan día a día. La base de datos fue encontrada en Kaggle, donde Dorian Voydie, creador de dicha base de datos, recopila la información de la página del Gobierno de Francia. 
+
+Sobre la base de datos, la población de estudio está determinada por los habitantes de Francia. Para la coyuntura de la pandemia existen bastantes variables a considerar, por lo que un muestreo representativo de la situación COVID-19 son los datos facilitados por el Gobierno francés, en síntesis, la muestra de estudio es cada persona que fue cuantificada en los registros de Francia por haberse realizado una prueba de detección de COVID-19, que fueron hospitalizadas por complicaciones, o que recibieron al menos una dosis de alguna vacuna disponible. Es decir, no se trata de una muestra específica sobre un grupo de personas, sino que la muestra se refiere al comportamiento diario del fenómeno. Ante lo anterior la unidad elemental de estudio son los datos epidemiológicos observados diariamente en el fenómeno del COVID-19.
+
+El presente compilado de datos posee algunas variables que se procede a nombrar y explicar:
+
+
+extract\_date : La fecha en la cual se obtuvo los datos.
+    tx\_incid : La tasa de incidencia corresponde al número de personas que dieron positivo (RT-PCR y prueba de antígeno) por primera vez en más de 60 días en comparación con el tamaño de la población. Se expresa por 100.000 habitantes y permite comparar áreas geográficas entre sí.
+    
+  R : El número de reproducciones del virus, o dicho de otra forma, es el número medio de personas que puede infectar una persona contagiada. Si el R es mayor que 1, la epidemia es creciente, si es menor que uno, la epidemia retrocede. Este indicador responde a lo que sucedía aproximadamente 7 días antes y se actualiza semanalmente
+    
+  taux\_occupation\_sae (\%) : Esta es la tasa de ocupación hospitalaria y corresponde a la demanda de cuidados por el sistema hospitalario. Es la proporción de pacientes en cuidados incentivos o unidad de monitorización continua respecto al total de camas en capacidad inicial, es decir, antes de aumentar la capacidad.
+    
+  tx\_pos : La tasa de positividad corresponde al número de personas positivas testeadas (RT-PCR y prueba de antígeno) por primera vez en 60 días en comparación con el número total de personas que dieron positivo o negativo durante un tiempo determinado y que nunca dieron positivo en los últimos a los 60 días.
+    
+  n\_dose1 : Número de primeras dosis administradas ese día
+
+  n\_complet : Número de aplicaciones completas otorgadas ese día (primera dosis para J\&J - segunda dosis para Pfitzer / AstraZeneca / Moderna - primera dosis si alguna vez tuvo COVID-19 antes)
+
+
+\section{Pregunta Central de investigación}
+
+¿Cuál es el efecto en las hospitalizaciones y tasa R, una vez que las personas tienen el esquema parcial o completo de la vacunación contra la enfermedad por COVID-19? 
+
+\section{Objeto de estudio}
+
+Buscamos a través de la presente investigación sentar las bases estadísticas que permitan comprender la evolución de la vacunación y contagios, producto del virus COVID-19 en la región definida por Francia, en el periodo que abarca desde el 27 de diciembre de 2020 hasta el 17 de agosto del 2021.
+
+\section{ Principios de investigación}
+
+ Desde que la COVID-19 fue declarada pandemia global por la Organización Mundial de la Salud, los estudios epidemiológicos y demográficos han señalado que los contagios y muertes responden a modelos ya conocidos por la humanidad desde hace bastante tiempo. El modelo más conocido fue propuesto en 1927 por el bioquímico William Ogilvy y el epidemiólogo Anderson Gray en el contexto de la fiebre española. El modelo que hoy llamamos SIR (Susceptible, Infectado, Recuperado), o SEIR cuando introduce a expuestos utiliza herramientas del cálculo de ecuaciones diferenciales para modelar los contagios de una población cerrada. Donde ‘S’ son todas las personas que no están vacunadas, la ‘I’ es de infectados y el objetivo es tratar de contenerla y ‘R’ es recuperados, donde se incluyen de igual manera a los que perdieron la vida por la enfermedad (Pais 2020). Para modelar la presente pandemia la Universidad Johns Hopkins utiliza la ‘E’ para representar a las personas portadoras de COVID-19, que pueden contagiar pero no presentan síntomas. Otro ejemplo de modelo sería el SIRS, donde la última letra indica que los recuperados no obtienen inmunidad total, sino que vuelven a ser susceptibles (Sánchez, 2020). Estos modelos ayudan a estimar la duración de la pandemia y aportan información a los Gobiernos para una más adecuada toma de decisión en cada contexto.
+
+Se ha tenido que desarrollar una estructura de colaboración entre los países y entes descentralizados para combatir con mayor eficiencia la pandemia. Ante toda la coyuntura actual, la OMS ha tenido que actuar y tomar sus herramientas en la lucha contra la COVID-19. En el comienzo se le hace un seguimiento a una serie de brotes de enfermedades, desastres y crisis humanitarias en los que la OMS puede tener injerencia. Esta lista puede incluir emergencias con consecuencias de salud pública como la actual crisis en Afganistán, en el Norte de Etiopía, el Ébola en la República del Congo y la actual pandemia global de la COVID-19. El rol de la OMS y sus recursos en el mundo resulta de suma importancia.
+
+El reto de la vacunación masiva es fundamental en la lucha, la OMS en etapas tempranas entendió que el desarrollo de vacunas era importante, pero lo era aun más garantizar su acceso en todo el mundo, y además de ofrecer a los distintos países mecanismos para detección del virus y tratamientos, debido a esto surge COVAX, el cual es uno de los pilares fundamentales que se propone la OMS para contener la COVID-19. Junto con Gobiernos, organizaciones de salud, manufactureros, científicos, sector privado, sociedad civil y filántropos, en un esfuerzo global. Ante el estado de emergencia mundial la OMS posee un listado de vacunas de uso de emergencia (EUL por sus siglas en inglés), el cual es prerrequisito fundamental para el suministro de COVAX. La idea es acelerar de manera segura la aprobación del uso de vacunas manteniendo particular rigurosidad en la tardía fase II y fase III del estudio clínico.
+
+Entre las instituciones que asesoran a la OMS en el proceso se encuentra el Grupo de Expertos en Asesoramiento Estratégico (SAGE) el cual asesora a la OMS en temas de política global y estrategias relacionadas con vacunación, investigación y desarrollo para enviar inmunización. Se asocia con todas las enfermedades que pueden ser prevenidas con vacunación. Este ente se encarga de emitir recomendaciones sobre las distintas vacunas para ser consideradas por la OMS. Cabe destacar que SAGE y EUL se complementan pero se desenvuelven en distintos procesos, SAGE está plenamente orientado a las políticas mientras que EUL se centra en determinar si un producto manufacturado es confiable, seguro y efectivo. SAGE no puede emitir criterio sobre una vacuna si ésta no se encuentra en el listado EUL.
+
+\section{Conceptos básicos}
+
+\begin{itemize}
+  \item Tasa R: De acuerdo con el Centro Centroamericano de Población (2021), la tasa R o tasa de reproducción indica el número promedio de contagios que cada persona infectada produce durante todo el periodo que ésta pueda transmitir un virus. Si la tasa es cercana a la unidad, quiere decir que la transmisión se mantiene estacionaria. Una tasa mayor a la unidad indica proliferación y una menor a la unidad es señal que el brote epidémico está camino a extinguirse. 
+     
+  \item Tasa de ocupación hospitalaria: Corresponde a la demanda de cuidados por el sistema hospitalario. Es la proporción de pacientes en cuidados incentivos o unidad de monitorización continua respecto al total de camas en capacidad inicial, es decir, antes de aumentar la capacidad (Ministerio de solidaridad y salud de Francia, 2021).
+     
+  \item Tasa de positividad:  La tasa de positividad corresponde al número de personas positivas testeadas (RT-PCR y prueba de antígeno) por primera vez en 60 días en comparación con el número total de personas que dieron positivo o negativo durante un tiempo determinado y que nunca dieron positivo en los últimos 60 días (Ministerio de solidaridad y salud Francia, 2021).
+     
+  \item Epidemia: Según la RAE (2021), una epidemia se produce cuando una enfermedad contagiosa se propaga en una población determinada, de manera rápida, afectando simultáneamente a un gran número de personas durante un periodo determinado y área geográfica concreta.
+     
+  \item Pandemia: Según la RAE (2021), para declararse pandemia la enfermedad debe afectar a más de un continente y que los casos de cada país ya no sean importados, si no, transmitidos comunitariamente.
+     
+  \item Virus:  Robert M. Krug (2020), comenta que un virus es un agente infeccioso de pequeño tamaño y composición simple que solo puede multiplicarse en células vivas de animales, plantas o bacterias. 
+     
+  \item Vacuna: Según el Hospital Winchester (2021), una vacuna es una sustancia biológica, diseñada para proteger a los humanos de infecciones causadas por los virus y las bacterias. Las vacunas también se denominan inmunizaciones porque aprovechan la capacidad de nuestro sistema inmunológico natural para prevenir enfermedades infecciosas. 
+  
+\end{itemize}
+
+
+\section{Descripción de los registros.}
+
+Se estudia la incidencia del virus COVID-19 en Francia mediante la base de datos obtenida en Kaggle.com, plataforma de Data Science más grande del mundo, útil para aprender y crecer en el campo de Data Science y Machine Learning. Dicha base recopila datos de indicadores de vacunación y COVID-19, información obtenida en la página del gobierno de Francia. Cabe destacar que por la naturaleza de la base de datos escogida, los resultados obtenidos no pueden ser generalizables, existe una cantidad de variables de indole cultural, social, climatológico, étnico, entre otros que sin duda pueden afectar el bienestar de las personas en un contexto. Estos datos se recopilaron de manera diaria.
+Se extraen de la base de datos nueve variables, las cuáles son:
+
+\begin{itemize}
+  
+  \item extract\_ date: fecha en la cuál se obtienen los datos, comprende del 27 de diciembre del 2020 al 17 de agosto del 2021. 
+    
+  \item tx\_incid: tasa de incidencia, corresponde al número de personas que dan positivo. Dicho registro se inicia el 27 de diciembre con $123.044038$. La cantidad mínima de personas que dan positivo en un día es de $18.82$, el 26 de junio del 2021. Por otro lado la cantidad máxima corresponde a $366.54$, el 01 de abril del 2021. 
+    
+  \item R: Indica el número medio de personas que puede infectar una persona contagiada por el virus. Cabe destacar que varía entre 0,53 y 2,07. Para los primeros días estudiados, del 27 de diciembre al 01 de enero , además del periodo comprendido entre el 05 de abril del 2021 y el 07 de julio del 2021, la tasa se encuentra cerca o menor a una unidad indicando as'i que en dichos días la transmisión se mantuvo estacionaria. Los  días no abarcados anteriormente son mayores a 1, es decir, se presentó proliferación.
+    
+  \item taux \_ocuppation\_sae: es la tasa de ocupación hospitalaria. La cantidad mínima de personas hospitalizadas en un día es de 17 el 21 de julio del 2021 y la mayor cantidad es de 118.6, el 26 de abril del 2021. Cabe destacar que desde finales de diciembre del 2020 hasta el 26 de abril del 2021 se presenta, en su mayoría, un comportamiento ascendente; luego adopta un comportamiento, mayormente, descendiente hasta el 17 del julio del 2021. A partir de la última fecha mencionada presenta nuevamente un comportamiento ascendente hasta el 17 de agosto del 2021.
+    
+  \item tx\_pos: es la tasa de positividad. Presenta un carácter inconsistente entre aumentos y bajas en el número de personas positivas, cabe destacar que el número mínimo se alcanza el día 26 de junio del 2020 con una cifra de 0.76 personas, por otro lado la mayor tasa correspone a 9.24, el día  21 de abril del 2021. 
+    
+  \item n\_dosel: corresponde al número de primeras dosis administradas por día. No se presentan consistencias en la cantidad de dosis suministradas por día, debido a que se pueden observar grandes picos producto entre los días, por ejemplo, se pasa de 188 personas vacunadas el 03 de enero del 2021 a 1638 personas el 04 de enero o pasa de 119990 el 22 de enero a 38098 el día siguiente. La cantidad máxima de personas vacunadas es de 503378 el 20 de mayo del 2021 y el mínimo se alcanza el 02 de enero del 2021. Además del 27 de diciembre del 2020 al 03 de enero del 2021 son los únicos días donde se vacunan menos de mil personas.
+    
+  \item n\_complet: indica el número de aplicaciones completas otorgadas por día. La máxima cantidad de aplicaciones completadas son 586840, el 13 de julio del 2021, mientras que el mínimo corresponde a 0 personas, los días 29 y 31 de diciembre del 2020 y  03 de enero del 2021. Cabe destacar que también se presentan diferencias drásticas entre algunos días, por ejemplo, se pasa de 208935 el 07 de agosto del 2021 a 72867 el 08 de agosto. 
+  
+\end{itemize}
+
+En resumen, se presenta el siguiente cuadro donde se exponen las variables registradas y sus valores mínimos y máximos obtenidos.
+
+![Cuadro 1: Descripción de variables, incluyendo mínimos y máximos.](cuadrof.PNG)
+
+\section{Teorías}
+
+\textbf{Teoría microbiana de la enfermedad:} De acuerdo con Sanders, Fuhrer, Johnson \& Riddle (2008) esta teoría corresponde al entendimiento que se obtiene a lo largo del siglo XX de que muchas de las enfermedades son causadas por microorganismos. Esta noción permite el desarrollo de medidas más efectivas para reducir las altas tasas de incidencia y mortalidad que se tenía para diversas enfermedades infecciosas. Entre estas medidas estuvo la mejora de la higiene, el desarrollo de vacunas, asimismo como del de antibióticos. \\
+
+\textbf{Teoría epidemiológica:} Estudia el comportamiento de los brotes epidémicos, buscando entender su evolución, así como medidas que permitan reducir el impacto que estos tienen sobre una población. Para esto se utiliza la matemática y estadística, de acuerdo con Gani (1978), el primer trabajo donde se utiliza esta idea fue hecho por Daniel Bernoulli en 1760 para describir la mortalidad causada por la viruela y la cantidad de personas que se podría salvar de ser eliminada esta enfermedad.  
+
+\section{Base de datos en formato \textit{tidy}}
+\begin{center}
+    Cuadro 2: Base de datos en formato tidy.
+\begin{table}[H]
+\centering
+\begin{tabular}{ccccccc}
+extract\_date & tx\_incid & R    & taux\_occupation\_sae & tx\_pos & n\_dose1 & n\_complet \\ \hline
+27/12/2020    & 123.04    & 0.96 & 52.4                  & 2.80    & 236      & 4          \\
+28/12/2020    & 124.20    & 0.95 & 53.3                  & 3.16    & 248      & 1          \\
+29/12/2020    & 126.00    & 0.95 & 52.7                  & 3.74    & 189      & 0          \\
+30/12/2020    & 129.53    & 0.95 & 52.4                  & 4.49    & 217      & 1          \\
+31/12/2020    & 133.36    & 0.97 & 51.9                  & 5.06    & 176      & 0         
+\end{tabular}
+\end{table}
+\end{center}
+
+\section{Propuesta UVE}
+
+![Diagrama V](diagramaV (1).PNG)
+
+\subsection{Cuadro resumen de cinco números}
+
+
+\begin{center}
+Cuadro 3: Resumen cinco números de variables.
+
+\begin{tabular*}{9.85 cm}{|c |c |c|c|c|}
+\hline
+&Tasa hospitalaria& Dosis 1& Dosis completas\\
+\hline
+Mínimo&17.00&154.00&0.00\\
+\hline
+Cuartil 1&36.38&70 202.75&36 504.50\\
+\hline
+Mediana&61.95& 193 524.50&101 736.00\\
+\hline
+Cuartil 3&84.05&306 556.80&296 950.50\\
+\hline
+Máximo&118.60&503 378.00&586 840.00\\
+\hline
+\end{tabular*}
+    
+\end{center}
+
+Para el análisis de los máximos y mínimos note que para el caso de tasa hospitalaria sería 118 y 17 respectivamente, por lo cual se puede notar una gran diferencia entre estos, produciendo así que la dispersión de los puntos de la variable sea alta. Además note que para el caso de Dosis 1 y dosis completas sucede exactamente lo mismo, siendo dicha dispersión muchísimo más grande pues para Dosis 1 hay una diferencia de 503 224 y para dosis completas es de 586 840.00. 
+
+En el caso de la mediana, para las tres variables ocurre que no coincide con la media pues para la tasa hospitalaria corresponde a 63.04, para dosis 1 199 235 y para dosis completas 170 193.59 obteniendo así que la muestra no es homogénea por lo cual la mediana será una mejor representación de la realidad muestral.
+
+Por último en el caso de los cuartiles note que para  la tasa hospitalaria casi que se mantiene igual la división de la distribución de sus puntos; sin embargo, para dosis 1 aumenta casi el doble y de igual forma, aunque un aumento un poco mayor,en el caso de dosis completas.
+
+\section{Estadísticos de dispersión}
+
+Con las variables tomadas en el punto anterior, se calcula su respectiva desviación estándar, así como su rango intercuartílico.
+\begin{center}
+    Cuadro 4: Estadísticos de dispersión.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+Variable          & Desviación estándar & Rango intercuartílico \\ \hline
+Tasa hospitalaria & 30.61               & 47.67                 \\
+I dosis aplicada  & 137001.8            & 236354.05             \\
+Dosis completadas & 166039.7            & 260446               
+\end{tabular}
+\end{table}
+
+\end{center}
+
+Para las variables de I dosis aplicada y Dosis completadas, se puede observar valores altos de desviación estándar. Debido a esto se puede intuir que el valor de la media debe manejarse con cuidado si se quiere tomar como una manera de estudiar dichas variables. 
+
+
+\subsection{Tablas de frecuencia}
+
+Note que el intervalo de (0.883, 1.06] tiene la mayor frecuencia en la tasa R, estamos hablando que si la tasa R es menor que la unidad, la epidemia está en camino de extinguirse. Ahora, note que la menor frecuencia se ve reflejando desde el intervalo de (1.24, 1.41], donde si la R es mayor que 1 hay proliferación, la cual será de tipo exponencial a menos que se haga algo para contenerla, no obstante esta dicha profileción si tiene una frecuencia relativa en el intervalo (1.06, 1.24], justo cuando va despegando su crecimiento.
+
+```{r fig1, cho=FALSE, fig.height=8.5, fig.pos="H", message=FALSE, warning=FALSE}
+base <- read_excel("Vaccine consequences on reproductibility4.xlsx")
+dt<-tablaDatos(base,3)
+kable(dt, caption= "Tasa de R" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboracion propia, datos extraidos de Kaggle" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+
+```
+
+
+```{r fig2, echo=FALSE, fig.height=7.5, fig.pos="H",message=FALSE, warning =FALSE}
+
+dt<-tablaDatos(base,4)
+kable(dt, caption= "Tasa de ocupación" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboracion propia, datos extraidos de Kaggle" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+```
+
+
+```{r fig3, echo=FALSE, fig.height=8.5, fig.pos="H", message=FALSE, warning =FALSE}
+
+dt<-tablaDatos(base,7)
+kable(dt, caption= " Tasa de vacunación completa" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboracion propia, datos extraidos de Kaggle" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+
+```
+
+
+En el cuadro 2, se puede encontrar la mayor frecuencia en tres intervalos, los cuales serían;  (17, 28.3], (50.9, 62.2] y (62.2, 73.4], donde la frecuencia es de 42. Esto quiere decir que entre estos dichos rangos, hay una mayor frecuencia en la ocupación de los hospitales. Por el contrario, las cantidades entre (39.6, 50.9] no son tan usuales.\\
+
+
+La frecuencia de vacunanción completa más alta, está entre los valores desde 0 hasta 65 200, esto  quiere decir que en una población tan grande como Francia, el cual tiene 67 439 599 habitantes, el esquema de vacunanción se frecuenta entre poblaciones del 0.01\% aproximadamente. Claramente, es menor la frecuencia cuando las vacunaciones son masivas, como de 522 000 a 587 000.
+
+\section{Gráficos}
+\subsection{Gráficos distribución de una variable cuantitativa.}
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico1
+```
+
+En el gráfico anterior se presenta la distribución de la variable Ocupación hospitalaria mediante un diagrama de cajas y bigotes. Para el análisis de este se interpreta primero la parte de la caja y luego la de los bigotes para una mayor comprensión. 
+
+ Dentro de la caja se encuentra tanto la mediana (representación del valor central de los puntos de la variable) como la media de los datos.  En el caso de la mediana corresponde a la línea que se encuentra dentro de la caja azul, por lo cual se sabe que la mitad superior de los valores centrales de los datos está por encima de 61 y la mitad inferior se encuentre por debajo de este valor. En el caso de la media, esta corresponde al punto rojo y es el promedio de los datos. En el caso del primer cuartil, que corresponde al límite (o línea) inferior de la caja, delimita el primer 25\% de los datos, los cuales están por debajo de 36.38; en el límite(o línea) superior de la caja se tiene el tercer cuartil, que corresponde al 75\% de los datos, los cuales están por encima de 84.05. Así la caja completa representa las puntuaciones centrales de la variable, las cuales están entre 36.38 y 84.05.
+
+En el caso de los bigotes del diagrama (las líneas verticales que salen de la caja), representan las puntuaciones en las cuales se mueve la variable, lo que significa que denotan el valor máximo y el mínimo ,es decir, 118.6 y 17 respectivamente. De lo anterior se deduce que la variable posee una dispersión de puntuaciones grande; además note que no se tienen valores atípicos, es decir, no hay valores que presenten una fuerte distancia a la media con respecto del resto de las puntuaciones de la variable.
+
+\subsection{Gráficos de relacion.}
+En el gráfico 2 se puede observar la relación entre la tasa de ocupación hospitalaria y la tasa R de contagio. Si bien no se mueven en sintonía, su relación es clara, dado que si en una población la tasa de contagio es mayor a uno, esto significa que los contagios están en incremento, pues cada infectado está contagiando al menos a una persona, mientras que si el valor de R es menor a uno cada infectado está contagiando a menos de una persona. 
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico2
+```
+En cuanto al gráfico tres observamos la dispersión entre la Hospitalización con su respectivo esquema de vacunación, ya sea completo o incompleto (parcial). Resulta natural ver que para hospitalización baja hay puntos más altos en la vacumación completa y para la vacunación imcompleta se observa el mismo comportamiento, pero no necesariamente en igual medida.
+
+Se observa una cuasilinealidad negativa en el eje equis, pues hay una caída muy fuerte en los primeros datos de hospitalización antes de 60, pero de repente una subida, que podría estar relacionada con oleadas posteriores del Coronabicho. El gráfico 3 posee además algunas tasas de hospitalización por encima de 100, que son momentos donde la capacidad hospitalaria estaba por encima del tope.
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico3
+```
+
+\subsection{Gráfico distribución de variable categórica.}
+Para el análisis de la base de datos se crea la variable categórica Aumento de tasa hospitalaria. Dicha variable es de tipo booleano, donde se toma como verdadero el caso en que la tasa de ocupación hospitalaria para la fecha en cuestión haya aumentado respecto a la observación anterior registrada en la base de datos. Su distribución se puede observar a continuación:
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico4
+```
+
+
+La distribución que se obtiene para el aumento hospitalario en el gráfico 4 arroja una cantidad de días similar para ambos casos. Ahora bien, de acuerdo con lo registrado en la base de datos, la cantidad de dosis de vacunación completadas al inicio es bastante baja respecto a las últimas observaciones. De esta manera, para ver la evolución de la variable de aumento de tasa hospitalaria conforme aumentó la cantidad de dosis completas, se plantea la distribución de la variable tomando únicamente la información de los últimos dos cuartiles de la base.
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico5
+```
+Con el gráfico 5 se puede notar como coincide el aumento de dosis completas con una disminución significativa de la cantidad de observaciones donde la tasa hospitalaria aumentó respecto al día anterior.
+
+A pesar de que con base en la aplicación de dosis se podría pensar que el proceso de vacunación fue lineal,, este es un proceso que depende de muchos factores, la vacunación no puede ser garantizada en una coyuntura donde la demanda a nivel mundial es gigantezca. Esa velocidad de vacunación también es cuantificable, y para nuestro caso, utilizamos la siguiente fórmula
+
+$$ \text{Velocidad de vacunación} = \dfrac{\text{Vacunaciones del día - Vacunaciones del día anterior}}{\text{Vacunaciones del día anterior}} $$
+La velocidad del día depende de la diferencia entre las dosis diarias, sobre las dosis del día anterior, para poder relacionar el crecimiento, o en su defecto, decrecimiento de las aplicaciones. Este gráfico de velocidad se ve de la siguiente forma.
+
+```{r warning=FALSE}
+grafico6
+```
+ Como se mencionó anteriormente, es natural ver la aceleración cíclica de las aplicaciones en algunos puntos en particular, y una estructura uniforme repetitiva de las mismas. Hacia los primeros días la velocidad fue alta, pues en comparación a fechas donde se completa hasta solo un esquema, se pasa a días con más de 50 esquemas completos, esto representa una aceleración significativa.
+ 
+ Es antinatural pensar en un efecto inmediato de las mismas, más considerando que inicialmente no había claridad en cuanto al distanciamiento de dosis y tope de inmunidad, posterior a ello hay una debacle natural en los casos, pues en los momentos en los que la vacunación se hizo más masiva, se pudo contener la pandemia, reducir los casos más críticos y por ende la hospitalización.
+ 
+ A medida que avanza el tiempo hay una estabilización en los picos, pues las dósis llegan en igual cuantía en tiempos regulares.
+
+\chapter{Bitácora 7}
+
+Después de que los datos se han analizado, se tiene que tomar una(s) decisión(es) en función de los parámetros del modelo. Por lo tanto, en este trabajo se va a emplear el método de problemas de decisión estadística, con el objetivo de poder inferir por medio de un intervalo de confianza, que permita dar un panorama de la evolución de la hospitalización, en relación con la vacunación completa.
+
+A través del desarrollo del proyecto y de las bitácoras, así como del manejo de los datos, se es capaz de generar conclusiones un poco más generales de la población. Se encuentra una fuerte relación entre la naturaleza de la vacunación con la disminución en las hospitalizaciones, a forma de introducir el tema en el ámbito de la inferencia estadística, se puede realizar un análisis con base en un periodo de tiempo y población cerrada.
+
+Se pueden analizar dos variables discretas de la base de datos mediante un gráfico de distribución, que muestre en qué manera se relacionan estas. Dos posibles variables que naturalmente se podría pensar que se encuentran relacionadas son la ocupación hospitalaria con la aplicación de dosis, tratar de ver gráficamente esta relacion y cuantificarla resulta de interés para la investigación.
+
+Esta distribución puede parecer en primera instancia un poco caótico, y se puede ver que eviste una sobregraficación de los puntos en algunas áreas, para ello, y con el objetivo de generar una visión más clara de la tendencia de los datos, se utiliza $stat\_smooth()$, esta función muestra en términos generales la tendencia y desviación de los datos en el análisis.
+
+Producto del código cor.test, se pudieron sacar los valores del cuadro 1. El p-value son los valores que ayudan a diferenciar el azar del muestreo, esto quiere decir que entre más cerca de cero los valores están bien definidos, como en este caso, que tiene un valor de 0.00000000000000022. El df, son los grados de libertad, los cuales se definen como el número de observaciones (piezas de información) en los datos que pueden variar libremente, al estimar parámetros estadísticos.En este caso el valor es de 232, esto quiere decir que los grupos son diferentes. La correlación de qué forma se comportas las variables d eun grupo con respecto al otro, en cuyo caso, la correlación del cuadro es pequeña, es de -0.5134568, esto quiere decir que la relación entre ellas es negativa, así que se comporta de manera inversa. Para terminar el intervalo de confianza es refleja los valores donde se encuentra la correlación, con una confianza de 95$\%$. Por último, la $t$ de valor es el valor estadístico de prueba, la cual por tener un valor de 9.1139 el cual al ser de una madnitud alta, nos dice que no hay una relación entre las variables.
+
+Gracias a este análisis se puede saber que la asociacion no es lineal, esto por la falta de relación que hay entre variables, así que, se va a tener que usar un método alternativo que permita modelar la información.
+
+```{r}
+cuadro <- data.frame( "p-value" = 0.00000000000000022, 
+                      "t-value" = -9.1139, df = 232,
+                      "Correlación" = -0.5134568,
+                      "Intervalo de confianza" = "[-0.6020580 , -0.4123644]")
+
+
+kable(cuadro, caption= "Correlación entre tasa de ocupación y vacunación completa" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboracion propia" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+#
+```
+ 
+ Producto de lo anterior, se puede observar, en el siguiente gráfico, los resultados de la relación o del análisis descriptivo de la misma.
+
+```{r warning=FALSE}
+grafico7
+```
+
+Siguiendo el tramo azul se puede observar que en los primeros días, donde hay una baja vacunación, la hospitalización no da un verdadero retroceso, la interpretación que se le da a esa creciente en los primeros datos es el hecho de que las vacunas tienen un periodo de eficacia.
+
+Debido a la falta de asociacion entre las variables, está claro que la relación no es lineal, por lo que se podría describir a tramos, o buscar una forma de aproximar mediante polinomios, con ayuda de una regresión cúbica. 
+
+Se puede describir el comportamiento anterior como una función de orden trigonométrico
+$$ O = \alpha\sin(\pi/2-\beta V-\gamma)+\delta $$ 
+y particularmente para el gráfico siguiente se considera $\alpha=87.5$, $\beta=8\times10^{-6}$, $\gamma=5$ y $\delta = 87.5/2$. Para valores de V entre 0 y $6\times 10^{5}$.
+
+
+```{r}
+grafico8
+```
+Lo anterior con el fin de modelar el comportamiento entre variables. Las descripciones trigonométricas pueden ser modeladas a su vez por Taylor como un polinomio. Entonces se podría desarrollar la modelación adecuada de orden cubico. Para ello aprovechamos la ciclicidad del seno, y se escribe $\gamma=5-2\cdot\pi=-1.283185$.
+
+Se puede realizar la aproximación del factor trigonométrico anterior por el método de Taylor centrado en algún punto en particular en el intervalo, para aproximar adecuadamente la asociación entre variables. Recuerde que el desarrollo de Taylor de seno tiene la forma
+$$ \sin(x)\approx x-\dfrac{x^3}{3!}$$
+
+
+Así, con base en el gráfico anterior, y el desarrollo de Taylor que se quiere escribir quedaría centrado en $\frac{-\gamma+\pi/2}{\beta}$.
+
+$$\frac{-\gamma+\pi/2}{\beta}= \frac{1.283185+\pi/2}{0.000007}$$
+
+```{r}
+grafico9
+```
+
+ Como método alternativo se va a realizar un modelo de regresión lineal simple que relaciona la tasa hospitalaria con las dosis completadas. De esta manera se podrá observar el comportamiento de los datos bajo este modelo. Primero se introduce el concepto y fórmulas de un modelo de regresión lineal.
+ 
+ Las regresiones lineales representan la relación que existe entre dos o más variables, una de ellas numérica con otras variables de predicción. La idea es estudiar la relación entre tasa hospitalaria  y dosis completas para tratar de dar una respuesta a la pregunta central de investigación. 
+ 
+El modelo de inferencias de regresión simple supone la siguiente fórmula:
+
+$$y_i = \beta _0 + \beta _1 x_i + \epsilon _i,  \ \ \ \ \ \  i= 1,....,n$$
+Bajo este modelo:
+
+- Los errores aleatorios $\epsilon _i$ serán independientes con una distribución normal con media 0 y varianza $\sigma ^2$
+
+- Los errores típicos correspondientes a los estimadores de los parámetros $\beta _0$ y $\beta _1$ son los  Std.error obtenidos en el resumen de los resultados del modelo.
+
+- El estadístico t corresponde al cociente entre el estimador y su error típico y se observa como t value en el resumen de los resultados del modelo. Dichos cocientes conforman una base para hacer un contrast $H_0 = \beta _0$ y $H_0 = \beta _1 = 0$.Los p-valores se muestran en la columna $Pr( >|t|)$ 
+
+- Residual standar error representa el estimador de la desviación típica de los errores $\sigma$.
+
+
+
+- Por último se pueden obtener intervalos de confianza para los parámetros mediante confint() de R , donde por defecto presenta un nivel de confianza de 0.95.
+
+
+Para efectos de estimación de los parámetros del modelo se hará uso del método estimación por mínimos cuadrados por medio del comando lm() de R.Este metodo consiste en minimizar la suma de los cuadrados de los errores mediante la formula:
+
+$$ \displaystyle \sum ^n _{i=1} \epsilon^2 = \displaystyle \sum ^n _ {i-1} (y_i - \hat{y} _i) ^2$$
+Basicamente, la suma de cuadrados de las diferencias entre los valores observados reales $y_i$ y los valores estimados $\hat{y} _i$
+
+A continuacion se muestra algunos de los datos obtenidos de la estimacion por minimos cuadrados con la regresion lineal:
+ 
+```{r}
+
+baset<- cbind(base$taux_occupation_sae,base$n_complet)
+baset <- as.data.frame.table(baset)
+lmTasaHospitalaria <- lm(base$taux_occupation_sae~base$n_complet, data = base) 
+summary(lmTasaHospitalaria)
+
+```
+
+Con la recta de minimos de cuadrados, en la cual la variable respuesta sera $(y)$ y la variable regresora sera $(x)$ , que para este caso corresponden a tasa de ocupación hospitalaria y dosis completas respectivamente. 
+
+Se observa el siguiente cuadro que corresponde a la estimacion de los parametros obtenida con el método de R:
+
+```{r}
+cuadro2<- data.frame( " β0 "= 7.915e+01,
+                      " β1" = -9.466e-05,
+                      "σ" = 26.32)
+
+kable( cuadro2, caption= "Estimación β0, β1, σ" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboración propia" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+```
+
+Los coeficientes de la regresión representa el cambio medio en la variable tasa de ocupación hospitalaria para una unidad de cambio en la variable dosis completadas. 
+
+Dado el cuadro anterior, se puede afirmar que los parametros de la ecuacion de la recta de mínimos cuadrados que relaciona las tasas hospitalarias en funcion del peso viene dado por:
+
+$$ y = 79.15 -9.466\mathrm{e}{-05}\cdot x $$
+
+Por lo cual se puede interpretar la formula anterior que por cada aplicación por dia de dosis completadas, se espera que la tasa de hospitalizacion promedio disminuya en $9.466e^{-05} %$. En caso de que las dosis completadas en un día no se den, es decir, dosis completadas sean cero, se espera que la tasa de hospitalización promedio sea de $7.915e^{01}%$. 
+
+
+Ahora bien, es importante recalcar que este modelo de regresión lineal trabaja con una hipótesis nula de que el factor $\beta_1 = 0$, si esto es así, se tiene que la información analizada implica que no hay relación entre la tasa hospitalaria y la cantidad de dosis completas. Como se pudo observar, se obtiene que la $\beta_1$ estimada es de una cantidad distinta a $0$, pero cabe preguntarse entonces que tan confiable es esta afirmación. Para ello se tiene a mano otros estadísticos que arroja el modelo.
+
+Por una parte se tiene que el estadístico F tiene un \textit{p-value} de $2.2 \texttimes 10^{-16} $, por lo que esto da seguridad de que se puede rechazar la hipótesis nula, es decir, si hay una relación entre la tasa hospitalaria y la cantidad de dosis completas, note que al coeficiente de regresion ser menor a 0 entonces nos indica que al aumentar las dosis completadas la tasa de hospitalización disminuye. No obstante, también se tiene que la R cuadrada ajustada es de un valor bastante bajo, no cercano a 1. A pesar de que se tienen valores bajos para los p, este bajo valor de la R nos dice que el modelo no se está ajustando bien. Es decir, la relación descrita en el modelo lineal, no es necesariamente cercana a la que estas dos variables poseen.
+
+Para una mejor visualizacion de la recta de regresion que representa al modelo ajustado se presenta el siguiente grafico. 
+
+
+```{r}
+grafico10
+```
+
+Al observar el gráfico 10 se puede notar que la regresión (representada por la recta roja) no está dando una buena representación al comportamiento de los datos. Note en el cuadro 2.3 que el rango de los errores en las predicciones es bastante alto, $110,397$. Adem\'as 
+
+```{r}
+cuadro1 <- data.frame( "Mínimo" = -52.183, 
+                      "1Q" = -18.867,
+                      "Mediana" = -4.786,
+                      "3Q" = 14.215,
+                      "Máximo" = 58.214)
+
+
+kable( cuadro1, caption= "Residuos de la regresión lineal " )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboración propia" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+#
+```
+
+ 
+
+
+
+
+\chapter{Bitácora 8}
+
+Se realizará un último intento de inferencia a nivel del modelo seleccionado, el cual permita responder parcialmente la pregunta de investigación.
+
+Debido a la falta de asociación entre las variables, observado gracias al análisis de correlación, está claro que la relación no es lineal, por lo que se podría describir a tramos, o buscar una forma de aproximar mediante polinomios como se realizó,en la regresión cúbica.
+
+Para este caso se elaborará una regresión de orden cuatro. 
+
+Se puede describir el comportamiento anterior como una función de orden trigonométrico
+$$ O = \alpha\cos(-\beta V-\gamma)+\delta $$ 
+y particularmente para el gráfico siguiente se considera $\alpha=87.5$, $\beta=8\times10^{-6}$, $\gamma=5$ y $\delta = 87.5/2$. Para valores de V entre 0 y $6\times 10^{5}$. Así se observa como en el gráfico 9 esta aproximación.
+
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico9
+```
+Una importante interpretación de este tipo de gráficos es ver que en el eje equis se representan los elementos como números de orden exponencial, es decir, el valor de $e$ realmente es un $\times10$ y el valor que le sigue a la derecha es el signo, naturalmente positivo por el orden de los datos y el valor consiguiente el el orden, por ejemlo, $2e+05$ viene representando $2\times 10^{5}=200.000$.Y no debe interpretarse de otra forma.
+
+El gráfico anterior con el fin de modelar el comportamiento entre variables. Las descripciones trigonométricas pueden ser modeladas a su vez por Taylor como un polinomio. Entonces se podría desarrollar la modelación adecuada de orden cubico. Para ello aprovechamos la ciclicidad del seno, y se escribe $\gamma=5-2\cdot\pi=-1.283185$.
+
+Se puede realizar la aproximación del factor trigonométrico anterior por el método de Taylor centrado en algún punto en particular en el intervalo, para aproximar adecuadamente la asociación entre variables. Recuerde que el desarrollo de Taylor de seno tiene la forma
+$$ \cos(x)\approx 1-\dfrac{x^2}{2!}$$
+
+
+Así, con base en el gráfico anterior, y el desarrollo de Taylor que se quiere escribir quedaría centrado en $\frac{-\gamma+\pi/2}{\beta}$.
+
+$$\frac{-\gamma}{\beta}= \frac{1.283185}{0.000007}$$
+
+```{r, warning = FALSE, echo=FALSE,fig.align="center", message=FALSE, fig.height=2.5, fig.pos="h"}
+grafico13
+```
+
+Al tener las tres regresiones implementadas, se puede analizar la eficacia con la que estas modelaron la tasa de ocupación hospitalaria. Para esto se utiliza el estadístico:
+$$ error  = |Y_t - Y(t)|$$
+donde $Y_t$ es la observación que se tiene guardada en la base de datos y $Y(t)$ es el estimado que se obtiene a partir de una cantidad de dosis completas $t$. Aplicándolo sobre los tres modelos se obtiene lo siguiente:
+
+```{r}
+dt<-data.frame("Modelo" = c("Lineal", "Cúbica", "Cuadrada"), "Media" = c(mean(errlineales), mean(errcubicos), mean(errcuartos)),"Desviación estándar" = c(sd(errlineales), sd(errcubicos), sd(errcuartos)), "Máximo" = c(max(errlineales), max(errcubicos), max(errcuartos)) )
+
+kable(dt, caption= "Errores para cada regresión" )%>%
+kable_styling( latex_options =  "HOLD_position")%>%
+footnote(general = " Elaboracion propia" , general_title = "Fuente:", title_format = "italic", footnote_as_chunk = T)
+```
+Observese de manera más clara el comportamiento de estos errores en el gráfico de dispersión 12:
+
+
+```{r, warning = FALSE, echo=FALSE, fig.align="center", message=FALSE}
+grafico15
+```
+
+A forma de conclusión, se puede observar que la regresión múltiple de grado 4 anterior es más precisa para valores más cercanos al cero, pero representa un problema a medida que se toman datos de vacunación más grandes. Al haber hecho el desarrollo anterior con base en aproximaciones de Taylor, no es significativamente mejor una aproximación sobre otra, y de hecho, el costo de calcular un tercer elemento en el desarrollo no se ve como una gran mejoría gráficamente.
+
+Resulta entonces computacionalmente más costoso realizar ese cálculo a la mejoría, por lo que es más óptimo mantener el orden cúbico como prioritario, o se podría intentar llegar al orden 5 sin que esto represente una mejoría tan importante a nivel gráfico.
+
+Además, si se observa el cuadro 3.1, se puede notar que al comparar el comportamiento de los errores de la regresión lineal y cúbica, se puede notar que se da una disminución considerable del error promedio obtenido. Esto es algo que se podía esperar después del análisis descriptivo, que se presentó anteriormente, sobre la manera en que se distribuye la tasa hospitalaria en el gráfico 7. También se puede observar la manera en que los errores del modelo de grado 4 explotan conforme se acerca al final del intervalo. Con esto en mente se puede afirmar que el que está dando una mejor aproximación a una relación entre la tasa hospitalaria y la cantidad de vacunaciones completas. 
+
+Con lo anterior se puede argumentar entonces que existe evidencia dentro de la base de datos para decir que la tasa hospitalaria está relacionada de manera inversa respecto a la cantidad de vacunados. Es decir, se podría esperar que la vacunación sí sea una medida efectiva como esfuerzo por reducir la carga al sistema hospitalario francés. Ahora bien, es importante notar que hacia el final del periodo registrado se nota cierta tendencia al aumento del error. En este punto es importante considerar las limitaciones. 
+
+Una limitación de la metodología utilizada es que la información que se tiene está constituida de variables confusoras, el nombre se debe al hecho de que este tipo de variable puede “confundir” al investigador haciendo aparecer una asociación que en realidad no existe, o que no es de la magnitud que parece ser, incluso que no solo exista esa asociación, porque la información no es precisa o es muy escasa. Entonces la hospitalización y vacunación completa pueden ser variables confusoras, puesto que la hospitalización está ligada con los fallecimientos, asimismo, la vacunación completa tiene el periodo de eficacia, que realmente no se puede estimar con qué otros factores podría alterar su resultado.
+
+Otra limitación es la falta de precisión de la información ya que la enfermedad está aún en estudio y ésta está en constante actualización. Si bien es cierto se tiene alcance de la teoría epidemiológica de enfermedades previas, inclusive de virus de características bastante similares, el curso de la pandemia ha mostrado que el factor de mutaciones y surgimiento de nuevas variantes del virus se debe tener en consideración a la hora de querer entender la evolución. Esto dificulta, puesto que la información que se tenía a comienzos del semestre es distinta al panorama que se tiene ahora. Incluso, para el 24 de Septiembre del 2021, la variante Delta generaba preocupaciones, actualmente se presenta la variante Ómicron, esta preocupación era imaginable en su momento, saber de la siguiente variante o cuando podría surgir.
+
+ \section{Anexos}
+
+![Cuadro descripción de variables, incluyendo mínimos y máximos.](cuadrof.PNG)
+
+
+ ![Digrama UVE.](DiagramaUVE2.PNG)
+ 
+ 
+ \newpage
+ \section{Referencias Bibliográficas:}
+
+\hspace{5 mm} Coudeville, L., Jollivet, O., Mahé, C., Chaves, S., \& Gomez, G. B. (2021). \textit{Potential impact of introducing vaccines against COVID-19 under supply and uptake constraints in France: A modelling study}. Plos one, 16(4), e0250797.
+
+\hspace{5 mm} Datosmacro, (2021). \textit{Francia: Economía y demografía 2021}. Visitado 20 de setiembre 2021. Recuperado en: https://datosmacro.expansion.com/paises/francia.
+
+\hspace{5 mm} Gani, J. (1978). \textit{Some problems of epidemic theory.} Journal of the Royal Statistical Society: Series A (General), 141(3), 323-337.
+
+\hspace{5 mm} Ministerio de solidaridad y salud (2021)\textit{Indicateurs de suivi de l’épidémie de COVID-19}  data.gouv.fr. Visitado el 5 Setiembre 2021. Recuperado en https://www.data.gouv.fr/fr/datasets/indicateurs-de-suivi-de-lepidemie-de-covid-19/.
+
+\hspace{5mm} Kandi, V. (2021). \textit{SARS-CoV-2 Genetic Variations, Immunity, and Efficacy of Vaccines: The Current Perspectives and Future Implications.} American Journal of Infectious Diseases, 9(3), 90-97.
+
+\hspace{5mm} Krug, Robert M. and Wagner, Robert R.. "Virus". Encyclopedia Britannica, visitado el 12 noviembre 2020. Visitado el 19 de setiembre 2021. Recuperado en
+https://www.britannica.com/science/virus.
+
+\hspace{5mm} Organización Mundial de la Salud. (2021). Visitado 19 setiembre 2021. Recuperado en: https://www.who.int/.
+
+\hspace{5 mm} Organización Mundial de la Salud, (2021). \textit{La vacuna Ad.26.CoV2.S de Janssen: lo que se debe saber}. Visitado 20 de setiembre 2021. Recuperado en: https://www.who.int/es/news-room/feature-stories/detail/the-j-j-covid-19-vaccine-what-you-need-to-know\\
+
+\hspace{5 mm} Organización Mundial de la Salud,  (2021). \textit{La vacuna de Moderna contra la COVID-19 (ARNm-1273): lo que debe saber}.Visitado 20 de setiembre 2021. Recuperado en: https://www.who.int/es/news-room/feature-stories/detail/the-moderna-covid-19-mrna-1273-vaccine-what-you-need-to-know?gclid=CjwKCAjw4qCKBhAVEiwAkTYsPNjID3IaCniN7Hq-P73F8hP\_bKA5tZgfkR0HG5\_H3dU42wHezrnfyRoCmyEQAvD\_BwE.
+
+\hspace{5 mm} Organización Mundial de la Salud, (2021). \textit{La vacuna de Oxford/AstraZeneca contra la COVID-19: lo que debe saber}. Visitado 20 de setiembre 2021. Recuperado en:https://www.who.int/es/news-room/feature-stories/detail/the-oxford-astrazeneca-covid-19-vaccine-what-you-need-to-know.
+
+\hspace{5 mm}Organización Mundial de la Salud, (2021). \textit{Lo que debe saber sobre la vacuna BNT162b2 de Pfizer-BioNTech contra la COVID-19}. Visitado 20 de setiembre 2021. Recuperado en: https://www.who.int/es/news-room/feature-stories/detail/who-can-take-the-pfizer-biontech-covid-19--vaccine.
+
+\hspace{5mm}Pais, A. (2020). Modelos matemáticos de coronavirus: por qué el más popular para predecir la curva del covid-19 considera a los muertos como "recuperados". BBC News Digital. Recuperado en : https://www.bbc.com/mundo/noticias-52455414
+
+
+\hspace{5 mm} Pontificia Universidad Católica de Chile (2020). \textit<{¿Epidemia, pandemia o endemia?}. Visitado 19 de setiembre 2021. Recuperado en:
+https://observatorio.medicina.uc.cl/epidemia-pandemia-o-endemia/.
+
+\hspace{5mm}Republiqué Française, (2021) \textit{Plateforme ouverte des données publiques françaises}. Visitado 20 de agosto 2021. Recuperado en:
+https://www.data.gouv.fr/fr/
+
+\hspace{5 mm} Sampathkumar, P. (2021, September). \textit{Lessons From India’s Second Wave: Real World Effectiveness of Health Care Worker Vaccination}. En Mayo Clinic Proceedings (Vol. 96, No. 9, pp. 2301-2302). Elsevier.
+
+\hspace{5 mm} Sánchez, M. (2020). COVID-19: pandemia de modelos matemáticos. The Conversation. Recuperado en https://theconversation.com/covid-19-pandemia-de-modelos-matematicos-136212 
+
+\hspace{5 mm} Sanders, J. W., Fuhrer, G. S., Johnson, M. D., \& Riddle, M. S. (2008). The epidemiological transition: the current status of infectious diseases in the developed world versus the developing world. Science Progress, 91(1), 1-37.
+
+\hspace{5 mm} \textit{Tasa R COVID-19} | Centro Centroamericano de Población. (2021). Visitado el 5 Setiembre 2021. Recuperado en https://ccp.ucr.ac.cr/tasa-r-covid-19
+
+\hspace{5 mm} The Vaccine Alliance. (2021). Covax Explained. \textit{Gavi}.  Recuperado en https://www.gavi.org/vaccineswork/covax-explained 
+
+\hspace{5mm} Voydie. D,  (2021). \textit{Vaccination impact on COVID-19 indicators}. Visitado 20 de agosto 2021. Recuperado en:
+https://www.kaggle.com/dorianvoydie/vaccination-impact-on-covid19-indicators 
+
+\hspace{5 mm} Wincherter Hospital,(2021).\textit{Health Library}. Visitado el 19 de setiembre 2021. Recuperado en: https://www.winchesterhospital.org/health-library/article?id=222982
+
