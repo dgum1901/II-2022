@@ -470,4 +470,31 @@ $$\includegraphics{UVEDistribucionperdidas}$$
 
 \end{center}
 
+
+\chapter{Bitácora II}
+
+\section{1erdx}
+```{r}
+base <- tibble(base)
+t1<-head(base[1:5,1:7])
+t2<-head(base[1:5,8:14])
+t3<-head(base[1:5,15:21])
+t4<-head(base[1:5,22:28])
+t5<-head(base[1:5,29:35])
+t6<-head(base[1:5,36:43])
+library(xtable)
+print.xtable(xtable(t2), file = "t1.txt")
+
+tabla <- head(base[1:5,])
+
+
+xtable(tabla[1:5,41:43])
+```
+
+
+
+
+
+
+
 \printbibliography

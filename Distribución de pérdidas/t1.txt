@@ -1,0 +1,16 @@
+% latex table generated in R 4.1.3 by xtable 1.8-4 package
+% Sat Sep 24 12:03:10 2022
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrlllrrr}
+  \hline
+ & X\_id & Area\_of\_Origin & Building\_Status & Business\_Impact & Civilian\_Casualties & Count\_of\_Persons\_Rescued & Estimated\_Dollar\_Loss \\ 
+  \hline
+1 & 420865 & 81 - Engine Area &  &  &   0 &   0 & 15000.00 \\ 
+  2 & 420866 & 75 - Trash, rubbish area (outside) &  &  &   0 &   0 & 50.00 \\ 
+  3 & 420868 & 75 - Trash, rubbish area (outside) & 01 - Normal (no change) & 1 - No business interruption &   0 &   0 & 0.00 \\ 
+  4 & 420870 & 81 - Engine Area &  &  &   0 &   0 & 1500.00 \\ 
+  5 & 420871 & 22 - Sleeping Area or Bedroom (inc. patients room, dormitory, etc) & 01 - Normal (no change) & 1 - No business interruption &   0 &   0 & 2000.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
