@@ -24,6 +24,8 @@ library(ggplot2)
 library(kableExtra)
 library(extrafont)
 library(scales)
+library(xtable)
+library(corrplot)
 options(max.print="75")
 opts_chunk$set(echo=FALSE, 
 	             cache=TRUE,
@@ -76,9 +78,71 @@ knitr::kable(p, caption = "Descripción completa de la base", longtable = TRUE) 
 
 \chapter{Bitácora II}
 
+Dado que la pregunta de investigación se centra en encontrar las bases que generan que un siniestro de tipo incendio sea de mayor cuantía en cuanto a pérdidas, por lo que este primer cuadro analiza la correlacion entre el log-estimado de perdidas (podria ser perfectamente el estimado regular) y las variables numéricas, para ello se utiliza select, y se genera una nueva variable numérica que corresponde a la diferencia entre el tiempo de notificación y el tiempo de llegada de las autoridades al lugar del siniestro.
+
+En cuanto a la metodología para obtener la correlación, y pensando más que todo en que los datos podrían no necesariamente obedecer a modelos estríctamente lineales, se utilizó 
+
+```{r}
+base$logEstimado <- log(base$Estimated_Dollar_Loss)
+base$logEstimado <- case_when(base$Estimated_Dollar_Loss == 0 ~ 0,
+                              TRUE ~ log(base$Estimated_Dollar_Loss))
+
+base$TFS_Alarm_Time <- as.POSIXct(base$TFS_Alarm_Time, format = "%Y-%m-%dT%H:%M:%S")
+base$TFS_Arrival_Time <- as.POSIXct(base$TFS_Arrival_Time, format = "%Y-%m-%dT%H:%M:%S")
+
+base$tiempoAtencion <- as.numeric(difftime(base$TFS_Arrival_Time, base$TFS_Alarm_Time))
+
+
+# El pairwise.complete.obs es para garantizar que tome todas las observaciones
+# completas por pares, para más consultas favor consultarme
+p <- base %>% select(is.numeric & !Estimated_Dollar_Loss) %>% cor(use = "pairwise.complete.obs", method = "spearman")
+
+
+#xtable(tibble(colnames(p)))
+colnames(p) <- 1:14
+rownames(p) <- 1:14
+xtable(p)
+
+#corrplot(p)
+
+```
+
+```{r}
+#Este código exporta el gráfico en formato PDF
+pdf("corrPlor.pdf")
+corrplot(p)
+dev.off()
+
+```
+
+
+Para iniciar hablando de la distribución del estimado de pérdidas.
+
+```{r}
+p <- tibble(summary(base$logEstimado), summary(base$Estimated_Dollar_Loss))
+
+colnames(p) <- c('Log pérdida estimada', 'Pérdida estimada')
+rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo')
+
+xtable(p)
+
+p <- aggregate(base$Estimated_Dollar_Loss, by=list(Category=base$Material_First_Ignited), FUN=sum)
+
+out <- quantile(perd, 0.95) #cuantil del 95 por ciento
+
+#p <- p[p$x > out,]
+p <- p[order(-p$x),]
+xtable(p)
+```
+
+
+
+
+
 \section{Graficos}
 
 ```{r}
+
 out <- quantile(perd, 0.95) #cuantil del 95 por ciento
 
 grafico1 <-
@@ -114,13 +178,13 @@ grafico2 <-
 grafico2
 
 
-df <-
+p <-
   data.frame(
     Name = c("Masa cuantil menor a .95", "Masa cuantil mayor o igual a .95"),
     Amount = c(sum(perd[perd < out]), sum(perd[perd >= out]))
   )
 
-grafico3 <- ggplot(df, aes(x = Name, y = Amount)) + geom_bar(
+grafico3 <- ggplot(p, aes(x = Name, y = Amount)) + geom_bar(
   stat = "identity",
   color = c('blue', 'red'),
   fill = c('lightblue', 'pink'),
@@ -132,10 +196,11 @@ grafico3 <- ggplot(df, aes(x = Name, y = Amount)) + geom_bar(
     x = "Cuantil",
     title = "Gráfico 3: Masa del estimado de pérdidas de acuerdo al cuantil 0.95",
     caption = "Fuente: Elaboración propia"
-  ) + scale_y_continuous(labels = comma) + scale_x_discrete(limits = df$Name)
+  ) + scale_y_continuous(labels = comma) + scale_x_discrete(limits = p$Name)
 grafico3
 
 ```
+
 
 
 
