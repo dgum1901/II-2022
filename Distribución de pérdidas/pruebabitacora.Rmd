@@ -125,14 +125,53 @@ colnames(p) <- c('Log pérdida estimada', 'Pérdida estimada')
 rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo')
 
 xtable(p)
+```
 
-p <- aggregate(base$Estimated_Dollar_Loss, by=list(Category=base$Material_First_Ignited), FUN=sum)
 
-out <- quantile(perd, 0.95) #cuantil del 95 por ciento
+```{r}
+p <-
+  aggregate(
+    base$Estimated_Dollar_Loss,
+    by = list(Category = base$Smoke_Alarm_at_Fire_Origin),
+    FUN = sum
+  )
+p$Frecuencia <- count(base$Smoke_Alarm_at_Fire_Origin)$freq
+p$Media <- p$x/p$Frecuencia
+
 
 #p <- p[p$x > out,]
 p <- p[order(-p$x),]
 xtable(p)
+```
+
+
+```{r}
+
+p <-
+  aggregate(
+    base$Estimated_Dollar_Loss,
+    by = list(Category = base$Property_Use),
+    FUN = sum
+  )
+p$Frecuencia <- count(base$Property_Use)$freq
+p$Media <- p$x/p$Frecuencia
+
+#p <- p[p$x > out,]
+
+a <- p[order(-p$x),]
+
+a <- a[1:15,]
+
+xtable(a)
+
+a <- p[order(-p$Media),]
+
+a <- a[1:15,]
+
+xtable(a)
+
+
+
 ```
 
 
