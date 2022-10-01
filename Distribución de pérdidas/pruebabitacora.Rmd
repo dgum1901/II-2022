@@ -120,10 +120,11 @@ Para iniciar hablando de la distribución del estimado de pérdidas.
 
 ```{r}
 p <- tibble(summary(base$logEstimado), summary(base$Estimated_Dollar_Loss))
-
+p <- rbind(p, c(sd(base$logEstimado), sd(base$Estimated_Dollar_Loss)))
+p <- rbind(p, c(IQR(base$logEstimado), IQR(base$Estimated_Dollar_Loss)))
 colnames(p) <- c('Log pérdida estimada', 'Pérdida estimada')
-rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo')
-
+rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo', 'Desviación', 'IQr')
+IQR(base$logEstimado)
 xtable(p)
 ```
 
@@ -140,7 +141,7 @@ p$Media <- p$x/p$Frecuencia
 
 
 #p <- p[p$x > out,]
-p <- p[order(-p$x),]
+p <- p[order(-p$Media),]
 xtable(p)
 ```
 
@@ -160,13 +161,13 @@ p$Media <- p$x/p$Frecuencia
 
 a <- p[order(-p$x),]
 
-a <- a[1:15,]
+a <- a[1:10,]
 
 xtable(a)
 
 a <- p[order(-p$Media),]
 
-a <- a[1:15,]
+a <- a[1:10,]
 
 xtable(a)
 
@@ -183,6 +184,19 @@ xtable(a)
 ```{r}
 
 out <- quantile(perd, 0.95) #cuantil del 95 por ciento
+grafico0 <-
+  ggplot(base, aes(x = Estimated_Dollar_Loss)) + 
+  geom_histogram(color =
+                   "darkblue", fill = "lightblue") + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Pérdida en escala regular",
+    title = "Gráfico 1: Histograma en escala regular de las pérdidas",
+    caption = "Fuente: Elaboración propia"
+  )
+
+grafico0
+
 
 grafico1 <-
   ggplot(base, aes(x = log(Estimated_Dollar_Loss))) + 
@@ -241,6 +255,12 @@ grafico3
 ```
 
 
+```{r}
+pdf("graf0.pdf")
+grafico0
+dev.off()
+plot_grid(grafico0, grafico1, labels = "AUTO")
+```
 
 
 
