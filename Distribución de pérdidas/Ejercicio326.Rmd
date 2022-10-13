@@ -1,0 +1,123 @@
+---
+title: "Ejercicio326"
+author: "Maria Jose Corea"
+date: "2022-10-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Pareto
+
+```{r}
+alphaPar<-2.5
+sigmaPar<-150
+(meanPar<-(sigma)/(alpha-1))
+(varPar<-(alpha*sigma^2)/((alpha-1)^2*(alpha-2)))
+```
+Lognormal
+
+```{r}
+muLog<-3.70929
+sigmaLog<-1.338566
+(media<- exp(muLog+(sigmaLog^2)/2))
+(var<-(exp(sigmaLog^2)-1)*exp(2*muLog+sigmaLog^2))
+```
+Gamma
+
+```{r}
+alphagamm<-0.2
+sigmagamm<-500
+(mean<-alphagamm*sigmagamm)
+(var<-alphagamm*sigmagamm^2)
+```
+
+En efecto dan igual
+
+```{r}
+for(x in 1:100){
+dgamma(x,2.5,150)
+dlnorm(x,muLog,sigmaLog)
+}
+q <- 0
+bool <- FALSE
+while(!bool){
+  gamm <- dgamma(q, shape = 0.2, scale = 500)
+  expo <- dlnorm(q, meanlog = 3.709290, sdlog = 1.338566)
+  pare <- dpareto2(q, min = 0, shape = 2.5, scale = 150)
+  
+  if (gamm < expo && expo < pare ){
+    bool <- TRUE
+  }
+  q <- q + 1
+}
+
+```
+
+```{r}
+x <- 1
+bool <- FALSE
+while(!bool){
+  # gamm <- dgamma(x, shape = 0.2, scale = 500)
+  gamm <- 0.62851*x^(-0.8)*exp(-0.002*x)
+
+  # logn <- dlnorm(x, meanlog = 3.709290, sdlog = 1.338566)
+  logn <- (2*pi)^(-1/2) * (1.338566*x)^(-1) * exp(-1/2*((log(x)-3.70929)/1.338566)^2)
+  #pare <- dpareto2(x, min = 0, shape = 2.5, scale = 150)
+  pare <- 688919 *(x + 150)^(-3.5)
+  
+  if (gamm < logn && logn < pare ){
+    bool <- TRUE
+  }
+  x <- x + 1
+}
+```
+
+```{r}
+x <- 1
+bool <- FALSE
+while(!bool){
+  # gamm <- dgamma(x, shape = 0.2, scale = 500)
+  gamm <- 0.62851*x^(-0.8)*exp(-0.002*x)
+
+  # logn <- dlnorm(x, meanlog = 3.709290, sdlog = 1.338566)
+  logn <- (2*pi)^(-1/2) * (1.338566*x)^(-1) * exp(-1/2*((log(x)-3.70929)/1.338566)^2)
+  #pare <- dpareto2(x, min = 0, shape = 2.5, scale = 150)
+  pare <- 688919 *(x + 150)^(-3.5)
+  
+  if (gamm < logn && logn < pare ){
+    bool <- TRUE
+  }
+  x <- x + 1
+}
+```
+
+calculo de l 9.63
+
+175
+```{r}
+200*(1-(1+175/100+(175/100)^2/2)*exp(-175/100))+175*(1-(1-(1+175/100)*exp(-175/100)))
+  
+```
+
+50
+```{r}
+200*(1-(1+50/100+(50/100)^2/2)*exp(-50/100))+50*(1-(1-(1+50/100)*exp(-50/100)))
+  
+```
+
+Ahora para el segundo momento
+
+175
+```{r}
+2*3*100^2*(1-(1+175/100+(175/100)^2/2+(175/100)^3/6)*exp(-175/100))+175^2*(1-(1-(1+175/100)*exp(-175/100)))
+  
+```
+
+50
+```{r}
+2*3*100^2*(1-(1+50/100+(50/100)^2/2+(50/100)^3/6)*exp(-50/100))+50^2*(1-(1-(1+50/100)*exp(-50/100)))
+  
+```

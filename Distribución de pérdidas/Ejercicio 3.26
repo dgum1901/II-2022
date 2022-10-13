@@ -1,0 +1,16 @@
+---
+title: "Ejercicio 3.26"
+author: "Maria Jose Corea"
+date: "2022-10-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Pareto
+
+```{r}
+mean<-
+```
+
