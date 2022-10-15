@@ -1,0 +1,36 @@
+---
+title: "Ejercicios Modelos"
+author: "Maria Jose Corea"
+date: "2022-10-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+2.16 Un estudio de bebés planteó la hipótesis de que los bebés tardarían más en
+aprender a gatear en los meses más fríos porque la ropa extra restringe su
+movimiento. Entre 1988 y 1991, la primera edad de gateo de los bebés y el promedio
+se registró la temperatura mensual seis meses después del nacimiento (cuando “los bebés presumiblemente entran en la ventana de preparación locomotora”; p. 72). Los padres
+informaron el mes de nacimiento y la edad en que su bebé se arrastró o gateó por primera vez
+distancia de cuatro pies en un minuto. Los datos fueron recolectados en la Universidad de
+Denver Infant Study Center sobre 208 niños y 206 niñas, y resumido por
+el mes de nacimiento (Tabla 2.10; conjunto de datos: rastreo).
+1. Trazar los datos. ¿Qué suposiciones, si las hubiere, parecen violarse?
+2. Explique por qué un modelo de regresión ponderado es apropiado para los datos.
+3. Ajuste un modelo de regresión lineal ponderado a los datos e interprete el
+coeficientes de regresión.
+4. Probar formalmente la hipótesis propuesta por los investigadores.
+5. Encuentre un intervalo de confianza del 90 % para la pendiente de la línea ajustada, y
+interpretar.
+6. Ajuste el modelo de regresión no ponderado, luego trace ambas líneas de regresión en
+una trama de los datos. Comenta las diferencias.
+7. Calcule los intervalos de confianza del 95 % para los valores ajustados de la
+línea de regresión ponderada, y también grafíquelos.
+8. Interpreta el modelo.
+
+```{r}
+Babies <- read.csv("~/GitHub/II-2022/Modelos Lineales/Babies.txt")
+```
+
