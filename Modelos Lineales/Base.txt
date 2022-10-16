@@ -8,6 +8,6 @@ June, 31.44, 29, 39
 July, 33.64, 21, 33
 August, 32.82, 45, 30
 September, 33.83, 38, 33
-October, 33.35, 44 37
-November, 33.38, 49 48
+October, 33.35, 44, 37
+November, 33.38, 49, 48
 December, 32.32, 44, 57

@@ -31,6 +31,42 @@ línea de regresión ponderada, y también grafíquelos.
 8. Interpreta el modelo.
 
 ```{r}
-Babies <- read.csv("~/GitHub/II-2022/Modelos Lineales/Babies.txt")
+Babies <- read.csv("~/GitHub/II-2022/Modelos Lineales/Base.txt")
 ```
 
+1.R\
+
+```{r}
+qqnorm(Babies$Monthly.average.temperature.six.months.after.birth..â..F., pch = 1, frame = FALSE)
+qqline(Babies$Monthly.average.temperature.six.months.after.birth..â..F., col = "steelblue", lwd = 2)
+```
+
+2.R\
+
+Porque la regresión ponderada se puede utilizar para corregir la heterocedasticidad. En un procedimiento de regresión ponderada, se otorga más peso a las observaciones con una varianza más pequeña porque estas observaciones brindan información más confiable sobre la función de regresión que aquellas con varianzas grandes. Observemos que la varianza de las observaciones, asimismo la desviación estándar y un histograma para ver si se ve normalidad.
+
+```{r}
+var(Babies$Monthly.average.temperature.six.months.after.birth..â..F.)
+sd(Babies$Monthly.average.temperature.six.months.after.birth..â..F.)
+hist(Babies$Monthly.average.temperature.six.months.after.birth..â..F., breaks = 12)
+```
+3.R/
+
+```{r}
+mod_ols <- lm(Babies$Monthly.average.temperature.six.months.after.birth..â..F.~ Babies$Mean.age.when.crawling.started..weeks. + I(Babies$Mean.age.when.crawling.started..weeks.^2))  #Modelo de mínimos cuadrados ordinarios
+mod_pond <- lm(I(sqrt(Babies$Sample.size) * Babies$Monthly.average.temperature.six.months.after.birth..â..F.) ~ 0 + sqrt(Babies$Sample.size) + I(sqrt(Babies$Sample.size) * Babies$Mean.age.when.crawling.started..weeks.) + I(sqrt(Babies$Sample.size) * 
+    Babies$Mean.age.when.crawling.started..weeks.^2))
+```
+
+```{r}
+coef(mod_ols)
+coef(mod_pond)
+```
+
+Se puede notar la diferencia en los coeficientes, o sea son modelos distintos
+```{r}
+summary(mod_pond)
+```
+
+
+El modelo es bastante significativo
