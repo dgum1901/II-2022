@@ -36,9 +36,13 @@ Babies <- read.csv("~/GitHub/II-2022/Modelos Lineales/Base.txt")
 
 1.R\
 
+qqline es la recta que minimiza el error
+Normal centrado en cero, y saca el cuantil de un lado y del otro
+
 ```{r}
 qqnorm(Babies$Monthly.average.temperature.six.months.after.birth..â..F., pch = 1, frame = FALSE)
 qqline(Babies$Monthly.average.temperature.six.months.after.birth..â..F., col = "steelblue", lwd = 2)
+qqplot(Babies$Monthly.average.temperature.six.months.after.birth..â..F., pch,Babies$Mean.age.when.crawling.started..weeks.)
 ```
 
 2.R\
