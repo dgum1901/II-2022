@@ -183,12 +183,14 @@ rstandard(p)#residual estandarizado
 fitted(p) #Este ejemplo demuestra cómo encontrar los valores ajustados de un modelo de regresión lineal usando la función added().
 cooks.distance(p) #La distancia de Cook es un resumen de cuánto cambia un modelo de regresión cuando se elimina la i-ésima observación
  scatter.smooth( rstandard(p) ~ fitted(p) )
- qqnorm( rstandard(p) ); qqline( rstandard(p) )
+ qqnorm( rstandard(p) )
+ qqline( rstandard(p) )
  plot( cooks.distance(p), type="h")
  plot( rstandard(p) ~ Babies$PromedioTemperatura)
  
 ```
- 
+ No demuestra una clara linealidad, es un mal modelo. 
+No hay un patrón lineal. Se puede observar variables independientes
 2.R/
 
 ```{r}
@@ -359,4 +361,158 @@ plot( jitter(Number)~Age, data=blocks)
  lines(ci.hi~newA, lty=2)
 ```
 
+8.11. Se pidió a los niños que construyeran torres tan altas como pudieran a partir de cubos
+y bloques cilíndricos [8, 14]. El número de bloques utilizados y el tiempo empleado
+fueron registrados (conjunto de datos: bloques). En este problema, sólo considere el número
+de bloques utilizados y y la edad del niño x.
+En el problema 6.10, se ajustó un glm para estos datos. Realizar un diagnóstico
+análisis y determinar si el modelo es adecuado
 
+
+```{r}
+ data(blocks)
+library(statmod)
+ m1 <- glm(Number~Age, data=blocks, family=poisson)
+ par(mfrow=c(2, 2))
+ plot( rstandard(m1)~fitted(m1))
+ plot(cooks.distance(m1), type="h")
+ qqnorm(rstandard(m1))
+ qqnorm(qresid(m1))
+ colSums(influence.measures(m1)$is.inf)
+```
+Hay una tendencia lineal.
+
+9.10. El periódico Independent tabuló el género de todos los candidatos que se postularon para las elecciones generales británicas de 1992 (Tabla 9.10; conjunto de datos:
+reflexión) [6].
+1. Grafique la proporción de candidatas contra el Partido y comente.
+2. Trazar la proporción de candidatas contra la Región y comentar.
+3. Encontrar un glm binomial adecuado, asegurando un análisis de diagnóstico.
+4. ¿Es evidente la sobredispersión?
+5. Interpretar el modelo ajustado.
+6. Estimar e interpretar las probabilidades de que una candidata se postule para el
+Partidos conservador y laborista. Luego calcule la razón de probabilidades de la
+El partido conservador presenta a una candidata para las probabilidades del Laborismo
+partido que presenta a una candidata.
+7. Determine si es probable que la aproximación del punto de silla sea adecuada para
+estos datos.
+
+1.R/
+
+```{r}
+data(belection)
+plot(belection$Females~belection$Party)
+```
+2.R/
+
+```{r}
+plot(belection$Females~belection$Region)
+```
+
+3.R/
+
+```{r}
+library(dplyr)
+base1 <- belection%>%mutate(Party  = case_when( Party == 'Cons' ~ 0,
+                                                 Party == 'Green' ~ 1,
+                                                 Party == 'Labour' ~ 2,
+                                                 Party == 'LibDem' ~ 3,
+                                                 Party == 'Other' ~ 4))
+```
+
+
+```{r}
+                      
+ m1 <- glm(jitter(Party)~Females, data=base1,    family=binomial(link=logit))
+ par(mfrow=c(2, 2))
+ plot( rstandard(m1)~fitted(m1))
+ plot(cooks.distance(m1), type="h")
+ qqnorm(rstandard(m1))
+ qqnorm(qresid(m1))
+ colSums(influence.measures(m1)$is.inf)
+```
+
+9.14. En el Ejemplo 9.4, se introdujeron datos [3] con respecto a la germinación
+de semillas, utilizando dos tipos de semillas y dos tipos de portainjertos (Cuadro 9.3).
+Una forma alternativa de ingresar los datos es registrar si cada
+semilla individual germina o no (conjunto de datos: germBin).
+1. Ajuste el modelo equivalente al ajustado en el ejemplo 9.4, pero usando datos
+preparado como en el archivo de datos germBin. Este modelo se basa en el uso de un Distribución de Bernoulli.
+2. Muestre que tanto el glms de Bernoulli como el binomial producen los mismos valores
+para las estimaciones de parámetros y errores estándar.
+3. Muestre que los dos modelos producen diferentes valores para la desviación residual, pero los mismos valores para la desviación.
+4. Muestre que los dos modelos producen resultados similares a partir de la secuencia
+pruebas de razón de verosimilitud.
+5. Compare las log-verosimilitudes de las distribuciones binomial y de Bernoulli.
+Comentario.
+6. Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
+
+
+10.11. El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido a el cáncer de cuello uterino se tabula (Cuadro 10.14; conjunto de datos: cuello uterino) por grupo de edad
+para cuatro países diferentes [19, 38].
+1. Grafique los datos y analice cualquier característica destacada.
+2. Explique por qué es útil un desplazamiento al ajustar un glm a los datos.
+3. Ajuste un glm de Poisson con edad y país como variables explicativas. Produzca la gráfica de residuos contra los valores ajustados y evalúe el modelo.
+4. Ajuste el modelo cuasi-Poisson correspondiente. Producir la trama de residuos
+contra los valores ajustados, y evaluó el modelo.
+5. Ajuste el glm binomial negativo correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.
+6. ¿Qué modelo parece apropiado, si alguno?
+
+```{r}
+data(cervical)
+ cervical$AgeNum <- rep( c(25, 35, 45, 55), 4)
+ par( mfrow=c(2, 2))
+ ### Part 1
+ with( cervical, {
+plot( Deaths/Wyears ~ AgeNum, type="n")
+lines(Deaths/Wyears ~ AgeNum, lty=1,
+subset=(Country==unique(Country)[1]) )
+lines(Deaths/Wyears ~ AgeNum, lty=2,
+subset=(Country==unique(Country)[2]) )
+lines(Deaths/Wyears ~ AgeNum, lty=3,
+subset=(Country==unique(Country)[3]) )
+lines(Deaths/Wyears ~ AgeNum, lty=4,
+subset=(Country==unique(Country)[4]) )
+legend("topleft", lty=1:4, legend=unique(cervical$Country) )
+})
+```
+
+
+```{r}
+### Part 3
+ cc.m0 <- glm( Deaths ~ offset(log(Wyears)) + Age + Country,
+data=cervical, family=poisson )
+ plot( rstandard(cc.m0) ~ fitted(cc.m0), main="Poisson glm" )
+```
+
+
+```{r}
+### Part 4
+ cc.m0Q <- glm( Deaths ~ offset(log(Wyears)) + Age + Country,
+data=cervical, family=quasipoisson )
+ plot( rstandard(cc.m0Q) ~ fitted(cc.m0Q), main="Quasi-Poisson model" )
+```
+
+
+```{r}
+### Part 5
+ cc.m0NB <- glm.nb( Deaths ~ offset(log(Wyears)) + Age + Country,
+data=cervical)
+ cc.m0NB <- glm.convert(cc.m0NB)
+ plot( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
+```
+
+10.16. Un experimento [21] comparó la densidad de aves del sotobosque en un
+serie de sitios en dos áreas a cada lado de una cerca a prueba de ganado, data conjunto: pastoreo). Un lado tenía un pastoreo limitado (principalmente de herbívoros nativos) y el otro estaba fuertemente pastoreado por herbívoros salvajes, en su mayoría caballos.
+Se registraron conteos de aves en los sitios a ambos lados de la cerca (el "antes"
+mediciones). Luego se eliminaron los herbívoros y se registraron los conteos de aves.
+de nuevo (las medidas 'después'). Las medidas son el número total de
+Aves que buscan alimento en el sotobosque observadas en tres estudios de 20 min de cuadrantes de 2 ha.
+1. Grafique los datos y explique las características importantes.
+2. Ajuste un glm de Poisson con el componente sistemático Birds ~ When * Pasto,
+asegurando un análisis de diagnóstico.
+3. Demostrar que existe sobredispersión. Demostrar calculando la media
+y varianza de cada combinación de las variables explicativas.
+4. Ajuste un modelo cuasi-Poisson.
+5. Ajuste un glm binomial negativo.
+6. Compare los tres modelos ajustados para determinar un modelo adecuado.
+7. Interpretar el modelo final.
