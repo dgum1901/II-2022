@@ -92,6 +92,8 @@ Nos salio una prueba de t, con un nivel de 5% de confianza, si se rechaza y con 
 
 5.R/
 
+El IC95% aporta al lector la precisión estadística. Por «precisión estadística», se refiere a la incertidumbre introducida por los métodos de muestreo. 
+
 ```{r}
 t.test(x=coef(mod_leo), conf.level=0.90)$conf.int
 ```
@@ -113,17 +115,40 @@ Es importante ver que al menos sale negativo el coeficiente, que es lo que esper
 
 Entonces baja un 0.002, o sea el impacto es mayor.
 
+```{r}
+
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
+xlab="Promedio Temperatura", ylab="Promedio semanas" )
+abline( coef(p),col="red", lty=1, lwd=2)
+abline( coef(mod_leo),col="blue", lty=1, lwd=2)
+```
+
+Asimismo, se puede ver mediante el gráfico una diferencia no tan abismal.
+
 7.R/
 
 ```{r}
 
 plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
 xlab="Promedio Temperatura", ylab="Promedio semanas" )
-abline( coef(p), lty=1, lwd=2)
-abline( coef(mod_leo), lty=1, lwd=2)
+abline( coef(p),col="red", lty=1, lwd=2)
+abline( coef(mod_leo),col="blue", lty=1, lwd=2)
 ```
 
 
+```{r}
+IC<-t.test(x=coef(mod_leo), conf.level=0.95)$conf.int
+```
+
+```{r}
 
 
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
+xlab="Promedio Temperatura", ylab="Promedio semanas" )
+abline( coef(IC) ,col="red", lty=3, lwd=2)
+
+```
+8.R/
+
+Como rompe con el supuesto de variabilidad nula, entonces se necesita un ajuste mediante los pesos, el cual no mejora significativamente la regresión, lo importante es notar es que si se logra la relación inversa con lo propuesto mediante la hip nula.
 
