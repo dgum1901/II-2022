@@ -260,7 +260,7 @@ data(blocks)
  #plot( Number~cut(Age, 3), data=blocks)
 
 plot( jitter(Number)~Age,  data=blocks, las=1,
-xlab="Número de bloques", ylab="Edad del niño" ) #el jitter agrega un poco de ruido, para que se traslapen
+xlab="Número de bloques", ylab="Edad del niño" ) #el jitter agrega un poco de ruido, para que se traslap
 ```
 1. ¿Qué distribución de probabilidad es apropiada? La respuesta determina la
 componente aleatoria del modelo. La elección de la distribución de probabilidad
@@ -305,6 +305,7 @@ data(blocks)
 
 deviance(m1)
 ```
+Conforme aumentan los conteos, esto implica que su edad es mayor, esto es porque el signo es positivo
 
 3.R/
 
