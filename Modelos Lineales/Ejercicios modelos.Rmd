@@ -178,3 +178,7 @@ plot(jitter(Number)~Age, data=blocks)
 plot( Number~cut(Age, 3), data=blocks)
 ```
 
+
+
+
+
