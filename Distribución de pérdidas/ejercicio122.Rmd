@@ -1,0 +1,97 @@
+---
+title: "ejercicico122"
+author: "Maria Jose Corea"
+date: "2022-10-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(flexsurv)
+library(actuar)
+library(dplyr)
+tabla_d <- read.csv("~/GitHub/II-2022/Distribución de pérdidas/tablad.txt")
+
+tabla_d$event[tabla_d$obs==5] <- "s"
+
+tabla_d <- tabla_d %>%
+  mutate(
+    delta = case_when(
+      event == "s" ~ 1,
+      event %in% c("d", "e") ~ 0
+    ))
+  
+```
+
+```{r}
+surv1 <-
+Surv(
+time = tabla_d$d,
+time2 = tabla_d$obs,
+event = tabla_d$delta
+)
+kaplan_meier <- survfit(surv1 ~ 1)
+```
+
+```{r}
+kaplan_meier$surv
+```
+12.4
+
+```{r}
+library(flexsurv)
+library(actuar)
+library(dplyr)
+obs <- c(27, 82, 115, 126, 155, 161, 243, 294, 340, 384,
+457, 680, 855, 877, 974, 1193, 1340, 1884, 2558, 15743)
+
+d <- c(1:20)*0
+
+delta <- rep(1, 20)
+
+tabla <- as.data.frame(cbind(obs, d, delta))
+```
+
+```{r}
+# S_KM
+
+surv1 <- Surv(
+time = tabla$d,
+time2 = tabla$obs,
+event = tabla$delta
+)
+
+S_KM <- survfit(formula = surv1 ~ 1)
+
+S_KM$surv
+```
+
+```{r}
+obs2 <- obs[obs>100]
+d2 <- rep(1, length(obs2))*100
+delta2 <- as.numeric(obs2<=1000)
+tabla2 <- as.data.frame(cbind(obs2, d2, delta2))
+
+surv2 <- Surv(
+time = tabla2$d2,
+time2 = tabla2$obs2,
+event = tabla2$delta2
+)
+```
+
+```{r}
+S_KM <- survfit(formula = surv2 ~ 1)
+
+S_KM$surv
+```
+
+```{r}
+H_NA <- survfit(formula = surv2 ~ 1, type="fleming-harrington")
+
+H_NA$cumhaz
+```
+

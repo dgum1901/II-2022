@@ -116,15 +116,6 @@ perd <- base$Estimated_Dollar_Loss
 base <- base[!is.na(perd),]
 perd <- perd[!is.na(perd)]
 
-
-# hist(perd,xlim = c(0, 5e5), breaks = 200)
-# out <- mean(perd) + sd(perd)
-# out <- quantile(perd, 0.95) #cuantil del 90 por ciento
-# 
-# sum(perd[perd < out])
-# sum(perd[perd >= out])
-# 
-# base.perd <- base[perd >= out, ]
 ```
 
 La base seleccionada fue obtenida de la página oficial de la ciudad de Toronto, y corresponde a información de los siniestros de tipo incendio.
@@ -218,6 +209,6 @@ incidente.
 \item TFS Firefighter Casualties: Cantidad de víctimas en el cuerpo de bomberos.
 \end{itemize}
 
-
+\section{Bitacora }
 
 \printbibliography

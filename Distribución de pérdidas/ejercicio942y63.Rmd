@@ -1,0 +1,63 @@
+---
+title: "Ejercicio 942"
+author: "Maria Jose Corea"
+date: "2022-10-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+fX <- c(0.14,0.05,0.02,0.03)
+lambda <- 200
+fS_recursive <- exp(-lambda*(1-0.76))
+
+for (x in 1:200) {
+s <- 0
+for (y in 1:4) {
+if (x - y >=0) {
+
+s <- s + y * fX[y] * fS_recursive[x - y + 1]
+}
+}
+fS_recursive[x + 1] <- lambda / x * s
+}
+fS_recursive[x + 1]
+
+
+```
+
+```{r}
+fX <- c(0.14, 0.05, 0.02, 0.03)
+lambda <- 200
+fs <- exp(-lambda * (1 - 0.76)) #f0
+sum<-fs
+x<-1
+m<-length(fX)
+while(sum<0.05){
+  y<- 1:min(x,m)
+  fs[x+1] <- lambda / x * (sum( y * fX[y] * fs[x+1-y] ))
+  sum <- sum + fs[x+1]
+  x<-x+1
+}
+(x <- x-1) # pues si sale es que ya se excedio
+```
+
+
+```{r}
+ES_usando_fS_recursive <- sum((0:nfilas)*fS_recursive)
+25*ES_usando_fS_recursive
+```
+d)
+```{r}
+1-((1+20/150))*exp(-20/100)
+```
+
+```{r}
+a<-1.36469/(1+1.36469)
+b<-(2-1)*1.36469/(1+1.36469)
+```
+

@@ -1,0 +1,13 @@
+Birth month ,Mean age when crawling started (weeks), Sample size, Monthly average temperature six months after birth (◦F)
+January, 29.84, 32, 66
+February, 30.52, 36, 73
+March, 29.70, 23, 72
+April, 31.84, 26, 63
+May, 28.58, 27, 52
+June, 31.44, 29, 39
+July, 33.64, 21, 33
+August, 32.82, 45, 30
+September, 33.83, 38, 33
+October, 33.35, 44, 37
+November, 33.38, 49, 48
+December, 32.32, 44, 57
