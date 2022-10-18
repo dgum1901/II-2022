@@ -132,3 +132,53 @@ Se interpreta que en el modelo existe una relación lineal entre el aumento de l
 
 
 # Ejercicio 
+
+
+
+
+
+
+
+
+
+
+Majo mamavergas
+```{r}
+ data(blocks); par(mfrow=c(2, 4))
+ m1 <- lm( Time~Shape, data=blocks); anova(m1)
+ ### Part 1
+ plot( rstandard(m1) ~ fitted(m1) )
+ qqnorm( rstandard(m1) ); qqline( rstandard(m1) )
+ plot( cooks.distance(m1), type="h")
+ plot( rstandard(m1) ~ blocks$Shape)
+ rowSums(influence.measures(m1)$is.inf)
+```
+
+
+1. The model includes only Shape. The Q–Q plot shows non-normality; the variance is
+different between cubes and cylinders. Perhaps influential observations. 2. The model
+diagnostics appear better, if not perfect, after applying a log-transform.
+
+
+
+
+
+
+
+
+
+ejercicio 5.25
+
+```{r}
+library("GLMsData") 
+data(blocks)
+
+par(mfrow=c(1, 2))
+plot(jitter(Number)~Age, data=blocks)
+plot( Number~cut(Age, 3), data=blocks)
+```
+
+
+
+
+
