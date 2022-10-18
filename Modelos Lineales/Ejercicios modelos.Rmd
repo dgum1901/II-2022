@@ -192,20 +192,10 @@ A partir de la gráfica y una comprensión de los datos, responda las dos pregun
 ```{r}
 var(blocks$Number)
 mean(blocks$Number)
+
 ```
 Varianza y media cercana, como una distribución poisson
 Las respuestas son conteos; la varianza aumenta con la media. Pisson GLM
-
-2. ¿Cómo se relacionan las variables explicativas con la media de la respuesta?
-¿? La respuesta sugiere el componente sistemático del modelo. glms
-asumir una función que une el predictor lineal η = β0 + p
-j=1 βjxj a
-la media μ, como log μ = η por ejemplo. Es decir, glms son regresión
-modelos lineales en los parámetros.
-
-se relaciona de una manera similar
-
-
 
 
 
@@ -217,9 +207,28 @@ Ajuste este GLM usando r y escriba el modelo ajustado.
 ```{r}
 data(blocks)
 m1 <- glm(Number~Age, data=blocks, family=poisson)
+
+m1
 ```
 
+2.R/
+Determine el error estándar para cada parámetro de regresión
+```{r}
+#Forma uno
+coef(summary(m1))
+#Forma dos, pag 251
+cov.mat <- summary(m1)$cov.scaled
+sqrt( diag( cov.mat ) )
+```
+3.R/
+Calcule la devianza residual
 
+```{r}
+#Pag 258
+deviance(m1)
+```
+
+## Ejercicio 7.4
 
 
 
