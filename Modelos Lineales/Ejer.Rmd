@@ -429,7 +429,7 @@ reflexión) [6].
 1. Grafique la proporción de candidatas contra el Partido y comente.
 2. Trazar la proporción de candidatas contra la Región y comentar.
 3. Encontrar un glm binomial adecuado, asegurando un análisis de diagnóstico.
-4. ¿Es evidente la sobredispersión?
+4. ¿Es evidente la sobredispersión? #la varianza, es menos de lo que realmente, usted estaría subestimando la longitud de los intervalos de confianza, subdispersion, usted daría un intervalo muy grande, en vez de hacerlo más estrecho. La varianza es mayor con la sobredispersion, entonces la prueba wald podría decir que variables son más significante que no lo son.
 5. Interpretar el modelo ajustado.
 6. Estimar e interpretar las probabilidades de que una candidata se postule para el
 Partidos conservador y laborista. Luego calcule la razón de probabilidades de la
@@ -491,6 +491,40 @@ sum( W * e^2 )
  
 Hay alta influencien en las observaciones 12 16 18 20 23 25 34 36 45 51, se ve una baja variabilidad. Se presencia de linealidad. Se ve una dispersión, son bastante parecidos.
 
+5.R/
+Es importante decir que con el summary, se puede observar la significancia del partido sobre la región, entonces solo nos fijaremos con los odds de los partidos.
+
+```{r}
+printCoefmat(exp(coef(summary(m2))),digits=4)
+```
+Los odds son la razón de la prob de exito, entre la prob de fracaso. la prob de exito es 4 veces que la prob de fracaso.
+En este caso como la variable es categórita, entonces se ve como, no se ve el cons, entonces ese el base, el 3.16 que acompaña al partido verda, esa es la expo del beta del partido verde 3.16 veces del partido de cons, entonces son 3.16 veces mayor que los del partido conservador. Por otro lado, los odds del democrático de 2. algo del cons
+
+Que pasa si solo queiro los odds del partido verde?
+
+eso se hace distinto
+
+```{r}
+exp(sum(coef(summary(m2))[1:2]))
+```
+La proporción de las mujeres es apenas 30% de la de los hombres en el partido verde
+
+6.R/
+
+```{r}
+exp(coef(summary(m2))[1])+exp(coef(summary(m2))[3])
+
+```
+Entonces la proporción de las mujeres es 263% de la de los hombre en el partido laboyer
+
+7.R/
+
+No se cumple el punto de silla, puesto que 
+```{r}
+min(belection$Females)
+```
+
+Por lo tanto no se cumple.
 
 
 9.14. En el Ejemplo 9.4, se introdujeron datos [3] con respecto a la germinación
@@ -508,6 +542,12 @@ pruebas de razón de verosimilitud.
 Comentario.
 6. Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
 
+1.R/
+2.R/
+3.R/
+4.R/
+5.R/
+6.R/
 
 10.11. El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido a el cáncer de cuello uterino se tabula (Cuadro 10.14; conjunto de datos: cuello uterino) por grupo de edad
 para cuatro países diferentes [19, 38].
@@ -582,4 +622,16 @@ y varianza de cada combinación de las variables explicativas.
 ```{r}
 
 ```
+#####################
+```{r}
+c("contr.treatment", "contr.treatment")
+ Orden_Mary_Joseph <- c("Green", "Cons", "Labour", "LibDem", "Other")
+ belection$Party <- ordered(belection$Party, levels=c(Orden_Mary_Joseph))
+ levels(belection$Party)
+ contrasts(belection$Party)
+```
 
+
+
+
+MAJO CAREPICHA
