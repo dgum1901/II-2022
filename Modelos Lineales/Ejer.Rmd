@@ -131,6 +131,24 @@ Asimismo, se puede ver mediante el gráfico una diferencia no tan abismal.
 7.R/
 
 ```{r}
+x<-Babies$PromedioTemperatura
+x <-(PromedioTemperatura = seq(min(x), max(x), by = 0.05))
+cosa <-
+  predict(mod_leo,
+          newdata = data.frame(x),
+          interval = "confidence",
+          level = 0.95)
+
+
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies,
+      xlab = "Promedio Temperatura", ylab = "Promedio semanas")
+abline(coef(mod_leo), lty = 1, lwd = 2)
+lines(x, cosa[,2], col="blue", lty=2)
+lines(x, cosa[,3], col="blue", lty=2)
+```
+
+
+```{r}
 library(ggplot2)
 ggplot(data = Babies, mapping = aes(x = Babies$PromedioTemperatura, y = Babies$PromedioSemanas)) + geom_point() + geom_smooth(method = lm)
 ```
@@ -156,27 +174,6 @@ confint(mod_leo, level = 0.95)
 # lines(x, cosa[,2], col="blue", lty=2)
 # lines(x, cosa[,3], col="blue", lty=2)
 ```
-
-
-```{r}
-new.base <- data.frame(PromedioTemperatura = seq(30,50,2))
-out <- predict(mod_leo, newdata = new.base, se.fit = TRUE)
-names(out)
-
-tstar <- qt(df=mod_leo$df.residual, p=0.975 ) # For a 95% CI
-ci.lo <- out$fit - tstar*out$se.fit
-ci.hi <- out$fit + tstar*out$se.fit
-CIinfo <- cbind( Lower=ci.lo, Estimate=out$fit, Upper=ci.hi)
-CIinfo
-
- newA <- seq( min(Babies$PromedioTemperatura), max(Babies$PromedioTemperatura), length=11)
-
- plot( Babies$PromedioSemanas~Babies$PromedioTemperatura, data=Babies)
- abline(coef(mod_leo), lty=1)
-lines(ci.lo~newA, lty=2)
-lines(ci.hi~newA, lty=2)
-```
-
 
 
 8.R/
@@ -207,25 +204,12 @@ cooks.distance(mod_leo) #La distancia de Cook es un resumen de cuánto cambia un
  plot( rstandard(mod_leo) ~ Babies$PromedioTemperatura)
  
 ```
- No demuestra una clara linealidad, es un mal modelo. 
-No hay un patrón lineal. Se puede observar variables independientes
-
-```{r}
- data(blocks); par(mfrow=c(2, 4))
- m1 <- lm( Time~Shape, data=blocks); anova(m1)
- ### Part 1
- plot( rstandard(m1) ~ fitted(m1) )
- qqnorm( rstandard(m1) ); qqline( rstandard(m1) )
- plot( cooks.distance(m1), type="h")
- plot( rstandard(m1) ~ blocks$Shape)
- rowSums(influence.measures(m1)$is.inf)
-```
 
 2.R/
 
 ```{r}
-influence.measures(p)
-#rowSums(influence.measures(p)$is.inf)
+influence.measures(mod_leo)
+rowSums(influence.measures(mod_leo)$is.inf)
 ```
  
  Hay una tendencia lineal, hay presencia de 3 outliers, el de la posición 2, 3 y 5, o se en febrero, marzo y mayo. Son de influencia.
@@ -258,7 +242,6 @@ data(blocks)
  #par(mfrow=c(1, 2))
  #plot(jitter(Number)~Age, data=blocks)
  #plot( Number~cut(Age, 3), data=blocks)
-
 plot( jitter(Number)~Age,  data=blocks, las=1,
 xlab="Número de bloques", ylab="Edad del niño" ) #el jitter agrega un poco de ruido, para que se traslap
 ```
@@ -271,8 +254,9 @@ cambia con la media.
 ```{r}
 var(blocks$Number)
 mean(blocks$Number)
+sd((blocks$Number))
 ```
-Varianza y media cercana, como una distribución poisson
+La varianza es menor a la esperanza(media), es una distribución poisson
 
 2. ¿Cómo se relacionan las variables explicativas con la media de la respuesta?
 ¿? La respuesta sugiere el componente sistemático del modelo. glms
@@ -305,14 +289,20 @@ data(blocks)
 
 deviance(m1)
 ```
-Conforme aumentan los conteos, esto implica que su edad es mayor, esto es porque el signo es positivo
+Sería equivalente a la suma de cuadrados residual de un modelo lineal; valores más altos indican peor ajuste
 
 3.R/
 
 ```{r}
 summary(m1)
 ```
-Que quiere decir?
+```{r}
+m1$null.deviance - m1$deviance
+1 - pchisq (7.185388, 1)
+
+```
+Se puede rechazar claramente la hipótesis nula. Hay una relación significativa con la edad.
+
 
 
 7.4. Se pidió a los niños que construyeran torres tan altas como pudieran a partir de cubos
@@ -384,7 +374,12 @@ min(blocks$Number)
 6.R/Para un glm de Poisson, se espera que la aproximación teorema del limite central sea suficiente si es y ≥ 5; aquí el mínimo es 3, por lo que la aproximación teorema del limite central 
 puede ser insuficientemente preciso.
 
-7.¿?
+7.R/
+
+```{r}
+confint(m1)
+```
+
 
 8.R/
 ```{r}
@@ -411,15 +406,23 @@ análisis y determinar si el modelo es adecuado
 ```{r}
  data(blocks)
 library(statmod)
- m1 <- glm(Number~Age, data=blocks, family=poisson)
+ m3 <- glm(Number~Age, data=blocks, family=poisson)
  par(mfrow=c(2, 2))
- plot( rstandard(m1)~fitted(m1))
- plot(cooks.distance(m1), type="h")
- qqnorm(rstandard(m1))
- qqnorm(qresid(m1))
- colSums(influence.measures(m1)$is.inf)
+ plot( rstandard(m3)~fitted(m3))
+ plot(cooks.distance(m3), type="h")
+ qqnorm(rstandard(m3))
+ qqnorm(qresid(m3))
+ colSums(influence.measures(m3)$is.inf)
+ 
+ influence.measures(m3)
+which(rowSums(influence.measures(m3)$is.inf)>0)
+
+
+deviance(m3)
+df.residual(m3)
+
 ```
-Hay una tendencia lineal.
+Hay una tendencia lineal. Hay alta influencia en las observaciones 10 22 44 69 72 94 95, no s eve una alta variabilidad. Está mal ajustado, puesto que su devianza es muy alta
 
 9.10. El periódico Independent tabuló el género de todos los candidatos que se postularon para las elecciones generales británicas de 1992 (Tabla 9.10; conjunto de datos:
 reflexión) [6].
@@ -450,25 +453,45 @@ plot(belection$Females~belection$Region)
 3.R/
 
 ```{r}
-library(dplyr)
-base1 <- belection%>%mutate(Party  = case_when( Party == 'Cons' ~ 0,
-                                                 Party == 'Green' ~ 1,
-                                                 Party == 'Labour' ~ 2,
-                                                 Party == 'LibDem' ~ 3,
-                                                 Party == 'Other' ~ 4))
+# library(dplyr)
+# base1 <- belection%>%mutate(Party  = case_when( Party == 'Cons' ~ 0,
+#                                                  Party == 'Green' ~ 1,
+#                                                  Party == 'Labour' ~ 2,
+#                                                  Party == 'LibDem' ~ 3,
+#                                                  Party == 'Other' ~ 4))
 ```
 
 
 ```{r}
-                      
- m1 <- glm(jitter(Party)~Females, data=base1,    family=binomial(link=logit))
+ m2 <- glm(cbind(Females,Males)~Party + Region, data=belection,    family=binomial()) #éxitos son mujeres y fracasos hombres
  par(mfrow=c(2, 2))
- plot( rstandard(m1)~fitted(m1))
- plot(cooks.distance(m1), type="h")
- qqnorm(rstandard(m1))
- qqnorm(qresid(m1))
- colSums(influence.measures(m1)$is.inf)
+ plot( rstandard(m2)~fitted(m2))
+ plot(cooks.distance(m2), type="h")
+ qqnorm(rstandard(m2))
+ qqnorm(qresid(m2))
+ colSums(influence.measures(m2)$is.inf)
+ 
+  influence.measures(m2)
+which(rowSums(influence.measures(m2)$is.inf)>0)
+deviance(m2)
+summary(m2)
+df.residual(m2)
+min(belection$Females)
+min(belection$Males)
 ```
+ 
+```{r}
+W <- weights(m2, type="working")
+e <- residuals(m2, type="working")
+# Estadístico de Pearson
+sum( W * e^2 )
+
+```
+ 
+ 
+Hay alta influencien en las observaciones 12 16 18 20 23 25 34 36 45 51, se ve una baja variabilidad. Se presencia de linealidad. Se ve una dispersión, son bastante parecidos.
+
+
 
 9.14. En el Ejemplo 9.4, se introdujeron datos [3] con respecto a la germinación
 de semillas, utilizando dos tipos de semillas y dos tipos de portainjertos (Cuadro 9.3).
@@ -534,10 +557,10 @@ data=cervical, family=quasipoisson )
 
 ```{r}
 ### Part 5
- cc.m0NB <- glm.nb( Deaths ~ offset(log(Wyears)) + Age + Country,
-data=cervical)
- cc.m0NB <- glm.convert(cc.m0NB)
- plot( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
+#  cc.m0NB <- glm.nb( Deaths ~ offset(log(Wyears)) + Age + Country,
+# data=cervical)
+#  cc.m0NB <- glm.convert(cc.m0NB)
+#  plot( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
 ```
 
 10.16. Un experimento [21] comparó la densidad de aves del sotobosque en un
@@ -555,3 +578,8 @@ y varianza de cada combinación de las variables explicativas.
 5. Ajuste un glm binomial negativo.
 6. Compare los tres modelos ajustados para determinar un modelo adecuado.
 7. Interpretar el modelo final.
+
+```{r}
+
+```
+
