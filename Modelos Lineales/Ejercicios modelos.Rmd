@@ -131,13 +131,104 @@ Interprete el modelo
 Se interpreta que en el modelo existe una relación lineal entre el aumento de la temperatura media y la disminución de la edad media de gateo. La variable es estadísticamente significativa.
 
 
-# Ejercicio 
+# Ejercicio 3.15
+Un estudio de bebés [4] planteó la hipótesis de que los bebés tardarían más en aprender a gatear en los meses más fríos porque la ropa adicional restringe su movimiento (conjunto de datos: gatear). Los datos y una descripción más completa se dan en el problema 2.16 (pág. 87). En ese problema, se ajustó un modelo de regresión lineal a los datos.
+
+1.R/
+Realice un análisis de diagnóstico del modelo de regresión lineal ajustado.
+
+```{r}
+
+scatter.smooth(rstandard(q) ~ fitted(q))
+qqnorm(rstandard(q))
+qqline(rstandard(q))
+plot(cooks.distance(q), type = "h")
 
 
 
+plot(rstandard(q) ~ Babies$PromedioTemperatura)
+
+```
+No demuestra una clara linealidad, es un mal modelo. 
+No hay un patrón lineal. Se puede observar variables independientes
 
 
 
+2.R/
+Identifique cualquier observación influyente o valor atípico
+
+```{r}
+rowSums(influence.measures(q)$is.inf)
+```
+
+Usando el test de influencia proporcionado por R, se detecta un outlyer en el valor 5, como se tenía de hipotetizó en el ejemplo anterior. Detectado por el radio de covarianza.
+
+3.R/
+Supongamos que algunos de los bebés fueran mellizos. ¿Qué suposición sería violada por la inclusión de estos bebés en el estudio? ¿Crees que esto tendría implicaciones prácticas?
+
+Se rompe el supuesto de independencia.
+
+## Ejercicio 5.25
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [2, 9]. Se registró el número de bloques utilizados y el tiempo empleado (Tabla 2.12; conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x.
+
+1.R/
+Grafique el número de bloques usados contra la edad del niño.
+
+```{r}
+data(blocks)
+plot( jitter(Number)~Age,  data=blocks, las=1,
+xlab="Número de bloques", ylab="Edad del niño" )
+plot( Number~cut(Age, 3), data=blocks)
+```
+
+
+2.R/
+A partir de la gráfica y una comprensión de los datos, responda las dos preguntas en la Secc. 5.2 (p. 211) para estos datos y, por lo tanto, proponga un glm para los datos.
+
+¿Qué distribución de probabilidad es apropiada? La respuesta determina el componente aleatorio del modelo. La elección de la distribución de probabilidad puede ser sugerida por los datos de respuesta (por ejemplo, las proporciones de un total sugieren una distribución binomial), o el conocimiento de cómo cambia la varianza con la media.
+
+¿Cómo se relacionan las variables explicativas con la media de la respuesta $\mu$? La respuesta sugiere el componente sistemático del modelo. Glms asume una función que vincula el predictor lineal $\eta = \beta_0 + \sum_{j=0}^p \beta_jx_j $con la media $\mu$, como por ejemplo $\log \mu = \eta$. Es decir, glms son modelos de regresión lineales en los parámetros
+
+```{r}
+var(blocks$Number)
+mean(blocks$Number)
+
+```
+Varianza y media cercana, como una distribución poisson
+Las respuestas son conteos; la varianza aumenta con la media. Pisson GLM
+
+
+
+## Ejercicio 6.10
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [3, 6]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x. En el problema 5.25, se propuso un glm para estos datos.
+
+1.R/
+Ajuste este GLM usando r y escriba el modelo ajustado.
+```{r}
+data(blocks)
+m1 <- glm(Number~Age, data=blocks, family=poisson)
+
+m1
+```
+
+2.R/
+Determine el error estándar para cada parámetro de regresión
+```{r}
+#Forma uno
+coef(summary(m1))
+#Forma dos, pag 251
+cov.mat <- summary(m1)$cov.scaled
+sqrt( diag( cov.mat ) )
+```
+3.R/
+Calcule la devianza residual
+
+```{r}
+#Pag 258
+deviance(m1)
+```
+
+## Ejercicio 7.4
 
 
 
@@ -170,7 +261,7 @@ diagnostics appear better, if not perfect, after applying a log-transform.
 ejercicio 5.25
 
 ```{r}
-library("GLMsData") 
+library(GLMsData) 
 data(blocks)
 
 par(mfrow=c(1, 2))
