@@ -342,7 +342,40 @@ colSums(influence.measures(m1)$is.inf)
 rowSums(influence.measures(m1)$is.inf)
 ```
 
-Hay una tendencia lineal. Hay alta influencia en las observaciones 10 22 44 69 72 94 95, no s eve una alta variabilidad. Está mal ajustado, puesto que su devianza es muy alta
+Hay una tendencia lineal. Hay alta influencia en las observaciones 10 22 44 69 72 94 95, no se ve una alta variabilidad. Está mal ajustado, puesto que su devianza es muy alta
+
+## Ejercicio 9.10
+El periódico Independent tabuló el género de todos los candidatos que se postularon para las elecciones generales británicas de 1992 (Tabla 9.10; conjunto de datos: belection) [6].
+
+1.R/
+Trace la proporción de candidatas contra el Partido y comente.
+```{r}
+data(belection)
+
+plot(Females~Party, data = belection)
+```
+2.R/
+Grafique la proporción de candidatas contra la Región y comente.
+```{r}
+plot(Females~Region, data = belection)
+```
+3.R/
+Encuentre un glm binomial adecuado, asegurando un análisis de diagnóstico.
+
+```{r}
+m2 <- glm(cbind(Females,Males)~Party + Region, data=belection, family=binomial())
+#Veamos los graficos
+par(mfrow = c(2, 2))
+plot(rstandard(m2) ~ fitted(m2))
+plot(cooks.distance(m2), type = "h")
+qqnorm(rstandard(m2))
+qqnorm(qresid(m2))
+colSums(influence.measures(m2)$is.inf)
+
+```
 
 
 
+
+4.R/
+¿Es evidente la sobredispersión?
