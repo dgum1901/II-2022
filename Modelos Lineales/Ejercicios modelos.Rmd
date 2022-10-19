@@ -144,8 +144,6 @@ qqnorm(rstandard(q))
 qqline(rstandard(q))
 plot(cooks.distance(q), type = "h")
 
-
-
 plot(rstandard(q) ~ Babies$PromedioTemperatura)
 
 ```
@@ -195,7 +193,7 @@ mean(blocks$Number)
 
 ```
 Varianza y media cercana, como una distribución poisson
-Las respuestas son conteos; la varianza aumenta con la media. Pisson GLM
+Las respuestas son conteos; la varianza aumenta con la media. Poisson GLM
 
 
 
@@ -229,6 +227,85 @@ deviance(m1)
 ```
 
 ## Ejercicio 7.4
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [3, 7]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x. En el problema 6.10, se ajustó un glm para estos datos.
+
+1.R/
+Use una prueba de Wald para determinar si la edad parece necesaria en el modelo.
+
+pagina 287 sobre la prueba Wald:
+they simply relate the coefficient estimates to their standard errors and, for this reason, they are routinely presented as part of the summary output for a glm fit in r
+```{r}
+#Esto borra la edad como variable del modelo :0
+m0 <- update(m1, .~1)
+
+(z.Wald <- coef(summary(m1))[2, 3])
+(P.Wald <- coef(summary(m1))[2, 4])
+```
+La edad tiene una significancia de 0.001, entonces sí es necesaria
+
+2.R/
+Use una prueba score para determinar si la edad parece necesaria en el modelo
+
+```{r}
+library(statmod)
+#Toma el modelo vacío m0 y 
+( z.score <- glm.scoretest(m0, blocks$Age) )
+
+( P.score <- 2*(1-pt(abs(z.score), df=df.residual(m1))) ) 
+
+```
+3.R/
+Use una prueba de likelihood ratio para determinar si la edad parece necesaria en el modelo.
+
+```{r}
+analisis <- anova(m1, test="Chisq") #analysis of variance (or deviance)
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+```
+4.R/
+Compare los resultados de las pruebas de Wald, puntuación y razón de verosimilitud. Comente
+
+```{r}
+
+round(c(z.Wald, z.score, sqrt(chisq.LRT)), 4)
+round(c(P.Wald, P.score, P.LRT), 4)
+
+min(blocks$Number)
+
+
+```
+Para todos los estadísticos se obtienen resukltados alentadores, donde la mayor significancia se obytiene en la prueba de likelihood
+
+
+5.R/
+
+
+
+
+```{r}
+library(GLMsData) 
+
+data(quilpie)
+m1.quilpie <- lm(y ~ Phase, data = quilpie)
+
+coef(m1.quilpie)
+m1.quilpie$coefficients
+
+
+beta <- c(0.23, 0.04, 0.06, 0.01, 0.09, 0.05, 0.30)
+se <- c(0.13, 0.04, 0.05, 0.03, 0.06, 0.02, 0.07)
+z <- beta/se; pvals <- (1-pnorm(abs(z)))*2
+round(pvals, 3)
+
+
+library(aod)
+
+#perform Wald Test to determine if 3rd and 4th predictor variables are both zero
+wald.test(Sigma = vcov(m1), b = coef(m1), Terms = 1) #se rechaza la hipotesis nula
+```
+
+
+
 
 
 
