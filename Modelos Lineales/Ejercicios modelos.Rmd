@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(GLMsData)
 ```
 
  # Ejercicio 2.16 
@@ -108,12 +109,12 @@ abline(coef(q), lty = 2, lwd = 2)
 Calcule los intervalos de confianza del 95 % para los valores ajustados de la línea de regresión ponderada y también grafíquelos.
 
 ```{r}
-cosa <- confint(q)
+
 x <- Babies$PromedioTemperatura
-x <-(PromedioTemperatura = seq(min(x), max(x), by = 0.05))
+x <- seq(min(x), max(x), by = 0.05)
 cosa <-
   predict(q,
-          newdata = data.frame(x),
+          newdata = data.frame(PromedioTemperatura = x),
           interval = "confidence",
           level = 0.95)
 
@@ -270,83 +271,78 @@ Compare los resultados de las pruebas de Wald, puntuación y razón de verosimil
 round(c(z.Wald, z.score, sqrt(chisq.LRT)), 4)
 round(c(P.Wald, P.score, P.LRT), 4)
 
-min(blocks$Number)
-
 
 ```
 Para todos los estadísticos se obtienen resukltados alentadores, donde la mayor significancia se obytiene en la prueba de likelihood
 
 
 5.R/
+¿Se espera que la aproximación del punto de silla sea precisa? Explique.
+
+En la pagina 277 habla de eso.
+```{r}
+min(blocks$Number)
+```
+Para un glm de Poisson, se espera que la aproximación del punto de silla sea suficiente si el más pequeño y ≥ 3; aquí el mínimo es 3, así que espere que la aproximación del punto de silla sea bueni
 
 
 
+
+6.R/
+¿Se espera que el teorema del límite central sea exacto? Explique.
+
+Para un glm de Poisson, espere que la aproximación CLT sea suficiente si la y ≥ 5 más pequeña; aquí el mínimo es 3 (y hay diez cuentas de 4), por lo que la aproximación CLT puede no ser lo suficientemente precisa.
+
+
+7.R/
+Encuentre los intervalos de confianza de Wald al 95 % para los coeficientes de regresión.
 
 ```{r}
-library(GLMsData) 
-
-data(quilpie)
-m1.quilpie <- lm(y ~ Phase, data = quilpie)
-
-coef(m1.quilpie)
-m1.quilpie$coefficients
-
-
-beta <- c(0.23, 0.04, 0.06, 0.01, 0.09, 0.05, 0.30)
-se <- c(0.13, 0.04, 0.05, 0.03, 0.06, 0.02, 0.07)
-z <- beta/se; pvals <- (1-pnorm(abs(z)))*2
-round(pvals, 3)
-
-
-library(aod)
-
-#perform Wald Test to determine if 3rd and 4th predictor variables are both zero
-wald.test(Sigma = vcov(m1), b = coef(m1), Terms = 1) #se rechaza la hipotesis nula
+confint(m1)
 ```
 
+8.R/
+Grafique el número de bloques usados contra la edad y muestre la relación descrita por el modelo ajustado. También trace las líneas que indican los intervalos de confianza del 95 % inferior y superior para estos valores ajustados.
 
-
-
-
-
-
-Majo mamavergas
 ```{r}
- data(blocks); par(mfrow=c(2, 4))
- m1 <- lm( Time~Shape, data=blocks); anova(m1)
- ### Part 1
- plot( rstandard(m1) ~ fitted(m1) )
- qqnorm( rstandard(m1) ); qqline( rstandard(m1) )
- plot( cooks.distance(m1), type="h")
- plot( rstandard(m1) ~ blocks$Shape)
- rowSums(influence.measures(m1)$is.inf)
+x <- seq(min(blocks$Age), max(blocks$Age), length = 100)
+cosa <- predict(m1,
+                newdata = data.frame(Age = x),
+                type = "response",
+                se.fit = TRUE)
+
+plot(jitter(Number) ~ Age, data = blocks)
+lines(cosa$fit ~ x, lwd = 2)
+t.star <- qt(p = 0.975, df = df.residual(m1)) #cuantil de t-student
+ci.lo <- cosa$fit - t.star * cosa$se.fit
+ci.hi <- cosa$fit + t.star * cosa$se.fit
+lines(ci.lo ~ x, lty = 2)
+lines(ci.hi ~ x, lty = 2)
 ```
 
+## Ejercicio 8.11
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [8, 14]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x.
 
-1. The model includes only Shape. The Q–Q plot shows non-normality; the variance is
-different between cubes and cylinders. Perhaps influential observations. 2. The model
-diagnostics appear better, if not perfect, after applying a log-transform.
-
-
-
-
-
-
-
-
-
-ejercicio 5.25
+En el problema 6.10, se ajustó un glm para estos datos. Realice un análisis de diagnóstico y determine si el modelo es adecuado
 
 ```{r}
-library(GLMsData) 
 data(blocks)
+library(statmod)
 
-par(mfrow=c(1, 2))
-plot(jitter(Number)~Age, data=blocks)
-plot( Number~cut(Age, 3), data=blocks)
+par(mfrow = c(2, 2))
+plot(rstandard(m1) ~ fitted(m1))
+plot(cooks.distance(m1), type = "h")
+qqnorm(rstandard(m1))
+qqnorm(qresid(m1))
 ```
 
 
+```{r}
+colSums(influence.measures(m1)$is.inf)
+rowSums(influence.measures(m1)$is.inf)
+```
+
+Hay una tendencia lineal. Hay alta influencia en las observaciones 10 22 44 69 72 94 95, no s eve una alta variabilidad. Está mal ajustado, puesto que su devianza es muy alta
 
 
 
