@@ -289,7 +289,7 @@ data(blocks)
 
 deviance(m1)
 ```
-Sería equivalente a la suma de cuadrados residual de un modelo lineal; valores más altos indican peor ajuste
+
 
 3.R/
 
@@ -543,11 +543,65 @@ Comentario.
 6. Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
 
 1.R/
+
+
+```{r}
+library(forcats)
+data(germ)
+data(germBin)
+# fct_rev invierte los niveles
+m4 <- glm(fct_rev(Result) ~ Seeds + Extract , data=germBin,family = binomial())
+
+m5  <- glm(Germ/Total ~ Seeds + Extract, family=binomial,
+data=germ, weights=Total)
+
+summary(m5)
+summary(m4)
+```
+
 2.R/
+
+```{r}
+summary(m5)
+summary(m4)
+```
+
 3.R/
+
+```{r}
+deviance(m4)
+deviance(m5)
+
+1 - pchisq (m4$null.deviance - m4$deviance, 1)
+1 - pchisq (m5$null.deviance - m5$deviance, 1)
+```
+
 4.R/
+
+```{r}
+anova(m4)
+anova(m4, test="Chisq")
+(chisq.LRT <- anova(m4)[2, 2])
+( P.LRT <- anova(m4, test="Chisq")[2, 5])
+```
+```{r}
+anova(m5)
+anova(m5, test="Chisq")
+(chisq.LRT <- anova(m5)[2, 2])
+( P.LRT <- anova(m5, test="Chisq")[2, 5])
+```
+
 5.R/
+
+```{r}
+
+```
+
 6.R/
+
+```{r}
+
+```
 
 10.11. El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido a el cáncer de cuello uterino se tabula (Cuadro 10.14; conjunto de datos: cuello uterino) por grupo de edad
 para cuatro países diferentes [19, 38].
