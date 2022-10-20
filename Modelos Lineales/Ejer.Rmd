@@ -745,7 +745,7 @@ scatter.smooth(q_res1 ~ fit10.11quasi$fitted.values)
 
 
 
-
+5.R/
 
 
 ```{r}
@@ -765,18 +765,15 @@ plot(fit10.11binneg)
 
 
 set.seed(27)
-q_res <- qresid(fit10.11binneg) 
+q_res <- resid(fit10.11binneg) 
 scatter.smooth(q_res ~ fit10.11binneg$fitted.values)
 ```
+Todos los modelos parecen tener un gran valor atípico negativo, pero
+claramente el modelo de Poisson no acomoda la variación correctamente.
 
+6.R/
 
-```{r}
-### Part 5
-#  cc.m0NB <- glm.nb( Deaths ~ offset(log(Wyears)) + Age + Country,
-# data=cervical)
-#  cc.m0NB <- glm.convert(cc.m0NB)
-#  plot( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
-```
+Se puede observar que entre el modelo de poisson y el negativo binomial, el aic más pequeño es ek negativo binomial, entonces es un mejor modelo. Además que la devianza es bastante alta en comparación a los gradis de libertad, en el modelo quasi y el poisson. 
 
 10.16. Un experimento [21] comparó la densidad de aves del sotobosque en un
 serie de sitios en dos áreas a cada lado de una cerca a prueba de ganado, data conjunto: pastoreo). Un lado tenía un pastoreo limitado (principalmente de herbívoros nativos) y el otro estaba fuertemente pastoreado por herbívoros salvajes, en su mayoría caballos.
@@ -794,9 +791,66 @@ y varianza de cada combinación de las variables explicativas.
 6. Compare los tres modelos ajustados para determinar un modelo adecuado.
 7. Interpretar el modelo final.
 
+1.R/
 ```{r}
+library(GLMsData)
+data(grazing)
+# Acá Wyears es T
+str(grazing)
 
+
+## Inciso 1
+
+plot(Birds ~ When, data = grazing)
+plot(Birds ~ Grazed, data = grazing)
 ```
+
+Del segundo gráfico, se ve que entre los hervíboros, el que tiene un mayor número absoluto de aves es el nativo, mientras que el conteo para el salvaje es el menor.
+
+En el primer gráfico se ve que se observó un mayor conteo después, en comparación de antes
+
+
+2.R/
+
+```{r}
+modelo_Poisson<-glm(formula = Birds ~ Grazed * When, data = grazing, family = poisson())
+```
+```{r}
+medidas <- influence.measures(modelo_Poisson)
+colSums(medidas$is.inf)
+which(medidas$is.inf[,7])
+```
+  Tiene 3 outliers y eso es malo
+3.R/
+La devianza es demasiado alta en comparación con los grados de libertad, entonces hay sobredispersion
+
+4.R/
+
+```{r}
+modelo_PoissonQuasi<-glm(formula = Birds ~ Grazed*When, data = grazing, family = quasipoisson())
+medidas1 <- influence.measures(modelo_PoissonQuasi)
+colSums(medidas1$is.inf)
+which(medidas1$is.inf[,7])
+```
+Devianza muy alta en comparación a sus grados de libertad
+
+5.R/
+
+```{r}
+modelo_Poissonnb<-glm.nb( formula = Birds ~ Grazed*When, data = grazing)
+medidas2 <- influence.measures(modelo_Poissonnb)
+colSums(medidas2$is.inf)
+which(medidas2$is.inf[,7])
+```
+Se puede observar que la devianza no es tan alta como los grados de libertad, entonces no se ve tan claro la sobredispersion.
+
+6.R/Se ve que es mejor el binomial negativo, por su devianza
+
+7.R/ 
+Se observa una devianza moderada, en comparación a los grados de libertad, además que tiene una mejor aic, un más baja.
+
+
+
 #####################
 ```{r}
 c("contr.treatment", "contr.treatment")
@@ -807,6 +861,3 @@ c("contr.treatment", "contr.treatment")
 ```
 
 
-
-
-MAJO CAREPICHA
