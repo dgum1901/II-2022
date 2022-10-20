@@ -91,7 +91,7 @@ Encuentre un intervalo de confianza del 90% para la pendiente de la línea ajust
 ```{r}
 confint(q, level = 0.9)
 ```
-Lo anterior indica que el intervalo de confianza para el coeficiente del promedio de temperatura al 90% se encuentra entre -0.1200823 y -0.03113231 en el modelo ajustado por pesos. Esto es que el 90% de las veces, casi seguramente, el coeficiente de la varaible se va a encontrar en ese intervalo.
+Lo anterior indica que el intervalo de confianza para el coeficiente del promedio de temperatura al 90% se encuentra entre -0.1200823 y -0.03113231 en el modelo ajustado por pesos. Esto es que el 90% de las veces, casi seguramente, el coeficiente de la variable se va a encontrar en ese intervalo.
 
 
 6. R/ 
@@ -264,7 +264,7 @@ analisis <- anova(m1, test="Chisq") #analysis of variance (or deviance)
 (P.LRT <- analisis[2, 5])
 ```
 4.R/
-Compare los resultados de las pruebas de Wald, puntuación y razón de verosimilitud. Comente
+Compare los resultados de las pruebas de Wald, score y razón de verosimilitud. Comente
 
 ```{r}
 
@@ -513,7 +513,7 @@ data(cervical)
 cervical$AgeNum <- rep(c(25, 35, 45, 55), 4)
 ### Part 1
 with(cervical, {
-  plot(Deaths / Wyears ~ AgeNum, type = "n")
+  plot(Deaths / Wyears ~ AgeNum, type = "n") #Las muertes y las wyears se escalan
   lines(Deaths / Wyears ~ AgeNum,
         lty = 1,
         subset = (Country == unique(Country)[1]))
@@ -531,14 +531,117 @@ with(cervical, {
          legend = unique(cervical$Country))
 })
 ```
+2.R/
+Explique por qué un desplazamiento es útil al ajustar un glm a los datos.
+
+Para tener en cuenta la exposición. Es una buena idea trabajar con un offset porque no se tiene información como por ejemplo la cantidad de mujeres expuestas para trabajar una binomial, si no que se tiene una medida de tiempo. Offset es una variable que se utiliza en el análisis de regresión de Poisson. Este análisis se utiliza siempre que los datos se registran durante un período observado.
+
+
+3.R/
+Ajuste un glm de Poisson con edad y país como variables explicativas. Producir la gráfica de residuos contra valores ajustados y evaluar el modelo. Ejemplo en pag 375
+
+```{r}
+### Part 3
+cc.m0 <- glm(Deaths ~ offset(log(Wyears)) + Age + Country,
+             data = cervical,
+             family = poisson)
+
+scatter.smooth(rstandard(cc.m0) ~ fitted(cc.m0), main = "Poisson glm")
+```
+4.R/
+Ajuste el modelo cuasi-Poisson correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.\
+
+```{r}
+cc.m0Q <- glm(Deaths ~ offset(log(Wyears)) + Age + Country,
+              data = cervical,
+              family = quasipoisson)
+scatter.smooth(rstandard(cc.m0Q) ~ fitted(cc.m0Q), main = "Quasi-Poisson model")
+```
+5.R/
+Ajuste el glm binomial negativo correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.
+
+```{r}
+library(MASS)
+cc.m0NB <- glm.nb(Deaths ~ offset(log(Wyears)) + Age + Country,
+                  data = cervical)
+cc.m0NB <- glm.convert(cc.m0NB)
+scatter.smooth( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
+```
+6.R/
+¿Qué modelo parece apropiado, si lo hay?
+
+Todos los modelos parecen tener un gran valor atípico negativo, pero claramente el modelo de Poisson no acomoda la variación correctamente.
+
+
+10.16 
+Un experimento [21] comparó la densidad de las aves del sotobosque en una serie de sitios en dos áreas a ambos lados de una cerca a prueba de ganado (Tabla 10.19; conjunto de datos: pastoreo). Un lado tenía un pastoreo limitado (principalmente de herbívoros nativos) y el otro estaba fuertemente pastoreado por herbívoros salvajes, en su mayoría caballos. Se registraron conteos de aves en los sitios a ambos lados de la cerca (las mediciones "antes"). Luego, se eliminaron los herbívoros y se volvieron a registrar los recuentos de aves (las medidas "después"). Las medidas son el número total de aves que buscan alimento en el sotobosque observadas en tres estudios de 20 minutos de cuadrantes de 2 ha.
+
+1.R/
+Grafique los datos y explique las características importantes.
+
+```{r}
+data(grazing)
+
+plot(Birds ~ When, data = grazing)
+plot(Birds ~ Grazed, data = grazing)
+```
+Del segundo gráfico, se ve que entre los hervíboros, el que tiene un mayor número absoluto de aves es el nativo, mientras que el conteo para el salvaje es el menor.
+
+En el primer gráfico se ve que se observó un mayor conteo después, en comparación de antes
+
+
+2.R/
+
+Ajustar un glm de Poisson con el componente sistemático Birds ~ When * Grazed, asegurando un análisis diagnóstico.
+
+```{r}
+modelo_Poisson<-glm(formula = Birds ~ Grazed * When, data = grazing, family = poisson())
+
+medidas <- influence.measures(modelo_Poisson)
+rowSums(medidas$is.inf)
+
+```
+Hay outlyers en las observaciones 15 26, y 55, bajo distintos criterios
+
+3.R/
+Demuestre que existe sobredispersión. Demuestre calculando la media y la varianza de cada combinación de las variables explicativas.
+
+```{r}
+anova(modelo_Poisson)
+```
+La devianza es demasiado alta en comparación con los grados de libertad, entonces hay sobredispersion
+
+4.R/
+Ajuste un modelo cuasi-Poisson.
+
+```{r}
+modelo_PoissonQuasi <-
+  glm(formula = Birds ~ Grazed * When,
+      data = grazing,
+      family = quasipoisson())
+
+anova(modelo_PoissonQuasi)
+```
+
+5.R/
+Ajuste un modelo binomial negativo
+```{r}
+modelo_Poissonnb<-glm.nb( formula = Birds ~ Grazed*When, data = grazing)
+modelo_Poissonnb <- glm.convert(cc.m0NB)
+
+anova(modelo_Poissonnb)
+```
+
+6.R/
+Compare los tres modelos ajustados para determinar un modelo adecuado
+
+Pagina 389
+Se ve que es mejor el binomial negativo, por su devianza
 
 
 
+7.R/ Interpretar el modelo final.
 
-
-
-
-
-
+Se observa una devianza moderada, en comparación a los grados de libertad, además que tiene una mejor aic, un más baja.
 
 
