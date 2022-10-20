@@ -489,17 +489,18 @@ analisis <- anova(m5, test="Chisq")
 Compare las log-verosimilitudes de las distribuciones binomial y de Bernoulli. Comente.
 
 ```{r}
+#Página 193
 sum( dbinom( germBin$Result=='Germ', size=1, prob=m4$fitted.values, log = TRUE) )
-#    . Aca se le aplica el log
-
-
 
 sum( dbinom( germ$Germ, size=germ$Total, prob=m5$fitted.values, log = TRUE) )
 
 ```
-Con la log verosimilitud, se ve que es mejor el modelo binomial, puesto que tiene el valor más cercano a 0.
+Maximizando la log verosimilitud se obtiene que el mejor modelo es el segundo.
 
+6.R/
+Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
 
+Es por la definición de devarianza residual, no tienen las mismas propiedades a que cuando tiene los datos agrupados o desagregados.Asimismo, no se puede punto de silla con pearson puesto que los datos son 0 y 1. No posee grados de libertad
 
 
 
