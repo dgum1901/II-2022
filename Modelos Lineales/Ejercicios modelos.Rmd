@@ -442,7 +442,11 @@ m4 <-
   glm(fct_rev(Result) ~ Seeds + Extract ,
       data = germBin,
       family = binomial())
+```
 
+ 2.R/
+Muestre que tanto el glm binomial como el de Bernoulli producen los mismos valores para las estimaciones de los parámetros y los errores estándar.
+```{r}
 m5 <- glm(
   Germ / Total ~ Seeds + Extract,
   family = binomial,
@@ -458,6 +462,45 @@ summary(m4)
 ```
 
 
+3.R/
+Muestre que los dos modelos producen diferentes valores para la desviación residual, pero los mismos valores para la desviación
+
+```{r}
+deviance(m4) #desviacion residual
+deviance(m5)
+
+1 - pchisq (m4$null.deviance - m4$deviance, 1)
+1 - pchisq (m5$null.deviance - m5$deviance, 1)
+```
+
+4.R/
+Demuestre que los dos modelos producen resultados similares a partir de las pruebas secuenciales de razón de verosimilitud (Likelihood-ratio test).
+
+```{r}
+analisis <- anova(m4, test="Chisq")
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+
+analisis <- anova(m5, test="Chisq")
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+```
+5.R/
+Compare las log-verosimilitudes de las distribuciones binomial y de Bernoulli. Comente.
+
+```{r}
+#Página 193
+sum( dbinom( germBin$Result=='Germ', size=1, prob=m4$fitted.values, log = TRUE) )
+
+sum( dbinom( germ$Germ, size=germ$Total, prob=m5$fitted.values, log = TRUE) )
+
+```
+Maximizando la log verosimilitud se obtiene que el mejor modelo es el segundo.
+
+6.R/
+Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
+
+Es por la definición de devarianza residual, no tienen las mismas propiedades a que cuando tiene los datos agrupados o desagregados.Asimismo, no se puede punto de silla con pearson puesto que los datos son 0 y 1. No posee grados de libertad
 
 
 
