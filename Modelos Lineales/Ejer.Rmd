@@ -512,10 +512,10 @@ La proporción de las mujeres es apenas 30% de la de los hombres en el partido v
 6.R/
 
 ```{r}
-exp(coef(summary(m2))[1])+exp(coef(summary(m2))[3])
+exp(coef(summary(m2))[1])*exp(coef(summary(m2))[3])
 
 ```
-Entonces la proporción de las mujeres es 263% de la de los hombre en el partido laboyer
+Entonces la proporción de las mujeres es 29% de la de los hombre en el partido laboyer
 
 7.R/
 
@@ -587,21 +587,31 @@ anova(m4, test="Chisq")
 ```{r}
 anova(m5)
 anova(m5, test="Chisq")
-(chisq.LRT <- anova(m5)[2, 2])
-( P.LRT <- anova(m5, test="Chisq")[2, 5])
+
 ```
+El modelo binomial es mejor que la bernoulli
+```{r}
+prod( dbinom(x = as.numeric(fct_rev(germBin$Result))-1, size = 1, prob=m4$fitted.values))
+```
+```{r}
+prod(dbinom(x = germ$Germ, size = germ$Total, prob=m5$fitted.values))
+```
+Es mejor el modelo binomial, puesto que el valor de su producto de masa es mayor en la binomial que en la bernoulli
 
 5.R/
+```{r}
+log(prod( dbinom(x = as.numeric(fct_rev(germBin$Result))-1, size = 1, prob=m4$fitted.values)))
+```
+
 
 ```{r}
-
+log(prod(dbinom(x = germ$Germ, size = germ$Total, prob=m5$fitted.values)))
 ```
+Con la log verosimilitud, se ve que es mejor el modelo binomial, puesto que tiene el valor más cercano a 0.
 
 6.R/
 
-```{r}
-
-```
+Es por la definición de devarianza residual, no tienen las mismas propiedades a que cuando tiene los datos agrupados o desagregados.Asimismo, no se puede punto de silla con pearson puesto que los datos son 0 y 1.
 
 10.11. El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido a el cáncer de cuello uterino se tabula (Cuadro 10.14; conjunto de datos: cuello uterino) por grupo de edad
 para cuatro países diferentes [19, 38].
@@ -612,6 +622,65 @@ para cuatro países diferentes [19, 38].
 contra los valores ajustados, y evaluó el modelo.
 5. Ajuste el glm binomial negativo correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.
 6. ¿Qué modelo parece apropiado, si alguno?
+
+1.R/
+
+```{r}
+library(GLMsData)
+data(cervical)
+# Acá Wyears es T
+str(cervical)
+
+
+## Inciso 1
+
+plot(Deaths ~ Country, data = cervical)
+plot(Deaths ~ Age, data = cervical)
+#plot(Deaths ~ jitter(Wyears), data = cervical)#Para el tercer gráfico, hace falta mencionar como se verán los años de exposición para este ajuste, será la suma de los años a los que las mujeres estuvieron expuesta en conjunto al cáncer(para hacer un conteo de muertes por años de exposición)
+```
+
+
+Del primer gráfico, se ve que el país con un mayor número absoluto de muertes es Inglaterra-Gales, mientras que el conteo para Bélgica es el menor, seguido de Italia y luego de Francia.
+
+En el segundo gráfico se observa que hay un relación positica en tre el número de muertes y la edad, la mediana crece consistentemente, pero también se observa como el tercer cuartil crece bastante en cada caso. 
+
+
+
+
+```{r}
+# library(tidyverse)
+# 
+# 
+# 
+# # Cantidad de muertes por cada país
+# cant <- cervical %>% group_by(Country) %>% summarise(Deaths= sum(Deaths))
+# 
+# plot(cant$Deaths ~ cant$Country)
+# 
+# 
+# 
+# cervical$Rate <- cervical$Deaths / cervical$Wyears
+# matplot( xtabs( Rate ~ Age+Country, data=cervical), pch=1:4, lty=1:4,
+# type="b", lwd=2, col="black", axes=FALSE,
+# xlab="Age group", ylab="Deaths/yearsexposure")
+# axis(side=1, at=1:4, labels=levels(cervical$Age))
+# axis(side=2, las=1); box()
+# legend("topleft", col="black", pch=1:4, lwd=2, lty=1:4, merge=FALSE,
+# legend=c("Belgium","EngWales","France","Italy" ) )
+# 
+# 
+# 
+# 
+# # Cantidad de muertes por cada rango de edad
+# cant <- cervical %>% group_by(Age) %>% summarise(Deaths= sum(Deaths))
+# 
+# plot(cant$Deaths ~ cant$Age)
+```
+
+
+
+Los gráficos anteriores confirman lo comentado al inicio sobre país y rango de edad. 
+
 
 ```{r}
 data(cervical)
@@ -631,6 +700,15 @@ subset=(Country==unique(Country)[4]) )
 legend("topleft", lty=1:4, legend=unique(cervical$Country) )
 })
 ```
+Tendencia de muerte por país. Se ve que es creciente con forme a la edad
+
+2.R/
+
+Para dar cuenta de la exposición. Es una buena idea trabajar con un offset porque no se tiene información como por ejemplo la cantidad de mujeres expuestas para trabajar una binomial, si no que se tiene una medida de tiempo. Offset es una variable que se utiliza en el análisis de regresión de Poisson. Este análisis se utiliza siempre que los datos se registran durante un período observado.
+
+3.R/
+
+Se usumirá independencia entre el país y la edad
 
 
 ```{r}
@@ -640,12 +718,55 @@ data=cervical, family=poisson )
  plot( rstandard(cc.m0) ~ fitted(cc.m0), main="Poisson glm" )
 ```
 
+Interpretacion de Leandro: Se presenta uns buena significancia de las variables, pero como la devianza da mucho más alta que los grados de libertad (habiendose cumplido la regla empírica de los yi ser mayores todos a 3 ) se tiene un indicador claro de sobredispersión. Pero se verá también el gráfico de residuos.
+
+Majo: No se ve una alta varianza y se observa que de -20 para arriba se encuentra las variables y se ve un posible outlierentre 0 y 500
 
 ```{r}
-### Part 4
- cc.m0Q <- glm( Deaths ~ offset(log(Wyears)) + Age + Country,
-data=cervical, family=quasipoisson )
- plot( rstandard(cc.m0Q) ~ fitted(cc.m0Q), main="Quasi-Poisson model" )
+fit10.11quasi <- glm( Deaths ~ offset( log(Wyears) ) + Country +Age,
+family="quasipoisson", data=cervical)
+summary(fit10.11quasi)
+
+plot(fit10.11quasi)
+
+
+
+set.seed(27)
+q_res <- resid(fit10.11quasi) 
+scatter.smooth(q_res ~ fit10.11quasi$fitted.values)
+
+```
+```{r}
+
+set.seed(27)
+q_res1 <- qresid(fit10.11quasi) 
+scatter.smooth(q_res1 ~ fit10.11quasi$fitted.values)
+```
+
+
+
+
+
+
+```{r}
+## Inciso 5
+
+library(MASS)
+
+
+
+
+fit10.11binneg <- glm.nb( Deaths ~ offset(log(Wyears)) + Country +Age, data=cervical)
+fit10.11binneg <- glm.convert(fit10.11binneg)
+summary(fit10.11binneg)
+
+
+plot(fit10.11binneg)
+
+
+set.seed(27)
+q_res <- qresid(fit10.11binneg) 
+scatter.smooth(q_res ~ fit10.11binneg$fitted.values)
 ```
 
 
