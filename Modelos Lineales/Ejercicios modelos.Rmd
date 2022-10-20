@@ -363,6 +363,7 @@ plot(Females~Region, data = belection)
 Encuentre un glm binomial adecuado, asegurando un análisis de diagnóstico.
 
 ```{r}
+library(statmod)
 m2 <- glm(cbind(Females,Males)~Party + Region, data=belection, family=binomial())
 #Veamos los graficos
 par(mfrow = c(2, 2))
@@ -371,11 +372,96 @@ plot(cooks.distance(m2), type = "h")
 qqnorm(rstandard(m2))
 qqnorm(qresid(m2))
 colSums(influence.measures(m2)$is.inf)
+rowSums(influence.measures(m2)$is.inf)
+```
+
+4.R/
+¿Es evidente la sobredispersión?
+
+Para el modelo binomial, note que la devianza es considerablemente mayor al los grados de libertad resuduales
+```{r}
+c( deviance(m2), df.residual(m2) )
+```
+Es estadistico de pearson también
+```{r}
+ sum( resid(m2, type="pearson")^2 )
+```
+
+5.R/
+Interprete el modelo ajustado
+
+Dado que el partido conservador es el primero, el exponencial de los betas corresponde al cociente de los odds de cada partido respecto al partido base. A excepcion del intercepto que es el odds ratio del partido conservador que corresponde al intercepto 
+```{r}
+#Veamos las odds
+exp(coef(m2))
+```
+
+6.R/
+Estime e interprete las probabilidades de que una candidata se presente a los partidos conservador y laborista. Luego, calcule la razón de probabilidades de que el partido conservador presente una candidata a las probabilidades de que el partido laborista presente una candidata.
+
+Para ello necesitamos calcular el odds ratio individual, para el partido conservador el odds es el intercepto, pero para el laborista hay que multiplicar, de forma que
+
+```{r}
+(odds.ratio.conservador <- exp(coef(m2))[[1]])
+(odds.ratio.laborista <- odds.ratio.conservador * exp(coef(m2))[[3]])
+
+# Ahora las probabilidades solas para el conservador y el laborista
+odds.ratio.conservador / ( 1 + odds.ratio.conservador)
+odds.ratio.laborista / (1 + odds.ratio.laborista)
+
+
+
+```
+7.R/
+Determine si es probable que la aproximación del punto de silla sea adecuada para estos datos
+
+```{r}
+# Note que el mi es la muestra
+m <- belection$Females + belection$Males
+y <-belection$Females / m
+
+min(m * y)
+min(m * (1 - y))
+```
+Ambas deben de ser igual a tres, lo cual no se cumple.
+
+## Ejercicio 9.14
+
+En el Ejemplo 9.4, se introdujeron datos [3] sobre la germinación de semillas, utilizando dos tipos de semillas y dos tipos de portainjertos (Tabla 9.3). Una forma alternativa de ingresar los datos es registrar si cada semilla individual germina o no (conjunto de datos: germBin).
+
+1.R/
+Ajuste el modelo equivalente al ajustado en el Ejemplo 9.4, pero usando datos preparados como en el archivo de datos germBin. Este modelo se basa en el uso de una distribución de Bernoulli.
+
+```{r}
+library(forcats)
+
+data(germBin)
+data(germ)
+# fct_rev invierte los niveles
+m4 <-
+  glm(fct_rev(Result) ~ Seeds + Extract ,
+      data = germBin,
+      family = binomial())
+
+m5 <- glm(
+  Germ / Total ~ Seeds + Extract,
+  family = binomial,
+  data = germ,
+  weights = Total
+)
+
+summary(m5)
+summary(m4)
+
+
 
 ```
 
 
 
 
-4.R/
-¿Es evidente la sobredispersión?
+
+
+
+
+
