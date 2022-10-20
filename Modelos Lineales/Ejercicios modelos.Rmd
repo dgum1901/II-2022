@@ -503,6 +503,40 @@ Explique por qué no se puede detectar la sobredispersión en el modelo de Berno
 Es por la definición de devarianza residual, no tienen las mismas propiedades a que cuando tiene los datos agrupados o desagregados.Asimismo, no se puede punto de silla con pearson puesto que los datos son 0 y 1. No posee grados de libertad
 
 
+## Ejercicio 10.11
+El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido al cáncer de cuello uterino se tabula (Tabla 10.14; conjunto de datos: cuello uterino) por grupo de edad para cuatro países diferentes [19, 38].
+
+1.R/
+Trazar los datos y discutir cualquier característica destacada
+```{r}
+data(cervical)
+cervical$AgeNum <- rep(c(25, 35, 45, 55), 4)
+### Part 1
+with(cervical, {
+  plot(Deaths / Wyears ~ AgeNum, type = "n")
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 1,
+        subset = (Country == unique(Country)[1]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 2,
+        subset = (Country == unique(Country)[2]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 3,
+        subset = (Country == unique(Country)[3]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 4,
+        subset = (Country == unique(Country)[4]))
+  legend("topleft",
+         lty = 1:4,
+         legend = unique(cervical$Country))
+})
+```
+
+
+
+
+
+
 
 
 
