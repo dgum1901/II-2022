@@ -1,0 +1,647 @@
+---
+title: "Ejercicios Modelos"
+author: "Maria Jose Corea"
+date: "2022-10-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(GLMsData)
+```
+
+ # Ejercicio 2.16 
+ Un estudio de bebés planteó la hipótesis de que los bebés tardarían más en
+aprender a gatear en los meses más fríos porque la ropa extra restringe su
+movimiento. Entre 1988 y 1991, la primera edad de gateo de los bebés y el promedio
+se registró la temperatura mensual seis meses después del nacimiento (cuando “los bebés presumiblemente entran en la ventana de preparación locomotora”; p. 72). Los padres
+informaron el mes de nacimiento y la edad en que su bebé se arrastró o gateó por primera vez
+distancia de cuatro pies en un minuto. Los datos fueron recolectados en la Universidad de
+Denver Infant Study Center sobre 208 niños y 206 niñas, y resumido por
+el mes de nacimiento (Tabla 2.10; conjunto de datos: rastreo).
+1. Trazar los datos. ¿Qué suposiciones, si las hubiere, parecen violarse?
+2. Explique por qué un modelo de regresión ponderado es apropiado para los datos.
+3. Ajuste un modelo de regresión lineal ponderado a los datos e interprete el
+coeficientes de regresión.
+4. Probar formalmente la hipótesis propuesta por los investigadores.
+5. Encuentre un intervalo de confianza del 90 % para la pendiente de la línea ajustada, y
+interpretar.
+6. Ajuste el modelo de regresión no ponderado, luego trace ambas líneas de regresión en
+una trama de los datos. Comenta las diferencias.
+7. Calcule los intervalos de confianza del 95 % para los valores ajustados de la
+línea de regresión ponderada, y también grafíquelos.
+8. Interpreta el modelo.
+
+```{r}
+Babies <- read.csv("~/GitHub/II-2022/Modelos Lineales/Base.txt")
+colnames(Babies) <- c('Mes','PromedioSemanas','TamMuestra','PromedioTemperatura')
+
+```
+
+1.R\
+grafique los datos. ¿Qué suposiciones, si las hubiere, parecen violarse?
+
+```{r}
+
+p <- lm(PromedioSemanas ~ PromedioTemperatura, data=Babies)
+
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
+      xlab = "Promedio Temperatura", ylab = "Promedio semanas" )
+abline(coef(p), lty = 1, lwd = 2)
+
+```
+
+2.R\
+Explique por qué un modelo de regresión ponderado es apropiado para los datos.
+
+Porque la regresión ponderada se puede utilizar para corregir la heterocedasticidad. En un procedimiento de regresión ponderada, se otorga más peso a las observaciones con una varianza más pequeña porque estas observaciones brindan información más confiable sobre la función de regresión que aquellas con varianzas grandes. Observemos que la varianza de las observaciones, asimismo la desviación estándar y un histograma para ver si se ve normalidad.
+
+
+3.R/
+Ajuste un modelo de regresión lineal ponderado a los datos e interprete los coeficientes de regresión.
+
+```{r}
+
+q <-  lm(PromedioSemanas ~ PromedioTemperatura, data=Babies, weights = TamMuestra)
+
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
+      xlab = "Promedio Temperatura", ylab = "Promedio semanas" )
+abline(coef(p), lty = 1, lwd = 2)
+abline(coef(q), lty = 2, lwd = 2)
+```
+Note que con el ajuste por pesos, la curva se eleva un poco, a grandes rasgos no hay una gran diferencia y el análisis es que dado un aumento en una unidad de temperatura, que es unica covariable y provoca una disminucuion de mas 0.75 en promedio en la edad promedio de gateo, amnteniendo las demás variables constante. Un unidad de la tempratura sube, indica que el promedio de la edad promedio baja en o.075, nomina lmente, funcio de enlacio que es la identidad.
+Un aumento de la temperatura proboca una disminucion de apro de 0.075 en promedio de la edad promedio,  como estamps viedno la esperanza, que estamos viendo mu, que es la esperanza de Y.
+
+Es importante ver que al menos sale negativo el coeficiente, que es lo que espera el estudio,puesto que tienen una relación negativa.
+
+
+4.R/
+Probar formalmente la hipótesis propuesta por los investigadores.
+
+```{r}
+summary(q)
+```
+
+Los valores son un poco alarmantes, sin embargo, se rechaza la hipótesis nula con un nivel de confianza superor al 95%, con una significancia considerable, sin embargo, la temperatura solo explica un 43% de la variabilidad de las semanas se explica con la temperatura.
+
+
+
+5.R/
+Encuentre un intervalo de confianza del 90% para la pendiente de la línea ajustada e interprete.
+```{r}
+confint(q, level = 0.9)
+```
+Lo anterior indica que el intervalo de confianza para el coeficiente del promedio de temperatura al 90% se encuentra entre -0.1200823 y -0.03113231 en el modelo ajustado por pesos. Esto es que el 90% de las veces, casi seguramente, el coeficiente de la variable se va a encontrar en ese intervalo.
+
+
+6. R/ 
+Ajuste el modelo de regresión no ponderado, luego trace ambas líneas de regresión en una gráfica de los datos. Comenta las diferencias
+
+Ya se habia hecho:
+```{r}
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies, las=1,
+      xlab = "Promedio Temperatura", ylab = "Promedio semanas" )
+abline(coef(p), lty = 1, lwd = 2)
+abline(coef(q), lty = 2, lwd = 2)
+```
+
+7.R/
+Calcule los intervalos de confianza del 95 % para los valores ajustados de la línea de regresión ponderada y también grafíquelos.
+
+```{r}
+
+x <- Babies$PromedioTemperatura
+x <- seq(min(x), max(x), by = 0.05)
+cosa <-
+  predict(q,
+          newdata = data.frame(PromedioTemperatura = x),
+          interval = "confidence",
+          level = 0.95)
+
+
+plot( PromedioSemanas ~ PromedioTemperatura, data=Babies,
+      xlab = "Promedio Temperatura", ylab = "Promedio semanas")
+abline(coef(q), lty = 1, lwd = 2)
+lines(x, cosa[,2], col="blue", lty=2)
+lines(x, cosa[,3], col="blue", lty=2)
+
+```
+8.R/
+Interprete el modelo
+
+Se interpreta que en el modelo existe una relación lineal entre el aumento de la temperatura media y la disminución de la edad media de gateo. La variable es estadísticamente significativa.
+
+
+# Ejercicio 3.15
+Un estudio de bebés [4] planteó la hipótesis de que los bebés tardarían más en aprender a gatear en los meses más fríos porque la ropa adicional restringe su movimiento (conjunto de datos: gatear). Los datos y una descripción más completa se dan en el problema 2.16 (pág. 87). En ese problema, se ajustó un modelo de regresión lineal a los datos.
+
+1.R/
+Realice un análisis de diagnóstico del modelo de regresión lineal ajustado.
+
+```{r}
+
+scatter.smooth(rstandard(q) ~ fitted(q))
+qqnorm(rstandard(q))
+qqline(rstandard(q))
+plot(cooks.distance(q), type = "h")
+
+plot(rstandard(q) ~ Babies$PromedioTemperatura)
+
+```
+No demuestra una clara linealidad, es un mal modelo. 
+No hay un patrón lineal. Se puede observar variables independientes
+
+
+
+2.R/
+Identifique cualquier observación influyente o valor atípico
+
+```{r}
+rowSums(influence.measures(q)$is.inf)
+```
+
+Usando el test de influencia proporcionado por R, se detecta un outlyer en el valor 5, como se tenía de hipotetizó en el ejemplo anterior. Detectado por el radio de covarianza.
+
+3.R/
+Supongamos que algunos de los bebés fueran mellizos. ¿Qué suposición sería violada por la inclusión de estos bebés en el estudio? ¿Crees que esto tendría implicaciones prácticas?
+
+Se rompe el supuesto de independencia.
+
+## Ejercicio 5.25
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [2, 9]. Se registró el número de bloques utilizados y el tiempo empleado (Tabla 2.12; conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x.
+
+1.R/
+Grafique el número de bloques usados contra la edad del niño.
+
+```{r}
+data(blocks)
+plot( jitter(Number)~Age,  data=blocks, las=1,
+xlab="Número de bloques", ylab="Edad del niño" )
+plot( Number~cut(Age, 3), data=blocks)
+```
+
+
+2.R/
+A partir de la gráfica y una comprensión de los datos, responda las dos preguntas en la Secc. 5.2 (p. 211) para estos datos y, por lo tanto, proponga un glm para los datos.
+
+¿Qué distribución de probabilidad es apropiada? La respuesta determina el componente aleatorio del modelo. La elección de la distribución de probabilidad puede ser sugerida por los datos de respuesta (por ejemplo, las proporciones de un total sugieren una distribución binomial), o el conocimiento de cómo cambia la varianza con la media.
+
+¿Cómo se relacionan las variables explicativas con la media de la respuesta $\mu$? La respuesta sugiere el componente sistemático del modelo. Glms asume una función que vincula el predictor lineal $\eta = \beta_0 + \sum_{j=0}^p \beta_jx_j $con la media $\mu$, como por ejemplo $\log \mu = \eta$. Es decir, glms son modelos de regresión lineales en los parámetros
+
+```{r}
+var(blocks$Number)
+mean(blocks$Number)
+
+```
+Varianza y media cercana, como una distribución poisson
+Las respuestas son conteos; la varianza aumenta con la media. Poisson GLM
+
+
+
+## Ejercicio 6.10
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [3, 6]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x. En el problema 5.25, se propuso un glm para estos datos.
+
+1.R/
+Ajuste este GLM usando r y escriba el modelo ajustado.
+```{r}
+data(blocks)
+m1 <- glm(Number~Age, data=blocks, family=poisson)
+
+m1
+```
+
+2.R/
+Determine el error estándar para cada parámetro de regresión
+```{r}
+#Forma uno
+coef(summary(m1))
+#Forma dos, pag 251
+cov.mat <- summary(m1)$cov.scaled
+sqrt( diag( cov.mat ) )
+```
+3.R/
+Calcule la devianza residual
+
+```{r}
+#Pag 258
+deviance(m1)
+```
+
+## Ejercicio 7.4
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [3, 7]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x. En el problema 6.10, se ajustó un glm para estos datos.
+
+1.R/
+Use una prueba de Wald para determinar si la edad parece necesaria en el modelo.
+
+pagina 287 sobre la prueba Wald:
+they simply relate the coefficient estimates to their standard errors and, for this reason, they are routinely presented as part of the summary output for a glm fit in r
+```{r}
+#Esto borra la edad como variable del modelo :0
+m0 <- update(m1, .~1)
+
+(z.Wald <- coef(summary(m1))[2, 3])
+(P.Wald <- coef(summary(m1))[2, 4])
+```
+La edad tiene una significancia de 0.001, entonces sí es necesaria
+
+2.R/
+Use una prueba score para determinar si la edad parece necesaria en el modelo
+
+```{r}
+library(statmod)
+#Toma el modelo vacío m0 y 
+( z.score <- glm.scoretest(m0, blocks$Age) )
+
+( P.score <- 2*(1-pt(abs(z.score), df=df.residual(m1))) ) 
+
+```
+3.R/
+Use una prueba de likelihood ratio para determinar si la edad parece necesaria en el modelo.
+
+```{r}
+analisis <- anova(m1, test="Chisq") #analysis of variance (or deviance)
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+```
+4.R/
+Compare los resultados de las pruebas de Wald, score y razón de verosimilitud. Comente
+
+```{r}
+
+round(c(z.Wald, z.score, sqrt(chisq.LRT)), 4)
+round(c(P.Wald, P.score, P.LRT), 4)
+
+
+```
+Para todos los estadísticos se obtienen resukltados alentadores, donde la mayor significancia se obytiene en la prueba de likelihood
+
+
+5.R/
+¿Se espera que la aproximación del punto de silla sea precisa? Explique.
+
+En la pagina 277 habla de eso.
+```{r}
+min(blocks$Number)
+```
+Para un glm de Poisson, se espera que la aproximación del punto de silla sea suficiente si el más pequeño y ≥ 3; aquí el mínimo es 3, así que espere que la aproximación del punto de silla sea bueni
+
+
+
+
+6.R/
+¿Se espera que el teorema del límite central sea exacto? Explique.
+
+Para un glm de Poisson, espere que la aproximación CLT sea suficiente si la y ≥ 5 más pequeña; aquí el mínimo es 3 (y hay diez cuentas de 4), por lo que la aproximación CLT puede no ser lo suficientemente precisa.
+
+
+7.R/
+Encuentre los intervalos de confianza de Wald al 95 % para los coeficientes de regresión.
+
+```{r}
+confint(m1)
+```
+
+8.R/
+Grafique el número de bloques usados contra la edad y muestre la relación descrita por el modelo ajustado. También trace las líneas que indican los intervalos de confianza del 95 % inferior y superior para estos valores ajustados.
+
+```{r}
+x <- seq(min(blocks$Age), max(blocks$Age), length = 100)
+cosa <- predict(m1,
+                newdata = data.frame(Age = x),
+                type = "response",
+                se.fit = TRUE)
+
+plot(jitter(Number) ~ Age, data = blocks)
+lines(cosa$fit ~ x, lwd = 2)
+t.star <- qt(p = 0.975, df = df.residual(m1)) #cuantil de t-student
+ci.lo <- cosa$fit - t.star * cosa$se.fit
+ci.hi <- cosa$fit + t.star * cosa$se.fit
+lines(ci.lo ~ x, lty = 2)
+lines(ci.hi ~ x, lty = 2)
+```
+
+## Ejercicio 8.11
+Se pidió a los niños que construyeran torres tan altas como pudieran con bloques cúbicos y cilíndricos [8, 14]. Se registró el número de bloques utilizados y el tiempo empleado (conjunto de datos: bloques). En este problema, solo considere el número de bloques usados y y la edad del niño x.
+
+En el problema 6.10, se ajustó un glm para estos datos. Realice un análisis de diagnóstico y determine si el modelo es adecuado
+
+```{r}
+data(blocks)
+library(statmod)
+
+par(mfrow = c(2, 2))
+plot(rstandard(m1) ~ fitted(m1))
+plot(cooks.distance(m1), type = "h")
+qqnorm(rstandard(m1))
+qqnorm(qresid(m1))
+```
+
+
+```{r}
+colSums(influence.measures(m1)$is.inf)
+rowSums(influence.measures(m1)$is.inf)
+```
+
+Hay una tendencia lineal. Hay alta influencia en las observaciones 10 22 44 69 72 94 95, no se ve una alta variabilidad. Está mal ajustado, puesto que su devianza es muy alta
+
+## Ejercicio 9.10
+El periódico Independent tabuló el género de todos los candidatos que se postularon para las elecciones generales británicas de 1992 (Tabla 9.10; conjunto de datos: belection) [6].
+
+1.R/
+Trace la proporción de candidatas contra el Partido y comente.
+```{r}
+data(belection)
+
+plot(Females~Party, data = belection)
+```
+2.R/
+Grafique la proporción de candidatas contra la Región y comente.
+```{r}
+plot(Females~Region, data = belection)
+```
+3.R/
+Encuentre un glm binomial adecuado, asegurando un análisis de diagnóstico.
+
+```{r}
+library(statmod)
+m2 <- glm(cbind(Females,Males)~Party + Region, data=belection, family=binomial())
+#Veamos los graficos
+par(mfrow = c(2, 2))
+plot(rstandard(m2) ~ fitted(m2))
+plot(cooks.distance(m2), type = "h")
+qqnorm(rstandard(m2))
+qqnorm(qresid(m2))
+colSums(influence.measures(m2)$is.inf)
+rowSums(influence.measures(m2)$is.inf)
+```
+
+4.R/
+¿Es evidente la sobredispersión?
+
+Para el modelo binomial, note que la devianza es considerablemente mayor al los grados de libertad resuduales
+```{r}
+c( deviance(m2), df.residual(m2) )
+```
+Es estadistico de pearson también
+```{r}
+ sum( resid(m2, type="pearson")^2 )
+```
+
+5.R/
+Interprete el modelo ajustado
+
+Dado que el partido conservador es el primero, el exponencial de los betas corresponde al cociente de los odds de cada partido respecto al partido base. A excepcion del intercepto que es el odds ratio del partido conservador que corresponde al intercepto 
+```{r}
+#Veamos las odds
+exp(coef(m2))
+```
+
+6.R/
+Estime e interprete las probabilidades de que una candidata se presente a los partidos conservador y laborista. Luego, calcule la razón de probabilidades de que el partido conservador presente una candidata a las probabilidades de que el partido laborista presente una candidata.
+
+Para ello necesitamos calcular el odds ratio individual, para el partido conservador el odds es el intercepto, pero para el laborista hay que multiplicar, de forma que
+
+```{r}
+(odds.ratio.conservador <- exp(coef(m2))[[1]])
+(odds.ratio.laborista <- odds.ratio.conservador * exp(coef(m2))[[3]])
+
+# Ahora las probabilidades solas para el conservador y el laborista
+odds.ratio.conservador / ( 1 + odds.ratio.conservador)
+odds.ratio.laborista / (1 + odds.ratio.laborista)
+
+
+
+```
+7.R/
+Determine si es probable que la aproximación del punto de silla sea adecuada para estos datos
+
+```{r}
+# Note que el mi es la muestra
+m <- belection$Females + belection$Males
+y <-belection$Females / m
+
+min(m * y)
+min(m * (1 - y))
+```
+Ambas deben de ser igual a tres, lo cual no se cumple.
+
+## Ejercicio 9.14
+
+En el Ejemplo 9.4, se introdujeron datos [3] sobre la germinación de semillas, utilizando dos tipos de semillas y dos tipos de portainjertos (Tabla 9.3). Una forma alternativa de ingresar los datos es registrar si cada semilla individual germina o no (conjunto de datos: germBin).
+
+1.R/
+Ajuste el modelo equivalente al ajustado en el Ejemplo 9.4, pero usando datos preparados como en el archivo de datos germBin. Este modelo se basa en el uso de una distribución de Bernoulli.
+
+```{r}
+library(forcats)
+
+data(germBin)
+data(germ)
+# fct_rev invierte los niveles
+m4 <-
+  glm(fct_rev(Result) ~ Seeds + Extract ,
+      data = germBin,
+      family = binomial())
+```
+
+ 2.R/
+Muestre que tanto el glm binomial como el de Bernoulli producen los mismos valores para las estimaciones de los parámetros y los errores estándar.
+```{r}
+m5 <- glm(
+  Germ / Total ~ Seeds + Extract,
+  family = binomial,
+  data = germ,
+  weights = Total
+)
+
+summary(m5)
+summary(m4)
+
+
+
+```
+
+
+3.R/
+Muestre que los dos modelos producen diferentes valores para la desviación residual, pero los mismos valores para la desviación
+
+```{r}
+deviance(m4) #desviacion residual
+deviance(m5)
+
+1 - pchisq (m4$null.deviance - m4$deviance, 1)
+1 - pchisq (m5$null.deviance - m5$deviance, 1)
+```
+
+4.R/
+Demuestre que los dos modelos producen resultados similares a partir de las pruebas secuenciales de razón de verosimilitud (Likelihood-ratio test).
+
+```{r}
+analisis <- anova(m4, test="Chisq")
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+
+analisis <- anova(m5, test="Chisq")
+(chisq.LRT <- analisis[2,2])
+(P.LRT <- analisis[2, 5])
+```
+5.R/
+Compare las log-verosimilitudes de las distribuciones binomial y de Bernoulli. Comente.
+
+```{r}
+#Página 193
+sum( dbinom( germBin$Result=='Germ', size=1, prob=m4$fitted.values, log = TRUE) )
+
+sum( dbinom( germ$Germ, size=germ$Total, prob=m5$fitted.values, log = TRUE) )
+
+```
+Maximizando la log verosimilitud se obtiene que el mejor modelo es el segundo.
+
+6.R/
+Explique por qué no se puede detectar la sobredispersión en el modelo de Bernoulli.
+
+Es por la definición de devarianza residual, no tienen las mismas propiedades a que cuando tiene los datos agrupados o desagregados.Asimismo, no se puede punto de silla con pearson puesto que los datos son 0 y 1. No posee grados de libertad
+
+
+## Ejercicio 10.11
+El número de muertes para 1969–1973 (1969–1972 para Bélgica) debido al cáncer de cuello uterino se tabula (Tabla 10.14; conjunto de datos: cuello uterino) por grupo de edad para cuatro países diferentes [19, 38].
+
+1.R/
+Trazar los datos y discutir cualquier característica destacada
+```{r}
+data(cervical)
+cervical$AgeNum <- rep(c(25, 35, 45, 55), 4)
+### Part 1
+with(cervical, {
+  plot(Deaths / Wyears ~ AgeNum, type = "n") #Las muertes y las wyears se escalan
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 1,
+        subset = (Country == unique(Country)[1]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 2,
+        subset = (Country == unique(Country)[2]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 3,
+        subset = (Country == unique(Country)[3]))
+  lines(Deaths / Wyears ~ AgeNum,
+        lty = 4,
+        subset = (Country == unique(Country)[4]))
+  legend("topleft",
+         lty = 1:4,
+         legend = unique(cervical$Country))
+})
+```
+2.R/
+Explique por qué un desplazamiento es útil al ajustar un glm a los datos.
+
+Para tener en cuenta la exposición. Es una buena idea trabajar con un offset porque no se tiene información como por ejemplo la cantidad de mujeres expuestas para trabajar una binomial, si no que se tiene una medida de tiempo. Offset es una variable que se utiliza en el análisis de regresión de Poisson. Este análisis se utiliza siempre que los datos se registran durante un período observado.
+
+
+3.R/
+Ajuste un glm de Poisson con edad y país como variables explicativas. Producir la gráfica de residuos contra valores ajustados y evaluar el modelo. Ejemplo en pag 375
+
+```{r}
+### Part 3
+cc.m0 <- glm(Deaths ~ offset(log(Wyears)) + Age + Country,
+             data = cervical,
+             family = poisson)
+
+scatter.smooth(rstandard(cc.m0) ~ fitted(cc.m0), main = "Poisson glm")
+```
+4.R/
+Ajuste el modelo cuasi-Poisson correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.\
+
+```{r}
+cc.m0Q <- glm(Deaths ~ offset(log(Wyears)) + Age + Country,
+              data = cervical,
+              family = quasipoisson)
+scatter.smooth(rstandard(cc.m0Q) ~ fitted(cc.m0Q), main = "Quasi-Poisson model")
+```
+5.R/
+Ajuste el glm binomial negativo correspondiente. Produzca la gráfica de residuos contra valores ajustados y evalúe el modelo.
+
+```{r}
+library(MASS)
+cc.m0NB <- glm.nb(Deaths ~ offset(log(Wyears)) + Age + Country,
+                  data = cervical)
+cc.m0NB <- glm.convert(cc.m0NB)
+scatter.smooth( rstandard(cc.m0NB) ~ fitted(cc.m0NB), main="Neg. bin. glm" )
+```
+6.R/
+¿Qué modelo parece apropiado, si lo hay?
+
+Todos los modelos parecen tener un gran valor atípico negativo, pero claramente el modelo de Poisson no acomoda la variación correctamente.
+
+
+10.16 
+Un experimento [21] comparó la densidad de las aves del sotobosque en una serie de sitios en dos áreas a ambos lados de una cerca a prueba de ganado (Tabla 10.19; conjunto de datos: pastoreo). Un lado tenía un pastoreo limitado (principalmente de herbívoros nativos) y el otro estaba fuertemente pastoreado por herbívoros salvajes, en su mayoría caballos. Se registraron conteos de aves en los sitios a ambos lados de la cerca (las mediciones "antes"). Luego, se eliminaron los herbívoros y se volvieron a registrar los recuentos de aves (las medidas "después"). Las medidas son el número total de aves que buscan alimento en el sotobosque observadas en tres estudios de 20 minutos de cuadrantes de 2 ha.
+
+1.R/
+Grafique los datos y explique las características importantes.
+
+```{r}
+data(grazing)
+
+plot(Birds ~ When, data = grazing)
+plot(Birds ~ Grazed, data = grazing)
+```
+Del segundo gráfico, se ve que entre los hervíboros, el que tiene un mayor número absoluto de aves es el nativo, mientras que el conteo para el salvaje es el menor.
+
+En el primer gráfico se ve que se observó un mayor conteo después, en comparación de antes
+
+
+2.R/
+
+Ajustar un glm de Poisson con el componente sistemático Birds ~ When * Grazed, asegurando un análisis diagnóstico.
+
+```{r}
+modelo_Poisson<-glm(formula = Birds ~ Grazed * When, data = grazing, family = poisson())
+
+medidas <- influence.measures(modelo_Poisson)
+rowSums(medidas$is.inf)
+
+```
+Hay outlyers en las observaciones 15 26, y 55, bajo distintos criterios
+
+3.R/
+Demuestre que existe sobredispersión. Demuestre calculando la media y la varianza de cada combinación de las variables explicativas.
+
+```{r}
+anova(modelo_Poisson)
+```
+La devianza es demasiado alta en comparación con los grados de libertad, entonces hay sobredispersion
+
+4.R/
+Ajuste un modelo cuasi-Poisson.
+
+```{r}
+modelo_PoissonQuasi <-
+  glm(formula = Birds ~ Grazed * When,
+      data = grazing,
+      family = quasipoisson())
+
+anova(modelo_PoissonQuasi)
+```
+
+5.R/
+Ajuste un modelo binomial negativo
+```{r}
+modelo_Poissonnb<-glm.nb( formula = Birds ~ Grazed*When, data = grazing)
+modelo_Poissonnb <- glm.convert(cc.m0NB)
+
+anova(modelo_Poissonnb)
+```
+
+6.R/
+Compare los tres modelos ajustados para determinar un modelo adecuado
+
+Pagina 389
+Se ve que es mejor el binomial negativo, por su devianza
+
+
+
+7.R/ Interpretar el modelo final.
+
+Se observa una devianza moderada, en comparación a los grados de libertad, además que tiene una mejor aic, un más baja.
+
+
