@@ -2,7 +2,9 @@
 title: "Ejer"
 author: "Maria Jose Corea"
 date: "2022-10-16"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -208,7 +210,7 @@ cooks.distance(mod_leo) #La distancia de Cook es un resumen de cuánto cambia un
 2.R/
 
 ```{r}
-influence.measures(mod_leo)
+influence.measures(mod_leo)$is.inf
 rowSums(influence.measures(mod_leo)$is.inf)
 ```
  
@@ -414,7 +416,7 @@ library(statmod)
  qqnorm(qresid(m3))
  colSums(influence.measures(m3)$is.inf)
  
- influence.measures(m3)
+ influence.measures(m3)$is.inf
 which(rowSums(influence.measures(m3)$is.inf)>0)
 
 
@@ -794,11 +796,14 @@ y varianza de cada combinación de las variables explicativas.
 1.R/
 ```{r}
 library(GLMsData)
+library(dplyr)
 data(grazing)
 # Acá Wyears es T
 str(grazing)
 
-
+grazing<-as.data.frame(grazing)
+mean1<-grazing%>%group_by(When,Grazed)%>%summarise(across(Birds,mean))
+var1<-grazing%>%group_by(When,Grazed)%>%summarise(across(Birds,var))
 ## Inciso 1
 
 plot(Birds ~ When, data = grazing)
@@ -860,4 +865,7 @@ c("contr.treatment", "contr.treatment")
  contrasts(belection$Party)
 ```
 
+```{r}
+
+```
 
