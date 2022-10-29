@@ -107,6 +107,8 @@ xtable(dt)
 dt<-tablaDatos(data,11)
 xtable(dt)
 ```
+######################################################################################################################################################################################################################################################################################################
+\section{Bitacora 3}
 
 
 En esta bitácora deberán elaborar e interpretar:
@@ -114,9 +116,103 @@ En esta bitácora deberán elaborar e interpretar:
 
 Un gráfico que describa la distribución de una variable cuantitativa.
 
+```{r}
+# Para evitar menos inf
+
+data <- data %>% mutate( logprecio = case_when(
+  data$price <1  ~ 0,
+  TRUE ~ log(data$price)
+))
+
+#Eliminamos las que son cero
+data <- data[data$logprecio != 0,]
+
+hist(data$logprecio, breaks = 100, xlab = 'Log - Precio', ylab = 'Frecuencia')
+
+ggplot(data, aes(x=logprecio))+
+  geom_histogram(color="darkblue", fill="lightblue", bins = 100)
+
+sort(data$logprecio)
+```
+
+```{r}
+mean(data$logprecio)
+
+exp(mean(data$logprecio))
+```
+
+
 Dos gráficos que describan la relación (asociación o covariación) de una variable con respecto a otra en su conjunto de datos. Al menos uno de los dos gráficos debe contener una variable categórica.
 
+Grafico axuliar para analizar de forma más general las correlaciones
+```{r}
+library(dplyr)
+
+p <-
+  data %>% select(is.numeric) %>% cor(use = "pairwise.complete.obs", method = "spearman")
+#xtable(tibble(colnames(p)))
+
+xtable(p)
+corrplot(p)
+
+library(reshape2)
+q <- melt(p)
+
+library(ggplot2)
+ggplot(data = q, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile()
+```
+Correlacion entre living y above. Living es la superficie habitable y la otra es la superficie de la construcción. 
+
+```{r}
+df <-  data.frame('superficie habitable' = data$sqft_living, 'superficie construccion' = data$sqft_above)
+ggplot(df, aes(superficie.habitable, superficie.construccion))+ geom_point()
+
+```
+Condicion con
+```{r}
+df <- data.frame(condicion = data$condition, logprecio = data$logprecio)
+
+
+df$condicion <- as.factor(df$condicion)
+ggplot(df, aes(x=condicion, y=logprecio)) + 
+  geom_boxplot()
+
+```
+
 Un gráfico que muestre la distribución de una variable categórica.
+
+```{r}
+hist(data$condition)
+
+
+ggplot(data, aes(x=condition))+geom_bar()
+  geom_histogram(color="darkblue", fill="lightblue")
+
+
+data %>%
+  group_by(city) %>%
+  summarise(n = n_distinct(Name)) %>%
+  ggplot()  + geom_col(aes(city, n))
+  #ggplot() + geom_bar(aes(Date, n), stat = "identity")
+
+
+
+
+data %>%
+  group_by(condition) %>%
+  summarize(x=dplyr::n()) %>%
+ggplot(., aes(condition, x, fill = as.factor(condition)))+
+  geom_bar(stat = "identity", col = "black", alpha = .85)+
+  scale_fill_brewer(palette = "Spectral")+
+  geom_text(aes(y = x+120, label = x), size = 7.5)+
+  theme_fivethirtyeight()+
+  theme(legend.position = "none", axis.title = element_text(size = 16), axis.text = element_text(size = 16), axis.line = element_line(size = 0.4, colour = "grey10"))+
+  labs(x = "House condition [from 1 to 5]", y = "Frequency", caption = "© Made by Michau96/Kaggle")
+
+```
+
+More than half of the buildings were rated "3" on a five-point scale. The highest possible rating was obtained by 371 houses, which is less than 9% of all buildings. Ratings 1 and 2 are very rare. We go to the last quantitative feature - the aboveground area of the house and build a histogram for this feature.
 
 
 Usen como base lo expuesto en el capítulo 7 del libro R for Data Science. Los gráficos deben contener información relevante para su pregunta de investigación. Todos los gráficos deben ser construidos con ggplot2.
@@ -128,4 +224,9 @@ Y ademas:
 Dar una descripción del modelo o metodología que se va a utilizar para contestar la pregunta de investigación, fundamentando la escogencia en el análisis descriptivo.
 
 Realizar un primer intento de inferencia a nivel del modelo seleccionado, que permita responder parcialmente la pregunta de investigación
+
+
+
+
+
 
