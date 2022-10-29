@@ -108,3 +108,24 @@ dt<-tablaDatos(data,11)
 xtable(dt)
 ```
 
+
+En esta bitácora deberán elaborar e interpretar:
+
+
+Un gráfico que describa la distribución de una variable cuantitativa.
+
+Dos gráficos que describan la relación (asociación o covariación) de una variable con respecto a otra en su conjunto de datos. Al menos uno de los dos gráficos debe contener una variable categórica.
+
+Un gráfico que muestre la distribución de una variable categórica.
+
+
+Usen como base lo expuesto en el capítulo 7 del libro R for Data Science. Los gráficos deben contener información relevante para su pregunta de investigación. Todos los gráficos deben ser construidos con ggplot2.
+
+
+Y ademas:
+
+
+Dar una descripción del modelo o metodología que se va a utilizar para contestar la pregunta de investigación, fundamentando la escogencia en el análisis descriptivo.
+
+Realizar un primer intento de inferencia a nivel del modelo seleccionado, que permita responder parcialmente la pregunta de investigación
+

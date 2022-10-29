@@ -9,22 +9,260 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+1. La base contenida en carbohydrate.csv tiene observaciones con porcentaje de calor´ıas totales obtenidas de carbohidratos complejos (carbohydrate), edad (age), peso relativo
+(weight) y porcentaje de calor´ıas en prote´ınas (protein) para 20 pacientes de sexo masculino
+diabeticos y dependientes de insulina.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+a) Considere como variable dependiente carbohydrate y el resto de variables como posibles covariables. Analice la posible asociacion entre variables de manera exploratoria
+
+```{r}
+library(readr)
+carbohydrate <- read_csv("carbohydrate.csv")
+plot(carbohydrate$carbohydrate~carbohydrate$age)
+plot( carbohydrate~ age, data = carbohydrate)
+plot(carbohydrate ~ weight, data = carbohydrate)
+plot(carbohydrate ~ protein, data = carbohydrate)
+
+summary(carbohydrate)
+var(carbohydrate$age)
+var(carbohydrate$carbohydrate)
+var(carbohydrate$weight)
+var(carbohydrate$protein)
+```
+Se ve una Mayor varianza en age y weight, los valores mínimos de carbohidratos son 24 y el maximo 51, con una media de 37.
+
+Min.   :24.00   Min.   :23.00   Min.   : 85.0   Min.   :12.0  
+ 1st Qu.:32.25   1st Qu.:34.50   1st Qu.:100.0   1st Qu.:14.0  
+ Median :37.00   Median :47.50   Median :106.0   Median :15.0  
+ Mean   :37.60   Mean   :46.15   Mean   :110.7   Mean   :15.9  
+ 3rd Qu.:42.25   3rd Qu.:57.25   3rd Qu.:120.2   3rd Qu.:18.0  
+ Max.   :51.00   Max.   :64.00   Max.   :144.0   Max.   :20.0  
+[1] 163.1868
+[1] 57.51579
+[1] 276.6421
+[1] 4.936842
+
+b) Usando AIC y seleccion para adelante, encuentre un modelo ´ optimo. Interprete todos ´
+los estimadores de los coeficientes en el modelo lineal ajustado.
+
+```{r}
+ min.model <- lm(carbohydrate ~ age +weight+protein, data=carbohydrate)
+ max.model <- lm( carbohydrate ~ (protein+weight+age)^2, data=carbohydrate)
+  auto.forward <- step( min.model, direction="forward",
+scope=list(lower=min.model, upper=max.model) )
+   signif( coef(auto.forward), 3 )
 ```
 
-## Including Plots
+El mejor aic es el de carbohydrate ~  weight:protein , puesto que arroja el valor menor
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+modelobase1<-lm(carbohydrate ~ weight+protein, data=carbohydrate)
+summary(modelobase1)
+coef(modelobase1)
+```
+Un aumento en una unidad de peso, provoca una disminucion de más 0.221649 en la cantidad de carbohidratos, manteniendo las demás variables constante. Un unidad del peso sube, indica que la cantidad de carbihidratos baja en 0.22, nominalmente. Asimismo, un aumento en una unidad de proteina, provoca un aumento de más 1.824291 en la cantidad de carbohidratos, manteniendo las demás variables constante. 
+
+
+
+c) Interprete un intervalo de confianza al 90 % para el coeficiente de weight. Calcule directamente (sin usar summary) el estad´ıstico de la prueba F y su valor p e interpretelo.
+
+```{r}
+confint(modelobase1, level = 0.9)
+```
+Esto es que el 90% de las veces, casi seguramente, el coeficiente de la variable weight se va aencontrar entre -0.3664914 -0.07680669, el otro porcentaje restante, puede incurrir al error.
+
+```{r}
+
+
+
+ Xmat<-model.matrix( ~ weight+protein,
+data=carbohydrate)
+ XtX <- t(Xmat) %*% Xmat # t() is transpose; %*% is matrix multiply
+ y <- log(carbohydrate$carbohydrate)
+ inv.XtX <- solve( XtX ) # solve returns the matrix inverse
+ XtY <- t(Xmat) %*% y
+
+  beta <- inv.XtX %*% XtY; drop(beta)
+
+ beta <- solve(XtX, XtY); beta
+ 
+ QR <- qr(Xmat)
+ beta <- qr.coef(QR, y); beta
+ 
+ 
+ mu <- Xmat %*% beta
+ RSS <- sum( (y - mu)^2 ); 
+ RSS
+
+ s2 <- RSS / ( length(carbohydrate$carbohydrate) - length(beta) )
+ c(s=sqrt(s2), s2=s2)
+ 
+ 
+  a<-predict(modelobase1,
+        
+          interval = "confidence",
+          level = 0.90)
+
+
+
+ MsReg<-sqrt(mean((carbohydrate$carbohydrate - a[,1])^2))
+ 
+ Festadista<-MsReg/s2
+ Festadista<-MsReg/s2
+  DF <- df.residual(modelobase1); 
+  DF
+  df.B <- df.residual(modelobase1); 
+  df.B
+ 
+   pf(Festadista, df1=DF, df2=df.B, lower.tail=FALSE)
+ 
+ summary(modelobase1)
+ 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+ Bueno, los calculé mal, pero usando la intrepertración del summary, dice que 
+ 
+ 
+Con respecto a la base, dice que con la prueba t que la proteina es el estimador con mayor significancia y que la edad no tiene significancia. En caso del peso, tienen una significancia del 0.01. Entonces se debería ajustar el modelo y sacar la variable age, puesto que no es tan relevante. Asimismo, se ve que la p-valor se rechararía si la hipótesis nula fuera conservadora y sería del 5%, en caso de ser de un 1%, no se rechazaría. La f-test nos dice que la capacidad explicativa que tiene un grupo de variables independientes(peso y proteina) sobre la variación de la variable dependiente (carbohidrato) es de 6.827 .
+
+d) Calcule usando la formula vista en clase, el intervalo de confianza al 90 % de una ´
+prediccion de la variable dependiente si la edad del individuo es 57, su peso es 120 y ´
+el nivel de prote´ına es 18. Compare el resultado obtenido con el que se obtiene a traves´
+de la funcion´ predict. Interprete el intervalo de confianza.
+
+```{r}
+# x <-(PromedioTemperatura = seq(min(x), max(x), by = 0.05))
+# cosa <-
+#   predict(mod_leo,
+#           newdata = data.frame(x),
+#           interval = "confidence",
+#           level = 0.90)
+
+```
+
+e)
+
+
+
+```{r}
+rstandard(modelobase1)#residual estandarizado
+fitted(modelobase1) #Este ejemplo demuestra cómo encontrar los valores ajustados de un modelo de regresión lineal usando la función added().
+cooks.distance(modelobase1) #La distancia de Cook es un resumen de cuánto cambia un modelo de regresión cuando se elimina la i-ésima observación
+ scatter.smooth( rstandard(modelobase1) ~ fitted(modelobase1) )
+ qqnorm( rstandard(modelobase1) )
+ qqline( rstandard(modelobase1) )
+ plot( cooks.distance(modelobase1), type="h")
+
+```
+Se ve una tendencia de residuo estandarizado entre 35 y 40. No se ve tan claro la tedencia lineal. Si se pone una barrera en el -1.5 se ven que 3 observaciones quedarían afuer, y el resto se concentraría arriba de -1.5.
+
+```{r}
+influence.measures(modelobase1)$is.inf
+rowSums(influence.measures(modelobase1)$is.inf)
+```
+Y se ven 3 outliers, esto con el modelo de cooks distance, el de la observación 4,5 y 12,se ve un apalancamiento en la observación 5, el cual sería el único. S eobserva con el normal plot no una clara linealidad, esto puede ser debido a los outliers y el apalancamiento encontrado.
+
+2. En el archivo doctors.csv se tiene la cantidad de muertes de medicos fumadores y no- ´
+fumadores ordenados por grupo de edad a partir de un seguimiento que se le hizo a grupos de
+medicos en el transcurso de 10 a ´ nos. La variable ˜ person-years denota la cantidad de medicos ´
+participantes por periodo de observacion (unidades: personas-a ´ no)
+
+
+```{r}
+library(readr)
+doctors <- read_csv("doctors.csv")
+```
+
+a) Grafique la tasa de muerte estimada por 100000 personas-anos de muerte ( ˜ personyears) con respecto a edad (age). Repita este grafico de manera separada para fumado- ´
+res y no fumadores (smoking). Interprete los graficos y justifique el uso de un modelo ´
+de conteo para estudiar la tasa de muerte.
+
+```{r}
+library(dplyr)
+doctors1 <- doctors%>%mutate(age = case_when( age == '35 to 44' ~ 1,
+                                                 age == '45 to 54' ~ 2,
+                                                 age == '55 to 64' ~ 3,
+                                                 age == '65 to 74' ~ 4,
+                                                 age == '75 to 84' ~ 5)
+                
+                                  )
+plot((doctors$`person-years`)/100000 ~age, data=doctors1)
+
+
+
+```
+
+Se observa para esta base que la mayo tasa de muerte en el rango de 35 a 44, e increblemete con forme aumenta la edad baja la tasa de muerte.
+
+```{r}
+
+# plot(smoking) ~age, data=doctors1)
+
+```
+
+b) Ajuste un modelo de conteo apropiado para la tasa de muerte con las covariables smoking y age, recodificando la variable age de la siguiente forma: 35-44: 1, 45-54: 2,
+55-64: 3, 65-74: 4 y 75-84: 5. Verifique si una interaccion entre la edad codificada y la ´
+variable smoking es significativa.
+
+```{r}
+doctors1 <- doctors%>%mutate(age = case_when( age == '35 to 44' ~ 1,
+                                                 age == '45 to 54' ~ 2,
+                                                 age == '55 to 64' ~ 3,
+                                                 age == '65 to 74' ~ 4,
+                                                 age == '75 to 84' ~ 5)
+                
+                                  )
+```
+
+```{r}
+glm(formula = (doctors1$deaths)/100000  ~ age+smoking, family = binomial, 
+    data = doctors1, weights = doctors1$`person-years`)
+```
+
+
+```{r}
+
+modelopos<- glm((doctors1$deaths)/100000 ~ age + smoking, family=poisson,
+data=doctors1 )
+```
+c) Analice los residuos del modelo y verifique de manera descriptiva e inferencial que una
+transformacion cuadr ´ atica sobre la edad codificada es significativa.
+
+d)Analice de manera descriptiva la posible existencia de sobredispersion. Ajuste un mo- ´
+delo con sobredispersion y comp ´ arelos a trav ´ es de BIC. ¿Cu ´ al es mejor y c ´ omo se ´
+relaciona ese resultado con el analisis descriptivo que hizo?
+
+```{r}
+min(doctors1$deaths)
+```
+Para ver la sobredispersión see necesitaría ver el punto de silla, en el caso binomial sería la suma de las partes mayor o igual a 3 y para usar pearson se necesitaría el teorema del limite central, o sea la suma de las partes mayor o igual a 5. EN el caso de possson ser mayor o igual a 3 el valor mpinimo del conteo o mayor igual a 5, pata el tlc y usar pearson, en caso de que la devianza falle o no indique nada.
+
+No pude calcular le bic por falta de tiempo, pero este se ve con el valor menor, en la comparación de modelos, además de que se ajusta con h, que es un apalancamiento
+
+
+e) Con el modelo resultante en el punto anterior, interprete en cuanto aumenta o disminuye ´
+el riesgo de muerte de una persona en el cuarto grupo de edad cuando es fumador con
+respecto a que no lo sea.
+
+
+```{r}
+fit10.11quasi <- glm( (doctors1$deaths)/100000 ~ offset(log(doctors1$`person-years`) )+age + smoking,
+family="quasipoisson", data=doctors1)
+summary(fit10.11quasi)
+```
+```{r}
+plot(fit10.11quasi)
+```
+```{r}
+influence.measures(fit10.11quasi)$is.inf
+```
+
+No se observa aplancamiento, pero si se ven valores de influencia
+```{r}
+printCoefmat(exp(coef(summary(fit10.11quasi))),digits=4)
+```
+
+Los odds son la razón de la prob de exito, entre la prob de fracaso. En este caso como la variable es categórita, entonces se ve como, no se ve el cons, entonces ese el base,el1.501e+00  de más de los que no fuman.
