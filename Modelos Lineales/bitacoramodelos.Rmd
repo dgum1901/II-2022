@@ -127,12 +127,20 @@ data <- data %>% mutate( logprecio = case_when(
 #Eliminamos las que son cero
 data <- data[data$logprecio != 0,]
 
-hist(data$logprecio, breaks = 100, xlab = 'Log - Precio', ylab = 'Frecuencia')
+#hist(data$logprecio, breaks = 100, xlab = 'Log - Precio', ylab = 'Frecuencia')
 
-ggplot(data, aes(x=logprecio))+
-  geom_histogram(color="darkblue", fill="lightblue", bins = 100)
-
-sort(data$logprecio)
+grafico1 <- ggplot(data, aes(x=logprecio))+
+  geom_histogram(color="darkblue", fill="lightblue", bins = 100) + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Precio en escala logarítmica",
+    title = "Gráfico 1: Histograma en escala logarítmica de los precios",
+    caption = "Fuente: Elaboración propia"
+  )
+grafico1
+pdf("graf1.pdf")
+grafico1
+dev.off()
 ```
 
 ```{r}
@@ -148,12 +156,14 @@ Grafico axuliar para analizar de forma más general las correlaciones
 ```{r}
 library(dplyr)
 
-p <-
-  data %>% select(is.numeric) %>% cor(use = "pairwise.complete.obs", method = "spearman")
-#xtable(tibble(colnames(p)))
+p <- data %>% select(is.numeric) %>% cor(use = "pairwise.complete.obs", method = "spearman")
+xtable(data.frame(Nombre = colnames(p)))
 
+#xtable(tibble(colnames(p)))
+colnames(p) <- 1:14
+rownames(p) <- 1:14
 xtable(p)
-corrplot(p)
+#corrplot(p)
 
 library(reshape2)
 q <- melt(p)
@@ -165,21 +175,66 @@ ggplot(data = q, aes(x=Var1, y=Var2, fill=value)) +
 Correlacion entre living y above. Living es la superficie habitable y la otra es la superficie de la construcción. 
 
 ```{r}
-df <-  data.frame('superficie habitable' = data$sqft_living, 'superficie construccion' = data$sqft_above)
-ggplot(df, aes(superficie.habitable, superficie.construccion))+ geom_point()
+df <-  data.frame(x = data$sqft_living, y = data$sqft_above)
+
+graf2 <- ggplot(df, aes(x, y))+
+  geom_point()+ 
+  geom_smooth(method = lm, formula = y ~ x) + theme_bw()+
+  labs(
+    y = "Superficie de construcción",
+    x = "Superficie habitable",
+    title = "Gráfico 2: Contraste de variables con regresión lineal",
+    caption = "Fuente: Elaboración propia"
+  )
+graf2
+pdf("graf2.pdf")
+graf2
+dev.off()
 
 ```
-Condicion con
+
+Se intercambia por ciudad y logprecio
 ```{r}
-df <- data.frame(condicion = data$condition, logprecio = data$logprecio)
+df <- data.frame(x = data$city, y = data$logprecio)
 
 
-df$condicion <- as.factor(df$condicion)
-ggplot(df, aes(x=condicion, y=logprecio)) + 
-  geom_boxplot()
+df$x <- as.factor(df$x)
+
+graf3 <-
+  ggplot(df, aes(x = reorder(x, y, FUN = mean), y = y))+theme_bw() +
+  geom_boxplot() + theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  ))+
+  labs(
+    y = "Precio en escala logarítmica",
+    x = "Ciudad",
+    title = "Gráfico 3: Diagrama de cajas ordenado respecto a mediana",
+    caption = "Fuente: Elaboración propia"
+  )
+graf3
+
+pdf("graf3.pdf")
+graf3
+dev.off()
 
 ```
+Seobtiene la media para la ciudad más alta y la ciudad más baja
+```{r}
+caca1 <- (reorder(df$x, df$y, FUN = length))
+caca2 <- as.numeric(caca1)
 
+df <- as.tibble(rep(caca1,caca2))
+
+ggplot(df, aes(x = value)) + geom_histogram()
+
+length(data$price[data$city == 'Seattle'])
+length(data$price[data$city == 'Sammamish'])
+length(data$price[data$city == 'Shoreline'])
+```
+
+########### SHESHIIIIIS
 Un gráfico que muestre la distribución de una variable categórica.
 
 ```{r}
