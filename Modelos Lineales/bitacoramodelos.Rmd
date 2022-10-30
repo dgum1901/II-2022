@@ -126,6 +126,7 @@ data <- data %>% mutate( logprecio = case_when(
 
 data$yr_renovated <- as.numeric(data$yr_renovated > 0)
 data$yr_built <- as.numeric(data$yr_built> 2014-40)
+data$sqft_basement <- as.numeric(data$sqft_basement > 0)
 
 #Eliminamos las que son cero
 data <- data[data$logprecio != 0,]
@@ -305,10 +306,14 @@ train2 <- data[filas,]
 test2 <- data[-filas,]
 
 library(mgcv)
-gam1 <- gam(price ~ s(sqft_living)+s(sqft_lot)+bedrooms+build+basement+condition, data = train2)
+gam1 <-
+  gam(
+    logprecio ~ s(sqft_living) + s(sqft_lot) + bedrooms + yr_built + yr_renovated +
+      sqft_basement + condition,
+    data = train2
+  )
 summary(gam1)
 
-hist(log(data$yr_renovated))
 ```
 
 
