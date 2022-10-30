@@ -124,6 +124,9 @@ data <- data %>% mutate( logprecio = case_when(
   TRUE ~ log(data$price)
 ))
 
+data$yr_renovated <- as.numeric(data$yr_renovated > 0)
+data$yr_built <- as.numeric(data$yr_built> 2014-40)
+
 #Eliminamos las que son cero
 data <- data[data$logprecio != 0,]
 
@@ -220,18 +223,26 @@ graf3
 dev.off()
 
 ```
-Seobtiene la media para la ciudad más alta y la ciudad más baja
+Se obtiene la media para la ciudad más alta y la ciudad más baja
 ```{r}
-caca1 <- (reorder(df$x, df$y, FUN = length))
-caca2 <- as.numeric(caca1)
 
-df <- as.tibble(rep(caca1,caca2))
+graf4 <- ggplot(df, aes(x = reorder(x, y, FUN = mean), y = y)) +
+    geom_bar(stat="identity") + theme_bw() + theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  ))+
+  labs(
+    y = "Frecuencia",
+    x = "Ciudad",
+    title = "Gráfico 4: Frecuencia de observación por ciudad",
+    caption = "Fuente: Elaboración propia"
+  ) 
+graf4
+pdf("graf4.pdf")
+graf4
+dev.off()
 
-ggplot(df, aes(x = value)) + geom_histogram()
-
-length(data$price[data$city == 'Seattle'])
-length(data$price[data$city == 'Sammamish'])
-length(data$price[data$city == 'Shoreline'])
 ```
 
 ########### SHESHIIIIIS
@@ -280,7 +291,25 @@ Dar una descripción del modelo o metodología que se va a utilizar para contest
 
 Realizar un primer intento de inferencia a nivel del modelo seleccionado, que permita responder parcialmente la pregunta de investigación
 
+Dado que se busca implementar un modelo generalizado aditivo, utilizaremos 6 características explicativas (sin "waterfornt", que de acuerdo a la matriz de covariables presenta poca correlación e influencia en la varaible de respuesta), donde se agregarán características cualitativas como elementos paramétricos, y características cuantitativas (superficies de la casa y la parcela). ) como elementos suavizados con funciones separadas.
 
+Para ello, y con el objetivo de testear el modelo, se separa la base de forma aleatoria en entrenamiento y testeo.
+
+
+
+```{r}
+set.seed(1921)
+
+filas <- sample(nrow(data), nrow(data)* 0.8, replace = FALSE)
+train2 <- data[filas,]
+test2 <- data[-filas,]
+
+library(mgcv)
+gam1 <- gam(price ~ s(sqft_living)+s(sqft_lot)+bedrooms+build+basement+condition, data = train2)
+summary(gam1)
+
+hist(log(data$yr_renovated))
+```
 
 
 
