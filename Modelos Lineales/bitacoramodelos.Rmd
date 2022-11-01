@@ -256,26 +256,26 @@ hist(data$condition)
 ggplot(data, aes(x=condition))+geom_bar()
   geom_histogram(color="darkblue", fill="lightblue")
 
-
-data %>%
-  group_by(city) %>%
-  summarise(n = n_distinct(Name)) %>%
-  ggplot()  + geom_col(aes(city, n))
-  #ggplot() + geom_bar(aes(Date, n), stat = "identity")
-
-
-
-
-data %>%
-  group_by(condition) %>%
-  summarize(x=dplyr::n()) %>%
-ggplot(., aes(condition, x, fill = as.factor(condition)))+
-  geom_bar(stat = "identity", col = "black", alpha = .85)+
-  scale_fill_brewer(palette = "Spectral")+
-  geom_text(aes(y = x+120, label = x), size = 7.5)+
-  theme_fivethirtyeight()+
-  theme(legend.position = "none", axis.title = element_text(size = 16), axis.text = element_text(size = 16), axis.line = element_line(size = 0.4, colour = "grey10"))+
-  labs(x = "House condition [from 1 to 5]", y = "Frequency", caption = "© Made by Michau96/Kaggle")
+# 
+# data %>%
+#   group_by(city) %>%
+#   summarise(n = n_distinct(Name)) %>%
+#   ggplot()  + geom_col(aes(city, n))
+#   #ggplot() + geom_bar(aes(Date, n), stat = "identity")
+# 
+# 
+# 
+# 
+# data %>%
+#   group_by(condition) %>%
+#   summarize(x=dplyr::n()) %>%
+# ggplot(., aes(condition, x, fill = as.factor(condition)))+
+#   geom_bar(stat = "identity", col = "black", alpha = .85)+
+#   scale_fill_brewer(palette = "Spectral")+
+#   geom_text(aes(y = x+120, label = x), size = 7.5)+
+#   theme_fivethirtyeight()+
+#   theme(legend.position = "none", axis.title = element_text(size = 16), axis.text = element_text(size = 16), axis.line = element_line(size = 0.4, colour = "grey10"))+
+#   labs(x = "House condition [from 1 to 5]", y = "Frequency", caption = "© Made by Michau96/Kaggle")
 
 ```
 
@@ -309,7 +309,7 @@ library(mgcv)
 gam1 <-
   gam(
     logprecio ~ s(sqft_living) + s(sqft_lot) + bedrooms + yr_built + yr_renovated +
-      sqft_basement + condition,
+      (sqft_basement) + condition,
     data = train2
   )
 summary(gam1)
@@ -318,4 +318,14 @@ summary(gam1)
 
 
 
+```{r}
+
+gam2 <-
+  gam(
+    logprecio ~ bathrooms + bedrooms + s(sqft_lot) + floors + s(sqft_living) + condition + yr_built + s(sqft_above) + yr_renovated + city,
+    data = train2
+  )
+summary(gam2)
+
+```
 
