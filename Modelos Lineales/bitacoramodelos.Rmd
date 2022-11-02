@@ -328,4 +328,24 @@ gam2 <-
 summary(gam2)
 
 ```
+Se revisa el modelo con
+```{r}
+checkeo <- gam.check(gam2)
+
+
+pdf("graficocheck.pdf")
+gam.check(gam2)
+dev.off()
+
+```
+```{r}
+pdf("graf5.pdf")
+
+par(mfrow=c(2, 2))
+qq.gam(gam2,rep=100); plot(fitted(gam2),residuals(gam2), xlab = 'Predictor lineal', ylab = 'Residuos')
+hist(gam2$residuals,xlab = 'Residuos', ylab='Frecuencuia', main = 'Histograma de Residuos')
+plot(gam2$fitted.values, train2$logprecio, xlab = 'Valores ajustados', ylab='log-precio', mean = 'Variable respuesta contra valores ajustados')
+dev.off()
+
+```
 

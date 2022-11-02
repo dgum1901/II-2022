@@ -1,0 +1,476 @@
+---
+title: Pérdidas estimadas mensuales por Incendios en Toronto
+author: César Rojas
+date: '2022-09-03'
+slug: []
+categories: []
+tags: []
+draft: no
+---
+
+
+En este ejercicio queremos calcular las pérdidas estimadas mensuales en Incendios que ocurren en Toronto. Este ejercicio utilizará la teoría de Distribuciones de Perdidas, en el cual intentaremos encontrar la severidad y frecuencia del fenómeno en cuestión. La intención de ejercicios de este estilo es tener un margen de confianza usualmente se usa el 95 o 99 porciento, en el cual tenemos seguridad que al 95 % de las veces las pérdidas no superaran este valor y en caso de superarlo podemos calcular otro estimador. Estos estimadores en Teoría de Riesgo son conocidos como el Valor en Riesgo(VaR) y el Valor en Riesgo Condicional (CVaR) respectivamente. La base de datos es tomada de: https://open.toronto.ca/dataset/fire-incidents/
+
+
+Para este ejercicio utilizaremos las distribuciones más conocidas para frecuencia como son la Poisson, la Binomial Negativa o la Uniforme. Con respecto a la severidad tenemos una gama muy alta de posibilidades, la primera es utilizar la distribución empírica, es decir, predecir las perdidas con la distribución como tal de los datos. Teóricamente, sabemos que existen diferentes distribuciones conocidas, tales como normal, log-normal, Gamma, Exponencial, entre otros. Adicionalmente, podemos usar distribuciones que son conocidas de cola pesada, tales como la Weibull o la Pareto Generalizada. De todas estás distribuciones conocidas probaremos cual será la que mejor se ajuste. 
+
+
+
+```{r,include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+library(traineR)
+library(caret)
+library(lattice)
+library(dummies)
+library(corrplot)
+library(tidyverse)
+library(glmnet)
+library(rpart)
+library(rpart.plot)
+library(xgboost)
+library(randomForest)
+library(rattle)
+library(gbm)
+library(ggplot2)
+library(e1071)
+library(neuralnet)
+library(plotly)
+library(lubridate)
+library(readr)
+library(forecast)
+library(dygraphs)
+library(xts)
+library(readr)
+library(nortest)
+library(rmarkdown)
+library(zoo)
+library(fpp2)
+library(echarts4r)
+library(fitdistrplus)
+library(actuar)
+library(univariateML)
+library(goftest)
+library(EnvStats)
+library(evir)
+library(ismev)
+library(ParetoPosStable)
+library(kableExtra)
+library(gPdtest)
+library(SpatialExtremes)
+library(opendatatoronto)
+```
+
+
+<h2> Lectura de datos  </h2>
+
+Para este ejercicio tenemos la ventaja que los datos están cargados en el ambiente de R, por lo tanto utilizaremos el paquete oficial dado por los open data de Toronto.
+
+```{r,echo=FALSE}
+package <- show_package("64a26694-01dc-4ec3-aa87-ad8509604f50")
+package
+resources <- list_package_resources("64a26694-01dc-4ec3-aa87-ad8509604f50")
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+	
+#data
+```
+
+```{r,echo=FALSE}
+kbl(head(data,10),format = "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),full_width = F,fixed_thead = T) %>%
+  scroll_box(width = "850px", height = "500px")
+```
+
+
+Tenemos un total de 17536 observaciones, ahora observamos que tenemos muchas variables que para este análisis en particular no tomaremos en cuento, por lo cual solo nos centraremos en "Estimated_Dollar_Loss y "TFS_Alarm_Time", esto pues se adaptan al estudio que queremos hacer. Una observación importante es cuando considerar el tiempo del incendio, pues tenemos diferentes variables que miden cuando se origino la alarma, cuando se llego al lugar o cuando se tuvo control del mismo. Para efectos prácticos tomaremos el tiempo cuando se inicio la alarma de dicho incendio, en un futuro análisis se podrían tomar otra dirección con respecto a este tema.
+
+
+Adicionalmente, entre los datos contamos con valores en pérdidas que no se registraron o que son 0, para nuestro estudio, eliminaremos estos datos.
+
+
+```{r,echo=FALSE}
+data$TFS_Alarm_Time <-  as.Date(data$TFS_Alarm_Time, format = "%Y-%m-%d")
+
+LossDolar <- data$Estimated_Dollar_Loss
+
+datos <- as.data.frame(LossDolar)
+
+datos$Time <- data$TFS_Alarm_Time
+
+datos <- datos %>% filter(LossDolar > 0)
+
+str(datos)
+
+```
+
+Por lo tanto nos quedaremos con 13571 datos. 
+
+
+<h2> Distribución de la Frecuencia  </h2>
+
+
+Ahora para encontrar la distribución de la frecuencia, primero haremos una agrupación mensual de los eventos, esto se visualiza en el siguiente gráfico.
+
+
+
+```{r,echo=FALSE}
+
+Frecuencia <- datos %>% group_by(Time =floor_date(Time, "month")) %>% summarise( "Frecuency" = n())
+
+
+#res <- data.frame(res)
+#res$d <- datos2$Date
+Frecuencia |> e_charts(x = Time) |> e_datazoom() |> e_tooltip(trigger = 'axis') |>
+  e_bar(Frecuency, name = 'Conteo') 
+```
+
+
+De este gráfico vemos que hay una distribución muy similar a una uniforme, aún así utilizaremos todas las herramientas para encontrar cuál es la distribución que mejor se ajusta.
+
+```{r,echo=FALSE}
+fg1<-fitdist(Frecuencia$Frecuency, "pois")
+
+fn1<-fitdist(Frecuencia$Frecuency, "nbinom",method = "mle")
+
+
+fn2<-fitdist(Frecuencia$Frecuency, "unif")
+
+
+Fre <- fn1
+
+```
+
+```{r,echo=FALSE}
+par(mfrow=c(2,2))
+plot.legend<-c("Poisson", "Binom Neg","Uniform")
+denscomp(list(fg1,fn1,fn2), legendtext=plot.legend)
+qqcomp(list(fg1,fn1,fn2), legendtext=plot.legend)
+cdfcomp(list(fg1,fn1,fn2), legendtext=plot.legend)
+ppcomp(list(fg1,fn1,fn2), legendtext=plot.legend)
+```
+
+
+```{r,echo=FALSE}
+comparacion1 <- gofstat(f = list(fg1, fn1,fn2))
+comparacion1
+```
+
+Tanto a nivel gráfico como a nivel visual en las diferentes pruebas, encontramos que la distribución que mejor se ajusta a nuestros datos es la Binomial Negativa, por lo que usaremos esto para continuar con nuestro estudio.
+
+
+<h2> Distribución de la Severidad  </h2>
+
+Para el caso de la Severidad, tomaremos 2 caminos, el primero será encontrar la mejor distribución de las existentes que citamos al inicio, segudo utilizaremos la distribución Pareto Generalizada, que sirve para eventos con muchos valores extremos, que para este ejercicio nos podrá servir.
+
+
+```{r,echo=FALSE}
+datos |> e_charts(x = LossDolar) |> e_datazoom() |> e_tooltip(trigger = 'axis') |>
+  e_histogram(LossDolar, name = 'Perdidas')
+```
+
+
+Ahora solo por cuestión de visualización, veremos el comportamiento previo al  millón de dolares.
+
+```{r,echo=FALSE}
+datos %>% filter(LossDolar < 1000000) |> e_charts(x = LossDolar) |> e_datazoom() |> e_tooltip(trigger = 'axis') |>
+  e_histogram(LossDolar, breaks = 250, name = 'Perdidas')
+```
+
+
+Notamos como la gran mayoria de eventos son inferiores a perdidas de 2500 dolares y luego de esto tenemos colas largas de datos con pérdidas que se acercan a los 50 millones de dolares. 
+
+Ya con la previsualización de estos datos vemos que será complicado encontrar una distribución que se ajuste a nuestro datos, pero continuaremos con el análisis, en caso de ser necesario podriamos usar una transformación de los datos para así suavizar un poco el efecto de esos valores tan lejanos.
+
+Adicionalmente veamos cuanto dinero estimado se pierde mensualmente para tener una idea de que tipo comportamiento final debemos tener.
+
+```{r,echo=FALSE}
+
+Severi <- datos %>% group_by(Time =floor_date(Time, "month")) %>% summarise( "Frecuency" = sum(LossDolar))
+
+
+#res <- data.frame(res)
+#res$d <- datos2$Date
+Severi |> e_charts(x = Time) |> e_datazoom() |> e_tooltip(trigger = 'axis') |>
+  e_bar(Frecuency, name = 'Perdidas Mensuales') 
+```
+
+
+Vamos a usar los mismos criterios del AIC Y BIC para encontrar las posibles mejores distribuciones
+```{r,echo=FALSE}
+comparacion_aic <- AIC(
+                    mlbetapr(datos$LossDolar),
+                    mlexp(datos$LossDolar),
+                    mlinvgamma(datos$LossDolar),
+                    mlgamma(datos$LossDolar),
+                    mllnorm(datos$LossDolar),
+                    mlinvgauss(datos$LossDolar),
+                    mlweibull(datos$LossDolar),
+                    mlinvweibull(datos$LossDolar),
+             #     mllgamma(datos$LossDolar)
+                    mlgumbel(datos$LossDolar)
+                                       )
+comparacion_aic %>% rownames_to_column(var = "distribucion") %>% arrange(AIC)
+```
+
+```{r,echo=FALSE}
+comparacion_bic <- BIC(
+                    mlbetapr(datos$LossDolar),
+                    mlexp(datos$LossDolar),
+                    mlinvgamma(datos$LossDolar),
+                    mlgamma(datos$LossDolar),
+                    mllnorm(datos$LossDolar),
+                    mlinvgauss(datos$LossDolar),
+                    mlweibull(datos$LossDolar),
+                    mlinvweibull(datos$LossDolar),
+                #    mllgamma(datos$LossDolar),
+                    mlgumbel(datos$LossDolar),
+                    mlpareto(datos$LossDolar)
+                                       )
+comparacion_bic %>% rownames_to_column(var = "distribucion") %>% arrange(BIC)
+```
+
+Del criterio AIC y BIC, vemos como las distribuciones log normal y weibull son las que mejor se ajustan a nuestros datos.
+
+```{r,echo=FALSE}
+fg<-fitdist(datos$LossDolar,"lnorm")
+
+fn<-fitdist(datos$LossDolar, "weibull", method = "mle")
+
+```
+
+```{r,echo=FALSE}
+par(mfrow=c(2,2))
+plot.legend<-c("lnorm", "weibull")
+denscomp(list(fg,fn), legendtext=plot.legend)
+qqcomp(list(fg,fn), legendtext=plot.legend)
+cdfcomp(list(fg,fn), legendtext=plot.legend)
+ppcomp(list(fg,fn), legendtext=plot.legend)
+```
+
+
+
+```{r,echo=FALSE}
+comparacion <- gofstat(f = list(fg, fn))
+comparacion
+
+```
+
+
+Ahora a nivel visual y tanto en las pruebas notamos que tenemos problemas con ambas distribuciones, pero aún así destaca de mejor manera la log normal. 
+
+<h3> Transformación de los datos </h3>
+
+Como mencionamos anteriormente, al tener valores tan altos, una forma de suavizar dichos datos es tomar una transformación, para este caso solo utilizaremos la transformación lógaritmica de los datos, adicionalmente filtraremos aquellas perdidas que sean 1, pues al utilizar esta transformación trabajar con 0 se vuelve complicado
+
+
+```{r,echo=FALSE}
+datos2 <- datos
+
+datos2 <- datos2 %>%  filter(LossDolar >1 ) %>%  mutate(LossDolar = log(LossDolar))
+
+comparacion_aic <- AIC(
+                    mlbetapr(datos2$LossDolar),
+                    mlexp(datos2$LossDolar),
+                    mlinvgamma(datos2$LossDolar),
+                    mlgamma(datos2$LossDolar),
+                    mllnorm(datos2$LossDolar),
+                    mlinvgauss(datos2$LossDolar),
+                    mlweibull(datos2$LossDolar),
+                    mlinvweibull(datos2$LossDolar),
+               #     mllgamma(datos$LossDolar),
+                    mlgumbel(datos$LossDolar)
+                                       )
+comparacion_aic %>% rownames_to_column(var = "distribucion") %>% arrange(AIC)
+```
+
+```{r,echo=FALSE}
+comparacion_bic <- BIC(
+                    mlbetapr(datos2$LossDolar),
+                    mlexp(datos2$LossDolar),
+                    mlinvgamma(datos2$LossDolar),
+                    mlgamma(datos2$LossDolar),
+                    mllnorm(datos2$LossDolar),
+                    mlinvgauss(datos2$LossDolar),
+                    mlweibull(datos2$LossDolar),
+                    mlinvweibull(datos2$LossDolar),
+                #    mllgamma(datos$LossDolar),
+                    mlgumbel(datos2$LossDolar),
+                    mlpareto(datos2$LossDolar)
+                                       )
+comparacion_bic %>% rownames_to_column(var = "distribucion") %>% arrange(BIC)
+```
+
+Del criterio AIC y BIC, vemos como las distribuciones weibull y Gamma son las que mejor se ajustan a nuestros datos.
+
+```{r,echo=FALSE}
+fg<-fitdist(datos2$LossDolar,"weibull")
+
+Severidad <-  fg
+
+fn<-fitdist(datos2$LossDolar, "gamma")
+```
+
+```{r,echo=FALSE}
+par(mfrow=c(2,2))
+plot.legend<-c("weibull", "gamma")
+denscomp(list(fg,fn), legendtext=plot.legend)
+qqcomp(list(fg,fn), legendtext=plot.legend)
+cdfcomp(list(fg,fn), legendtext=plot.legend)
+ppcomp(list(fg,fn), legendtext=plot.legend)
+```
+
+
+
+```{r,echo=FALSE}
+comparacion <- gofstat(f = list(fg, fn))
+comparacion
+
+```
+
+
+Notamos como la distribución Weibull es la que mejor se ajusta a nuestros datos, por tal razón de distribuciones conocidas utilizaremos esto. 
+
+
+<h2> Uso de la Pareto Generalizada </h2>
+
+
+
+```{r,echo=FALSE}
+umbral=quantile(datos2$LossDolar,0.95)[[1]]
+emplot(datos2$LossDolar)
+```
+
+```{r,echo=FALSE}
+meplot(datos2$LossDolar, omit = 0)
+```
+
+```{r,echo=FALSE}
+fit<- gpd(datos2$LossDolar,threshold=umbral, nextremes=NA)
+```
+
+```{r,echo=FALSE}
+tp<-tailplot(fit)
+```
+
+
+Notamos como visualmente nos indica que utilizar la Pareto Generalizada podría funcionarnos para este ejercicio.
+
+
+```{r,echo=FALSE}
+
+loc<-tp$location
+scal<-tp$scale
+shape<-tp$shape
+
+
+```
+
+
+
+
+
+<h2> Simulacion de datos </h2>
+
+Ahora dado que conocemos el compartamiento de la Severidad y Frecuencia, continuaremos con la simulación del evento, esto utilizá la teoría de convulución, en el cual nos permite combinar estas 2 distribuciones para encontrar una respuesta final, que nos indicará cuanto dinero se estima perder o gastar por incendios en la zona de Toronto. Tomaremos 10 mil simulaciones para este ejercicio práctico.
+
+```{r,echo=FALSE}
+
+Risk.values <- function(datos,alpha){
+riesgo <- list()
+  Perdida.Esperada <- mean(datos)
+  Value.at.Risk <- as.numeric(quantile(datos,alpha))
+  C.Value.at.Risk <- mean(datos[datos>Value.at.Risk])
+  riesgo <- list("Perdida Esperada" = Perdida.Esperada,"VaR al 95%" = Value.at.Risk,"CVaR al 95%"=C.Value.at.Risk) 
+  return(riesgo)
+  }
+
+
+
+```
+
+```{r,echo=TRUE}
+set.seed(777)
+
+m <-  10000
+```
+
+Dejemos una semilla aleatoria fijada en 777 solo para tener resultados iguales para cargar el documento, pero esto se deja aleatorio, aún así los resultados no varian drasticamente.
+
+```{r,echo=FALSE}
+set.seed(777)
+
+m <-  10000
+N <- rnbinom(m,size=Fre$estimate[1],mu=Fre$estimate[2])
+
+perdidasTotal <- list()
+perdidasPareto <- list()
+for (j in 1:m){
+ perdidasTotal[[j]] <- exp(rweibull(N[j],Severidad$estimate[1],Severidad$estimate[2]))
+  perdidasPareto[[j]] <-   exp(rgpd(N[j],loc,scal,shape))
+}
+
+
+vecSumas <- c()
+vecSumasPareto <- c()
+for (i in 1:m) {
+  vecSumas[i] <- sum(perdidasTotal[[i]])
+  vecSumasPareto[i] <- sum(perdidasPareto[[i]])
+}
+
+SimulacionesTotal <- as.data.frame(vecSumas)
+
+
+SimulacionesPareto <- as.data.frame(vecSumasPareto)
+
+
+
+#mean(Severi$Frecuency)
+
+#quantile(Severi$Frecuency,.95)
+         
+```
+
+<h2> Conclusiones </h2>
+
+
+Con este ejercicio buscamos encontrar mediante la teoría de distribuciones de perdida, cuanto se podría estimar perder mensualmente por los incendios que ocurren en Toronto.  Este problema buscamos darle solución encontrando aquellas distribuciones que mejor se ajustaran tanto a la severidad como a la frecuencia del suceso. Para el caso de la frecuencia, no existe duda que la distribución Binomial Negativa es la que mejor se ajusta, luego para la Severidad como mencionamos tomamos 2 caminos, antes de eso decidimos transformar los datos o suavizarlos para minimizar el impacto de valores extremos, pero siempre siendo considerados en nuestro estudio, pues estos tienen una gran importancia en nuestro estudio. Logramos encontrar que la Weibull fue la que mejor se ajustó a nuestros datos, adicionalmente nos acercamos por la distribución Pareto Generalizada, la cual para casos donde los valores extremos son tan importantes usualmente logra captarlos de buena manera.
+
+
+```{r,echo=FALSE}
+
+datin <- Severi %>%  filter( Frecuency > quantile(Severi$Frecuency,.95))
+
+ma <- cbind(mean(Severi$Frecuency),quantile(Severi$Frecuency,.95),mean(datin$Frecuency))
+fa <- Risk.values(SimulacionesTotal$vecSumas,0.95)
+ga <- Risk.values(SimulacionesPareto$vecSumasPareto,0.95)
+nom <- c("Datos Mensuales Reales","Weibull Proyectada","Pareto Generalizada Proyectada")
+#nom2 <- c("Perdidas Esperadas","VaR o Perdidas al 95%","CVaR o  Perdidas Esperadas superado el 95%")
+tablita <- rbind(ma,fa,ga)
+rownames(tablita) <- nom
+#colnames(tablita) <- nom2
+tablita <- as.data.frame(tablita)
+
+
+
+sep.miles<-function(x){
+  format(x,big.mark = " ", decimal.mark = ",")
+}
+
+
+
+tab<-sep.miles(tablita)
+Tabla<- tab %>% kbl(formato="html",align = "r",caption =  "Tabla de perdidas esperadas mensuales por Incendio de Toronto en Dolares")%>%
+kable_classic(full_width = F, html_font = "Cambria")
+Tabla
+```
+
+Como observamos en el cuadro, primero aclaramos que los valores presentados con datos reales, solamente se usan para comparar que tan cercanos están a los encontrados, pero no necesariamente representan el VaR y el CVaR en términos estrictos. Lo que vemos es que la Weibull subestima las pérdidas un poco con respecto a los datos reales.
+Notamos como la Pareto Generalizada logra captar de mejor manera estás perdidas, llegando a tener resultados muy cercanos a los reales.  La traducción de estos datos es que mensualmente se estima perder $5 449 758 en promedio o es el valor esperado, es decir, abusando un poco de notación, en un caso normal promedio esa cantidad es lo que mensualmente se tendría en pérdidas. 
+
+
+Ahora con respecto al VaR el monto asciende a $11 048 694, esto quiero decir que si queremos cubrir un 95% de los posibles casos que se podrían presentar en los incendios mensuales utilizamos este valor. Usualmente en Teoría de Riesgo usamos valores del 95% o 99%, para así tener mayor seguridad y cubrir prácticamente todos los escenarios. 
+Por último, usamos el CVaR, que es termino más ligado a otras áreas, especialmente las financieras, pues su valor es muy importante en cuanto a pérdidas se refiere, pues nos indica dado que hemos pasado ese umbral del 95%, cuanto estimo perder en promedio en estos casos. Para nuestro ejercicio este valor representa $16 724 907.
+
+
+Como argumento final, es importante aclarar que la terminología de VaR y CVaR aunque están más ligadas a otras áreas, es importante también medirla en estos casos, pues si pensamos que estás perdidas por ejemplo debe cubrirla una aseguradora o el mismo estado, deben tener una base o una seguridad que con una cantidad estimada pueden cubrir prácticamente el 95% de los casos. Incluso, también tener seguridad que en aquellos meses que se pasa este umbral también tenemos definido un valor que representa de una manera realista cuánto dinero necesitamos para cubrir esta situación.
+
