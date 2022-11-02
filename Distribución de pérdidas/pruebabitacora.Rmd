@@ -264,6 +264,98 @@ plot_grid(grafico0, grafico1, labels = "AUTO")
 
 
 
+\section{Bitacora 3}
+
+```{r}
+p <- base$logEstimado[base$Extremo]
+
+hist(p)
+
+library(univariateML)
+comparacion_aic <- AIC(
+                    mlbetapr(p),
+                    mlexp(p),
+                    mlinvgamma(p),
+                    mlgamma(p),
+                    mllnorm(p),
+                    mlinvgauss(p),
+                    mlweibull(p),
+                    mlinvweibull(p),
+                    mlgumbel(p),
+                    mlpareto(p)
+                                       )
+comparacion_aic %>% rownames_to_column(var = "distribucion") %>% arrange(AIC)
+
+comparacion_bic <- BIC(
+                    mlexp(p),
+                    mlweibull(p),
+                    mlinvweibull(p),
+                    mlgumbel(p),
+                    mlpareto(p)
+                   )
+comparacion_bic %>% rownames_to_column(var = "distribucion") %>% arrange(BIC)
+
+
+```
+
+
+```{r}
+
+
+caca <- fevd(p, )
+
+summary(caca)
+
+caca$results
+library(evd)
+#fgev(caca$x, start = list(caca$const.loc, caca$const.scale, caca$const.shape))
+
+
+library(evir)
+gev(caca$x)
+```
+
+
+
+
+
+Que pendeja sheshis.
+
+```{r}
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+
+temperature <- read.csv(file = "http://www.dataanalysisclassroom.com/wp-content/uploads/2018/03/cp_temperature.csv")
+
+temperature <- temperature %>%
+  dplyr::filter(Year <= 2017) %>%
+  mutate(
+    TAVG_C = (TAVG - 32) * 5 / 9,
+    TMIN_C = (TMIN - 32) * 5 / 9,
+    TMAX_C = (TMAX - 32) * 5 / 9
+  )
+
+ggplot(temperature %>% dplyr::filter(Year >= 1995)) +
+  geom_point(aes(as.factor(Month), TAVG_C)) +
+  facet_wrap(~Year)
+```
+```{r}
+temperature1 <- temperature %>% group_by(Year) %>% dplyr::summarise(TMAX_C=max(TMAX_C))
+
+hist(x=temperature1$TMAX_C)
+```
+
+```{r}
+library(extRemes)
+fevd(temperature1$TMAX_C)
+summary(fevd(temperature1$TMAX_C))
+plot(fevd(temperature1$TMAX_C))
+```
+
+
+
 
 
 
