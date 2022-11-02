@@ -269,6 +269,10 @@ plot_grid(grafico0, grafico1, labels = "AUTO")
 ```{r}
 p <- base$logEstimado[base$Extremo]
 
+fevd(p)
+summary(fevd(p))
+plot(fevd(p))
+
 hist(p)
 
 library(univariateML)
