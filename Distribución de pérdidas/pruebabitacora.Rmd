@@ -95,7 +95,7 @@ base$tiempoAtencion <- as.numeric(difftime(base$TFS_Arrival_Time, base$TFS_Alarm
 
 # El pairwise.complete.obs es para garantizar que tome todas las observaciones
 # completas por pares, para más consultas favor consultarme
-p <- base %>% select(is.numeric & !Estimated_Dollar_Loss) %>% cor(use = "pairwise.complete.obs", method = "spearman")
+p <- base %>% dplyr::select(is.numeric & !Estimated_Dollar_Loss) %>% cor(use = "pairwise.complete.obs", method = "spearman")
 
 
 #xtable(tibble(colnames(p)))
@@ -259,104 +259,154 @@ grafico3
 pdf("graf0.pdf")
 grafico0
 dev.off()
-plot_grid(grafico0, grafico1, labels = "AUTO")
 ```
 
 
 
 \section{Bitacora 3}
 
+Dado que se utiliza el ajuste con la función fevd, estos son los únicos resultados
+
+
 ```{r}
 p <- base$logEstimado[base$Extremo]
 
-fevd(p)
-summary(fevd(p))
-plot(fevd(p))
+#c("GEV", "GP", "PP", "Gumbel", "Exponential")
 
-hist(p)
+gev <- fevd(p,type="GEV", method = 'MLE') #Generalized Extreme Value
+s <- summary(gev)
+( gev.comp <- c(s$AIC[[1]],s$BIC[[1]], -s$nllh) )
 
-library(univariateML)
-comparacion_aic <- AIC(
-                    mlbetapr(p),
-                    mlexp(p),
-                    mlinvgamma(p),
-                    mlgamma(p),
-                    mllnorm(p),
-                    mlinvgauss(p),
-                    mlweibull(p),
-                    mlinvweibull(p),
-                    mlgumbel(p),
-                    mlpareto(p)
-                                       )
-comparacion_aic %>% rownames_to_column(var = "distribucion") %>% arrange(AIC)
+gp <- fevd(p,type="GP", threshold = log(out), method = 'MLE') #Generalized Pareto
+s <- summary(gp)
+( gp.comp <- c(s$AIC[[1]],s$BIC[[1]], -s$nllh) )
 
-comparacion_bic <- BIC(
-                    mlexp(p),
-                    mlweibull(p),
-                    mlinvweibull(p),
-                    mlgumbel(p),
-                    mlpareto(p)
-                   )
-comparacion_bic %>% rownames_to_column(var = "distribucion") %>% arrange(BIC)
+gumbel <- fevd(p,type="Gumbel", method = 'MLE') #Gumbel
+s <- summary(gumbel)
+( gumbel.comp <- c(s$AIC[[1]],s$BIC[[1]], -s$nllh) )
 
+pp <- fevd(p,type="PP", threshold = log(out), method = 'MLE') #Poisson Process
+s <- summary(pp)
+( pp.comp <- c(s$AIC[[1]],s$BIC[[1]], s$nllh) )
 
-```
+exponencial <- fevd(p,type="Exponential", threshold = log(out), method = 'MLE') #exponencial
+s <- summary(exponencial)
+( exponencial.comp <- c(s$AIC[[1]],s$BIC[[1]], -s$nllh) )
 
-
-```{r}
-
-
-caca <- fevd(p, )
-
-summary(caca)
-
-caca$results
-library(evd)
-#fgev(caca$x, start = list(caca$const.loc, caca$const.scale, caca$const.shape))
-
-
-library(evir)
-gev(caca$x)
-```
-
-
-
-
-
-Que pendeja sheshis.
-
-```{r}
-library(lubridate)
-library(dplyr)
-library(ggplot2)
-library(tidyverse)
-
-temperature <- read.csv(file = "http://www.dataanalysisclassroom.com/wp-content/uploads/2018/03/cp_temperature.csv")
-
-temperature <- temperature %>%
-  dplyr::filter(Year <= 2017) %>%
-  mutate(
-    TAVG_C = (TAVG - 32) * 5 / 9,
-    TMIN_C = (TMIN - 32) * 5 / 9,
-    TMAX_C = (TMAX - 32) * 5 / 9
+df <-
+  data.frame(
+    GEV = gev.comp,
+    GP = gp.comp,
+    Gumbel = gumbel.comp,
+    PP = pp.comp,
+    Exponencial = exponencial.comp
   )
+rownames(df) <- c('AIC','BIC', 'Log-verosimilitud')
+#xtable(df)
+df
 
-ggplot(temperature %>% dplyr::filter(Year >= 1995)) +
-  geom_point(aes(as.factor(Month), TAVG_C)) +
-  facet_wrap(~Year)
 ```
-```{r}
-temperature1 <- temperature %>% group_by(Year) %>% dplyr::summarise(TMAX_C=max(TMAX_C))
 
-hist(x=temperature1$TMAX_C)
-```
+Ahora se busca ajustar Weibull, Frechet y Beta
 
 ```{r}
-library(extRemes)
-fevd(temperature1$TMAX_C)
-summary(fevd(temperature1$TMAX_C))
-plot(fevd(temperature1$TMAX_C))
+
+
+library(fitdistrplus)
+weibull <- fitdist(p, "weibull")
+weibull.comp <- c(weibull$aic, weibull$bic, weibull$loglik)
+
+library(extraDistr)
+frechet<-fitdist(p,"frechet", start = list( lambda = 1, mu = 1, sigma = 1))
+frechet.comp <- c(frechet$aic, frechet$bic, frechet$loglik)
+
+# dbeta_d <- function(x, alpha = -1, theta = 1){
+#   #alpha * (-x)^(-alpha-1)
+#   -alpha / theta * (-(x-theta)/theta)^(-alpha-1)
+# }
+beta <- fitdist(p, 'betapr', start = list(  shape1=1, shape2=1))
+
+# beta <- fitdist(p, dbeta_d, start = list( alpha = 3000 , theta = 300))
+beta.comp <- c(beta$aic, beta$bic, beta$loglik)
+
+df <-
+  data.frame(
+    Weibull = weibull.comp,
+    Frechet = frechet.comp,
+    Beta = beta.comp
+  )
+rownames(df) <- c('AIC','BIC', 'Log-verosimilitud')
+xtable(df)
+df
+
 ```
+Reajustamos las primeras funciones con fitdist para hacer más facil la graficacion
+```{r}
+
+gev2 <- fitdist(p, "gev", start = list(mu = 0, sigma = 1, xi = 2.302585 ))
+gev2.comp <- c(gev2$aic, gev2$bic, gev2$loglik)
+
+library(actuar)
+gp2 <- fitdist(p, 'genpareto' , start=list(shape1 = 1, shape2=1))
+
+gp2.comp <- c(gp2$aic, gp2$bic, gp2$loglik)
+denscomp(gp2)
+
+
+gumbel2 <- fitdist(p, 'gumbel', start=list(alpha = 0, scale = 1))
+gumbel2.comp <- c(gumbel2$aic, gumbel2$bic, gumbel2$loglik)
+
+exponencial2 <- fitdist(p, 'exp')
+exponencial2.comp <- c(exponencial2$aic, exponencial2$bic, exponencial2$loglik)
+
+df <-
+  data.frame(
+    GEV = gev2.comp,
+    GP = gp2.comp,
+    Gumbel = gumbel2.comp,
+    Exponencial = exponencial2.comp
+  )
+rownames(df) <- c('AIC','BIC', 'Log-verosimilitud')
+xtable(df)
+
+grafico4 <- denscomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'Histograma contra cada densidad', xlab = 'log-precio', ylab= 'Densidad')
+grafico5 <- qqcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Cuantil teórico', ylab = 'Cuantil empírico')
+grafico6 <- cdfcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'CDF empírico y teórico', xlab = 'log-precio')
+grafico7 <- ppcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Probabilidad teórica', ylab = 'Probabilidad empírica')
+
+
+pdf("graf4.pdf")
+denscomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'Histograma contra cada densidad', xlab = 'log-precio', ylab= 'Densidad')
+dev.off()
+pdf("graf5.pdf")
+qqcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Cuantil teórico', ylab = 'Cuantil empírico')
+dev.off()
+pdf("graf6.pdf")
+cdfcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'CDF empírico y teórico', xlab = 'log-precio')
+dev.off()
+pdf("graf7.pdf")
+ppcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Probabilidad teórica', ylab = 'Probabilidad empírica')
+dev.off()
+```
+
+
+
+Analisis diagnostico
+
+```{r}
+#se comparan los deos mejores modelos
+
+comparacion <- gofstat(f = list(frechet, gumbel2, gev2))
+comparacion
+
+df <- tibble('Kolgomorov-Smirnoff' = comparacion$ks, 'Anderson-Darling' = comparacion$ad, 'Chi-Cuadrado'=comparacion$chisq)
+
+rownames(df) <- c('Frechet','Gumbel','GEV')
+
+
+xtable(df)
+```
+
 
 
 

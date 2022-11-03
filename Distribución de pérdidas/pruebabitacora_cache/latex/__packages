@@ -19,3 +19,6 @@ fBasics
 fOptions
 kableExtra
 extrafont
+scales
+xtable
+corrplot
