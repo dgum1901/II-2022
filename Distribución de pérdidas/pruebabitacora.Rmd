@@ -409,6 +409,9 @@ xtable(df)
 
 
 
+```{r}
+descdist(p, discrete = FALSE)
+```
 
 
 
