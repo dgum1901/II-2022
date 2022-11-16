@@ -412,8 +412,55 @@ xtable(df)
 ```{r}
 descdist(p, discrete = FALSE)
 ```
+\section{Maik Updates}
+Estamos desarrollando un modelaje POT (Peak Over Threshold), entonces requerimos encontrar el umbral más adecuado para los datos.
 
+```{r}
+#perd <- base$logEstimado
+perd <- base$Estimated_Dollar_Loss
+n <- 10000 #La cantidad de puntos
 
+d<-seq(0,max(perd),length.out=n)
 
+e<-function(d){ # Función media de exceso
+  index <- lapply(d, function(e){var <- perd - e; var <- var[var>0]; return(var)}  )
+  sapply(index, mean)
+}
 
+p <- tibble(Umbral = d, Exceso = e(d))
+
+grafico8 <-
+  ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() +
+  labs(title = "Gráfico 8: Función media de exceso",
+       caption = "Fuente: Elaboración propia")
+grafico8
+```
+
+Efectivamente existe un d a partir del cual la función es lineal, para encontrarlo identificamos el máximo de la función.
+```{r}
+p <- p[-nrow(p),]
+d1 <- which(p$Exceso == max(p$Exceso))
+
+grafico8 + geom_vline(xintercept = p$Umbral[d1], 
+                color = "blue", size=0.5)
+
+perd <- base$logEstimado
+#perd <- base$Estimated_Dollar_Loss
+n <- 10000 #La cantidad de puntos
+
+d<-seq(0,max(perd),length.out=n)
+
+p <- tibble(Umbral = d, Exceso = e(d))
+
+grafico9 <-
+  ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + geom_vline(xintercept = p$Umbral[d1], 
+                color = "blue", size=0.5)+
+  labs(title = "Gráfico 8: Función media de exceso",
+       caption = "Fuente: Elaboración propia")
+grafico9
+
+```
+
+If it is decreasing, then a Weibull with a finite upper limit is the best
+choice, although we have generally ruled out this possibility
 \printbibliography
