@@ -2,7 +2,7 @@
 title: "AjusteFinal"
 author: "Daniel Ulate Montero"
 date: "2022-11-17"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -99,7 +99,7 @@ df
 ```
 El regular da lo siguiente:
 ```{r}
-df <- data.frame(matrix(NA, 2,0))
+df <- df[, -(1:3)]
 mod.gp <- fit.gpd(regular)
 
 df$gp <-c(mod.gp$nllh, AIC(mod.gp))
@@ -119,7 +119,29 @@ mod.wei <- fitdist(regular, 'weibull')
 df$wei <- c(-mod.wei$loglik, mod.wei$aic)
 df
 ```
-La función
 
+Los graficos completos por si acaso:
+
+```{r}
+perd <- base$Estimated_Dollar_Loss
+d1 <- min(perd)
+d<-seq(d1,max(perd),length.out=n)
+
+p <- tibble(Umbral = d, Exceso = e(d))
+
+ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() +
+  labs(title = "Función media de exceso")
+```
+
+```{r}
+perd <- base$logEstimado
+d1 <- min(perd)
+d<-seq(d1,max(perd),length.out=n)
+
+p <- tibble(Umbral = d, Exceso = e(d))
+
+ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() +
+  labs(title = "Función media de exceso")
+```
 
 
