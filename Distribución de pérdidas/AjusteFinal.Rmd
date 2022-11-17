@@ -1,0 +1,125 @@
+---
+title: "AjusteFinal"
+author: "Daniel Ulate Montero"
+date: "2022-11-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(mev)
+library(fitdistrplus)
+```
+
+## Proyecto
+
+Con base en las últimas recomendaciones, y para tener un medio de trabajo más sintetizado se crea un nuevo markdown.
+
+```{r}
+base <- read.csv('~/GitHub/II-2022/Distribución de pérdidas/Fire Incidents Data.csv')
+
+perd <- base$Estimated_Dollar_Loss
+#Los elementos de la base donde no se cuantificaron perdidas no interesan
+base <- base[!is.na(perd),]
+perd <- perd[!is.na(perd)]
+
+base$logEstimado <- log(base$Estimated_Dollar_Loss)
+base$logEstimado <- case_when(base$Estimated_Dollar_Loss == 0 ~ 0,
+                              TRUE ~ log(base$Estimated_Dollar_Loss))
+
+base$TFS_Alarm_Time <- as.POSIXct(base$TFS_Alarm_Time, format = "%Y-%m-%dT%H:%M:%S")
+base$TFS_Arrival_Time <- as.POSIXct(base$TFS_Arrival_Time, format = "%Y-%m-%dT%H:%M:%S")
+
+base$tiempoAtencion <- as.numeric(difftime(base$TFS_Arrival_Time, base$TFS_Alarm_Time))
+
+```
+
+
+Estamos desarrollando un modelaje POT (Peak Over Threshold), entonces requerimos encontrar el umbral más adecuado para los datos.
+
+```{r}
+perd <- base$Estimated_Dollar_Loss
+n <- 1000 #La cantidad de puntos
+d1 <- quantile(perd, 0.9)
+d<-seq(d1,max(perd),length.out=n)
+
+e <- function(d, X = perd){ # Funcion media de exceso para cualquier vector
+  index <- lapply(d, function(e){X[X>=e]-e}  )
+  sapply(index, mean)
+}
+
+p <- tibble(Umbral = d, Exceso = e(d))
+
+ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() +
+  labs(title = "Función media de exceso")
+
+regular = perd[perd>d1]-d1
+
+```
+
+Un problema evidente es que el gráfico muestra un comportamiento distinto al aplicar la escala logarítmica de las pérdidas.
+
+```{r}
+perd <- base$logEstimado
+d1 <- quantile(perd, 0.9)
+d<-seq(d1,max(perd),length.out=n)
+p <- tibble(Umbral = d, Exceso = e(d))
+# d1 <- nrow(p) - which.max(diff(rev(p$Exceso))<0)
+# d1 <- p$Umbral[d1]
+
+ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + 
+  labs(title = "Función media de exceso log-pérdida",
+       caption = "Fuente: Elaboración propia")
+
+logaritmica <- perd[perd>d1]-d1
+```
+Ajustemos el logaritmico con cada opción a ver qué pez
+
+```{r}
+df <- data.frame(matrix(NA, 2,0))
+rownames(df) <- c('neg-verosim', 'AIC')
+mod.gp <- fit.gpd(logaritmica)
+df$gp <-c(mod.gp$nllh, AIC(mod.gp))
+
+
+#mod.gp$param
+
+mod.exp <- fitdist(logaritmica, 'exp')
+df$exp <- c(-mod.exp$loglik, mod.exp$aic)
+
+
+#mod.exp$estimate
+
+mod.wei <- fitdist(logaritmica, 'weibull')
+df$wei <- c(-mod.wei$loglik, mod.wei$aic)
+
+df
+```
+El regular da lo siguiente:
+```{r}
+df <- data.frame(matrix(NA, 2,0))
+mod.gp <- fit.gpd(regular)
+
+df$gp <-c(mod.gp$nllh, AIC(mod.gp))
+#mod.gp$param
+dexp1 <- function(x, rate){
+  rate * exp(-rate * x) * (x>=0)
+  
+}
+
+#library(extRemes)
+#mod.exp <- fevd(x = regular, data = data.frame(regular),type = 'Exponential')
+# -mod.exp$loglik
+# mod.exp$aic
+#mod.exp$estimate
+
+mod.wei <- fitdist(regular, 'weibull')
+df$wei <- c(-mod.wei$loglik, mod.wei$aic)
+df
+```
+La función
+
+
+
