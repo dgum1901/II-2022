@@ -138,8 +138,8 @@ grafico1 <- ggplot(data, aes(x=logprecio))+
   labs(
     y = "Frecuencia",
     x = "Precio en escala logarítmica",
-    title = "Gráfico 1: Histograma en escala logarítmica de los precios",
-    caption = "Fuente: Elaboración propia"
+    #title = "Gráfico 1: Histograma en escala logarítmica de los precios",
+    #caption = "Fuente: Elaboración propia"
   )
 grafico1
 pdf("graf1.pdf")
@@ -187,8 +187,8 @@ graf2 <- ggplot(df, aes(x, y))+
   labs(
     y = "Superficie de construcción",
     x = "Superficie habitable",
-    title = "Gráfico 2: Contraste de variables con regresión lineal",
-    caption = "Fuente: Elaboración propia"
+    #title = "Gráfico 2: Contraste de variables con regresión lineal",
+    #caption = "Fuente: Elaboración propia"
   )
 graf2
 pdf("graf2.pdf")
@@ -214,8 +214,8 @@ graf3 <-
   labs(
     y = "Precio en escala logarítmica",
     x = "Ciudad",
-    title = "Gráfico 3: Diagrama de cajas ordenado respecto a mediana",
-    caption = "Fuente: Elaboración propia"
+    #title = "Gráfico 3: Diagrama de cajas ordenado respecto a mediana",
+    #caption = "Fuente: Elaboración propia"
   )
 graf3
 
@@ -236,8 +236,8 @@ graf4 <- ggplot(df, aes(x = reorder(x, y, FUN = mean), y = y)) +
   labs(
     y = "Frecuencia",
     x = "Ciudad",
-    title = "Gráfico 4: Frecuencia de observación por ciudad",
-    caption = "Fuente: Elaboración propia"
+    #title = "Gráfico 4: Frecuencia de observación por ciudad",
+    #caption = "Fuente: Elaboración propia"
   ) 
 graf4
 pdf("graf4.pdf")
@@ -333,9 +333,9 @@ Se revisa el modelo con
 checkeo <- gam.check(gam2)
 
 
-pdf("graficocheck.pdf")
-gam.check(gam2)
-dev.off()
+# pdf("graficocheck.pdf")
+# gam.check(gam2)
+# dev.off()
 
 ```
 ```{r}
@@ -346,6 +346,17 @@ qq.gam(gam2,rep=100); plot(fitted(gam2),residuals(gam2), xlab = 'Predictor linea
 hist(gam2$residuals,xlab = 'Residuos', ylab='Frecuencuia', main = 'Histograma de Residuos')
 plot(gam2$fitted.values, train2$logprecio, xlab = 'Valores ajustados', ylab='log-precio', mean = 'Variable respuesta contra valores ajustados')
 dev.off()
+
+```
+
+```{r}
+pene <- rnorm(1000)
+
+
+pdf("graficoPENE.pdf")
+hist(pene, breaks = 100)
+dev.off()
+
 
 ```
 
