@@ -49,63 +49,63 @@ library(xtable)
 Un cuadro con resúmenes de cinco números de al menos dos variables de su tabla de datos. Para ello se decide tomar todas las variables de carácter numérico en un cuadro
 
 ```{r}
-p <- data %>% tibble() %>% select(is.numeric & !yr_built & !yr_renovated & !view & !waterfront)
-a <- t(mapply(p, FUN = summary))
-
-xtable(a)
-
-
-a <- tibble(Desviacion = mapply(p, FUN = sd), IQR = mapply(p, FUN = IQR))
-
-rownames(a) <- colnames(p)
-
-#Se le pone doble transpuesta porque por algún motivo así acepta el formato
-xtable(t(t(a)))
+# p <- data %>% tibble() %>% select(is.numeric & !yr_built & !yr_renovated & !view & !waterfront)
+# a <- t(mapply(p, FUN = summary))
+# 
+# xtable(a)
+# 
+# 
+# a <- tibble(Desviacion = mapply(p, FUN = sd), IQR = mapply(p, FUN = IQR))
+# 
+# rownames(a) <- colnames(p)
+# 
+# #Se le pone doble transpuesta porque por algún motivo así acepta el formato
+# xtable(t(t(a)))
 ```
 Para la tabla de frecuencias
 
 ```{r}
-#Es la misma tabla de álgebra 1 xd
- tablaDatos <- function(datos, columna){
-  x <- as.numeric(datos[[columna]]) #Acá tira warning por NA en el vector, pero no afecta
-  x <- x[!is.na(x)] #Aca se arregla
-  
-  s <- sd(x)
-  n <- length(x)
-
-  # Usamos el h mas robusto normal
-  h <- 1.06 * min(s, IQR(x)/1.34) * n^(-1/5)
-  n <- floor(diff(range(x))/h)
-
-  breaks <- seq(from = min(x), to = max(x), by = (max(x)-min(x))/n) #9 subintervalos
-  breaks[1] <- breaks[1]-0.01 #Para que incluya al primer elemento
-  
-  x<-tibble(variable = x)
-  
-  tabla <- x %>% group_by(variable) %>% 
-    mutate(
-      variable = cut(variable, breaks  = breaks)
-    ) %>% 
-    dplyr::summarise(frequency = n()) %>% 
-    mutate(cum_frequency = cumsum(frequency))
-  
-  tabla$rf <- tabla$frequency/sum(tabla$frequency)
-  tabla$'crf(%)' <- cumsum(tabla$rf)*100
-  tabla$'rf(%)' <- tabla$rf*100
-  colnames(tabla)[1:3]<- c("Intervalo","f","cf")
-  tabla<-tabla %>% mutate_if(is.numeric, ~round(., 2))
-  
-  tabla
- }
-
-
-#Precio
-dt<-tablaDatos(data,2)
-xtable(dt)
-
-#Tamano construccion
-dt<-tablaDatos(data,11)
-xtable(dt)
+# #Es la misma tabla de álgebra 1 xd
+#  tablaDatos <- function(datos, columna){
+#   x <- as.numeric(datos[[columna]]) #Acá tira warning por NA en el vector, pero no afecta
+#   x <- x[!is.na(x)] #Aca se arregla
+#   
+#   s <- sd(x)
+#   n <- length(x)
+# 
+#   # Usamos el h mas robusto normal
+#   h <- 1.06 * min(s, IQR(x)/1.34) * n^(-1/5)
+#   n <- floor(diff(range(x))/h)
+# 
+#   breaks <- seq(from = min(x), to = max(x), by = (max(x)-min(x))/n) #9 subintervalos
+#   breaks[1] <- breaks[1]-0.01 #Para que incluya al primer elemento
+#   
+#   x<-tibble(variable = x)
+#   
+#   tabla <- x %>% group_by(variable) %>% 
+#     mutate(
+#       variable = cut(variable, breaks  = breaks)
+#     ) %>% 
+#     dplyr::summarise(frequency = n()) %>% 
+#     mutate(cum_frequency = cumsum(frequency))
+#   
+#   tabla$rf <- tabla$frequency/sum(tabla$frequency)
+#   tabla$'crf(%)' <- cumsum(tabla$rf)*100
+#   tabla$'rf(%)' <- tabla$rf*100
+#   colnames(tabla)[1:3]<- c("Intervalo","f","cf")
+#   tabla<-tabla %>% mutate_if(is.numeric, ~round(., 2))
+#   
+#   tabla
+#  }
+# 
+# 
+# #Precio
+# dt<-tablaDatos(data,2)
+# xtable(dt)
+# 
+# #Tamano construccion
+# dt<-tablaDatos(data,11)
+# xtable(dt)
 ```
 ######################################################################################################################################################################################################################################################################################################
 \section{Bitacora 3}
@@ -142,9 +142,9 @@ grafico1 <- ggplot(data, aes(x=logprecio))+
     #caption = "Fuente: Elaboración propia"
   )
 grafico1
-pdf("graf1.pdf")
-grafico1
-dev.off()
+# pdf("graf1.pdf")
+# grafico1
+# dev.off()
 ```
 
 ```{r}
@@ -191,9 +191,9 @@ graf2 <- ggplot(df, aes(x, y))+
     #caption = "Fuente: Elaboración propia"
   )
 graf2
-pdf("graf2.pdf")
-graf2
-dev.off()
+# pdf("graf2.pdf")
+# graf2
+# dev.off()
 
 ```
 
@@ -219,9 +219,9 @@ graf3 <-
   )
 graf3
 
-pdf("graf3.pdf")
-graf3
-dev.off()
+# pdf("graf3.pdf")
+# graf3
+# dev.off()
 
 ```
 Se obtiene la media para la ciudad más alta y la ciudad más baja
@@ -240,9 +240,9 @@ graf4 <- ggplot(df, aes(x = reorder(x, y, FUN = mean), y = y)) +
     #caption = "Fuente: Elaboración propia"
   ) 
 graf4
-pdf("graf4.pdf")
-graf4
-dev.off()
+# pdf("graf4.pdf")
+# graf4
+# dev.off()
 
 ```
 
@@ -299,39 +299,38 @@ Para ello, y con el objetivo de testear el modelo, se separa la base de forma al
 
 
 ```{r}
-set.seed(1921)
+set.seed(1905)
 
 filas <- sample(nrow(data), nrow(data)* 0.8, replace = FALSE)
-train2 <- data[filas,]
-test2 <- data[-filas,]
+train <- data[filas,]
+test <- data[-filas,]
 
 library(mgcv)
-gam1 <-
-  gam(
-    logprecio ~ s(sqft_living) + s(sqft_lot) + bedrooms + yr_built + yr_renovated +
-      (sqft_basement) + condition,
-    data = train2
-  )
-summary(gam1)
-
 ```
 
 
 
 ```{r}
 
-gam2 <-
+gam1 <-
   gam(
     logprecio ~ bathrooms + bedrooms + s(sqft_lot) + floors + s(sqft_living) + condition + yr_built + s(sqft_above) + yr_renovated + city,
-    data = train2
+    data = train
   )
-summary(gam2)
+options(max.print=1000000)
+eso <- summary(gam1)
+#eso$p.pv
+
+eso
 
 ```
 Se revisa el modelo con
 ```{r}
-checkeo <- gam.check(gam2)
+#pdf("graficocheck.pdf")
+gam.check(gam1)
+#dev.off()
 
+<<<<<<< HEAD
 
 # pdf("graficocheck.pdf")
 # gam.check(gam2)
@@ -340,15 +339,19 @@ checkeo <- gam.check(gam2)
 ```
 ```{r}
 pdf("graf5.pdf")
+=======
+#pdf("graf5.pdf")
+>>>>>>> 31fbc95451c51129347ec87c2b93870f6795e983
 
 par(mfrow=c(2, 2))
-qq.gam(gam2,rep=100); plot(fitted(gam2),residuals(gam2), xlab = 'Predictor lineal', ylab = 'Residuos')
-hist(gam2$residuals,xlab = 'Residuos', ylab='Frecuencuia', main = 'Histograma de Residuos')
-plot(gam2$fitted.values, train2$logprecio, xlab = 'Valores ajustados', ylab='log-precio', mean = 'Variable respuesta contra valores ajustados')
-dev.off()
+qq.gam(gam1,rep=100); plot(fitted(gam1),residuals(gam1), xlab = 'Predictor lineal', ylab = 'Residuos')
+hist(gam1$residuals,xlab = 'Residuos', ylab='Frecuencuia', main = 'Histograma de Residuos')
+plot(gam1$fitted.values, train$logprecio, xlab = 'Valores ajustados', ylab='log-precio', mean = 'Variable respuesta contra valores ajustados')
+#dev.off()
 
 ```
 
+<<<<<<< HEAD
 ```{r}
 pene <- rnorm(1000)
 
@@ -360,3 +363,118 @@ dev.off()
 
 ```
 
+=======
+\section{Bitácora 4}
+
+En esta bitácora deberán:
+
+1. Realizar un segundo intento de inferencia a nivel del modelo seleccionado, que permita responder parcialmente la pregunta de investigación. Se debe tomar en cuenta las recomendaciones recibidas en la bitácora anterior.
+
+Se presentan dos modelos adicionales que serán comparados mediante su error cuadrático medio para analizar cual adapta mejor los datos. El primero consiste en eliminar las variables, que no son ciudad, en las cuales se vio una baja significancia. Estas son el número de pisos, el año de construcción y el area del lote, con lo cual se obtiene lo siguiente:
+
+```{r}
+gam2 <-
+  gam(
+    logprecio ~ bathrooms + 
+      bedrooms + 
+      s(sqft_living) + 
+      condition +  
+      s(sqft_above) + 
+      yr_renovated + 
+      city,
+    data = train
+  )
+summary(gam2)
+```
+Otra propuesta consiste en tratar de sintetizar, de manera análoga a como se hizo anteriormente, la variable de ciudad, pues existen ciudades que evidentemente elevan el costo de la propiedad, por lo que lo ideal sería sintetizar esto en el grupo de ciudades que afectan significativamente el costo y las ciudades que no necesariamente lo hace, para ello tomamos un umbral de significancia de 0.001, y ajsutamos la variable en los datos de entrenamiento y de prueba.
+
+```{r}
+df <- train[,c(16,19)]
+df <- model.matrix(logprecio~., df)[,-1] %>% data.frame()
+
+p <- eso$p.pv[-(1:7)]
+p <- p[p<0.001]
+p <- names(p)
+q <- colnames(df) %in% p 
+
+train$city2 <- rowSums(df[,q])
+
+
+#Ahora hay que hacer lo mismo para la base de prueba
+df <- test[,c(16,19)]
+df <- model.matrix(logprecio~., df)[,-1] %>% data.frame()
+q <- colnames(df) %in% p 
+test$city2 <- rowSums(df[,q])
+
+
+df <- tibble(substr(p, 5, 25))
+xtable(df)
+```
+
+
+Y ahora se ajusta el modelo, con esta nueva categoría, además de eliminar la variable suavizada de sqft_lot, pues demostró baja significancia en el primer modelo, sin embargo, se decide mantener las que se rechazaron en el segundo modelo para ver su relevancia haciendo este ajuste.
+
+```{r}
+gam3 <-
+  gam(
+    logprecio ~ bathrooms + 
+      bedrooms + 
+      floors + 
+      s(sqft_living) + 
+      condition + 
+      yr_built + 
+      s(sqft_above) + 
+      yr_renovated + 
+      city2,
+    data = train
+  )
+
+summary(gam3)
+```
+
+2. Análisis de diagnósticos sobre el modelo seleccionado, para sustentar su escogencia sobre algún modelo alternativo.
+
+```{r}
+gam.check(gam2)
+#plot(gam2, residuals = T, pages = 1, scheme = 1, all.terms = T)
+
+gam.check(gam3)
+#plot(gam3, residuals = T, pages = 1, scheme = 1, all.terms = T)
+```
+
+Si se realiza el predict comparando al modelo anterior, se obtienen los sgtes resultados
+
+```{r}
+#test2 <- test # Duplicate test data set
+
+b1 <- predict(gam1, newdata = test)
+b2 <- predict(gam2, newdata = test)
+b3 <- predict(gam3, newdata = test)
+
+p <- c(sqrt(mean((test$logprecio - b1)^2)),
+sqrt(mean((test$logprecio - b2)^2)),
+sqrt(mean((test$logprecio - b3)^2)))
+df <- data.frame(Modelo = c('Modelo 1','Modelo 2','Modelo 3'),MSE=p)
+
+xtable(df)
+p
+```
+
+El modelo escogido es el segundo. El gam2, entonces devuelva los graficos del primero
+
+```{r}
+
+pdf("graficocheck2.pdf")
+par(mfrow=c(2, 2))
+qq.gam(gam1,rep=100); plot(fitted(gam1),residuals(gam1), xlab = 'Predictor lineal', ylab = 'Residuos')
+hist(gam1$residuals,xlab = 'Residuos', ylab='Frecuencuia', main = 'Histograma de Residuos', breaks = 100)
+plot(gam1$fitted.values, train$logprecio, xlab = 'Valores ajustados', ylab='log-precio', mean = 'Variable respuesta contra valores ajustados')
+dev.off()
+```
+
+3. Plantear al menos dos conclusiones que se deduzcan del último intento de inferencia y que permitan responder parcialmente o totalmente la pregunta de investigación.
+
+4. Incluir al menos una limitación de la metodología utilizada.
+
+5. Presentar la UVE completa.
+>>>>>>> 31fbc95451c51129347ec87c2b93870f6795e983

@@ -108,10 +108,10 @@ xtable(p)
 ```
 
 ```{r}
-#Este código exporta el gráfico en formato PDF
-pdf("corrPlor.pdf")
-corrplot(p)
-dev.off()
+# #Este código exporta el gráfico en formato PDF
+# pdf("corrPlor.pdf")
+# corrplot(p)
+# dev.off()
 
 ```
 
@@ -119,59 +119,59 @@ dev.off()
 Para iniciar hablando de la distribución del estimado de pérdidas.
 
 ```{r}
-p <- tibble(summary(base$logEstimado), summary(base$Estimated_Dollar_Loss))
-p <- rbind(p, c(sd(base$logEstimado), sd(base$Estimated_Dollar_Loss)))
-p <- rbind(p, c(IQR(base$logEstimado), IQR(base$Estimated_Dollar_Loss)))
-colnames(p) <- c('Log pérdida estimada', 'Pérdida estimada')
-rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo', 'Desviación', 'IQr')
-IQR(base$logEstimado)
-xtable(p)
+# p <- tibble(summary(base$logEstimado), summary(base$Estimated_Dollar_Loss))
+# p <- rbind(p, c(sd(base$logEstimado), sd(base$Estimated_Dollar_Loss)))
+# p <- rbind(p, c(IQR(base$logEstimado), IQR(base$Estimated_Dollar_Loss)))
+# colnames(p) <- c('Log pérdida estimada', 'Pérdida estimada')
+# rownames(p) <- c('Mínimo', '1er cuartil','Mediana','Promedio','Tercer cuartil','Máximo', 'Desviación', 'IQr')
+# IQR(base$logEstimado)
+# xtable(p)
 ```
 
 
 ```{r}
-p <-
-  aggregate(
-    base$Estimated_Dollar_Loss,
-    by = list(Category = base$Smoke_Alarm_at_Fire_Origin),
-    FUN = sum
-  )
-p$Frecuencia <- count(base$Smoke_Alarm_at_Fire_Origin)$freq
-p$Media <- p$x/p$Frecuencia
-
-
-#p <- p[p$x > out,]
-p <- p[order(-p$Media),]
-xtable(p)
+# p <-
+#   aggregate(
+#     base$Estimated_Dollar_Loss,
+#     by = list(Category = base$Smoke_Alarm_at_Fire_Origin),
+#     FUN = sum
+#   )
+# p$Frecuencia <- count(base$Smoke_Alarm_at_Fire_Origin)$freq
+# p$Media <- p$x/p$Frecuencia
+# 
+# 
+# #p <- p[p$x > out,]
+# p <- p[order(-p$Media),]
+# xtable(p)
 ```
 
 
 ```{r}
 
-p <-
-  aggregate(
-    base$Estimated_Dollar_Loss,
-    by = list(Category = base$Property_Use),
-    FUN = sum
-  )
-p$Frecuencia <- count(base$Property_Use)$freq
-p$Media <- p$x/p$Frecuencia
-
-#p <- p[p$x > out,]
-
-a <- p[order(-p$x),]
-
-a <- a[1:10,]
-
-xtable(a)
-
-a <- p[order(-p$Media),]
-
-a <- a[1:10,]
-
-xtable(a)
-
-
+# p <-
+#   aggregate(
+#     base$Estimated_Dollar_Loss,
+#     by = list(Category = base$Property_Use),
+#     FUN = sum
+#   )
+# p$Frecuencia <- count(base$Property_Use)$freq
+# p$Media <- p$x/p$Frecuencia
+# 
+# #p <- p[p$x > out,]
+# 
+# a <- p[order(-p$x),]
+# 
+# a <- a[1:10,]
+# 
+# xtable(a)
+# 
+# a <- p[order(-p$Media),]
+# 
+# a <- a[1:10,]
+# 
+# xtable(a)
+# 
+# 
 
 ```
 
@@ -256,9 +256,9 @@ grafico3
 
 
 ```{r}
-pdf("graf0.pdf")
-grafico0
-dev.off()
+# pdf("graf0.pdf")
+# grafico0
+# dev.off()
 ```
 
 
@@ -272,7 +272,7 @@ Dado que se utiliza el ajuste con la función fevd, estos son los únicos result
 p <- base$logEstimado[base$Extremo]
 
 #c("GEV", "GP", "PP", "Gumbel", "Exponential")
-
+library(extRemes)
 gev <- fevd(p,type="GEV", method = 'MLE') #Generalized Extreme Value
 s <- summary(gev)
 ( gev.comp <- c(s$AIC[[1]],s$BIC[[1]], -s$nllh) )
@@ -375,18 +375,18 @@ grafico6 <- cdfcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2
 grafico7 <- ppcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Probabilidad teórica', ylab = 'Probabilidad empírica')
 
 
-pdf("graf4.pdf")
-denscomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'Histograma contra cada densidad', xlab = 'log-precio', ylab= 'Densidad')
-dev.off()
-pdf("graf5.pdf")
-qqcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Cuantil teórico', ylab = 'Cuantil empírico')
-dev.off()
-pdf("graf6.pdf")
-cdfcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'CDF empírico y teórico', xlab = 'log-precio')
-dev.off()
-pdf("graf7.pdf")
-ppcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Probabilidad teórica', ylab = 'Probabilidad empírica')
-dev.off()
+# pdf("graf4.pdf")
+# denscomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'Histograma contra cada densidad', xlab = 'log-precio', ylab= 'Densidad')
+# dev.off()
+# pdf("graf5.pdf")
+# qqcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Cuantil teórico', ylab = 'Cuantil empírico')
+# dev.off()
+# pdf("graf6.pdf")
+# cdfcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), main = 'CDF empírico y teórico', xlab = 'log-precio')
+# dev.off()
+# pdf("graf7.pdf")
+# ppcomp(list(weibull, frechet, beta, gev2, gp2,gumbel2, exponencial2), xlab = 'Probabilidad teórica', ylab = 'Probabilidad empírica')
+# dev.off()
 ```
 
 
@@ -412,8 +412,72 @@ xtable(df)
 ```{r}
 descdist(p, discrete = FALSE)
 ```
+\section{Updates}
+Estamos desarrollando un modelaje POT (Peak Over Threshold), entonces requerimos encontrar el umbral más adecuado para los datos.
+
+```{r}
+#perd <- base$logEstimado
+perd <- base$Estimated_Dollar_Loss
+n <- 1000 #La cantidad de puntos
+d1 <- quantile(perd, 0.95)
+d<-seq(d1,max(perd),length.out=n)
+
+e <- function(d, X = perd){ # Funcion media de exceso para cualquier vector
+  index <- lapply(d, function(e){X[X>=e]-e}  )
+  sapply(index, mean)
+}
+
+p <- tibble(Umbral = d, Exceso = e(d))
+# d1 <- nrow(p) - which.max(diff(rev(p$Exceso))<0) #Forma de automatizar el umbral
+# d1 <- p$Umbral[d1]
+grafico8 <-
+  ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + 
+  labs(title = "Gráfico 8: Función media de exceso",
+       caption = "Fuente: Elaboración propia")
+grafico8
+```
+
+Se nota como este comportamiento es creciente en general, si le ponemos el umbral en .95, se ve así:
+```{r}
+d1 <- quantile(perd, 0.95)
+d<-seq(d1,max(perd),length.out=n)
+p <- tibble(Umbral = d, Exceso = e(d))
+
+ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + 
+  labs(title = "Gráfico 8: Función media de exceso, iniciando el .95",
+       caption = "Fuente: Elaboración propia")
+```
+
+
+```{r}
+perd <- base$logEstimado
+d1 <- quantile(perd, 0.95)
+d<-seq(d1,max(perd),length.out=n)#MeanExcess(perd)
+p <- tibble(Umbral = d, Exceso = e(d))
+# d1 <- nrow(p) - which.max(diff(rev(p$Exceso))<0)
+# d1 <- p$Umbral[d1]
+grafico9 <-
+  ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + 
+  labs(title = "Gráfico 9: Función media de exceso log-pérdida",
+       caption = "Fuente: Elaboración propia")
+grafico9
+```
+
+Como se vio en clases, a partir de este umbral hay una función lineal decreciente, por lo que la opción que mejor puede ajustar los datos es una Weibul, porque hablamos de colar ligeras. Observe la siguiente grafica inutil
+
+```{r}
+d<-d[d>d1] # Lo que esta arriba del umbral
+plot(d,e(d),type='line')
+```
 
 
 
+
+```{r}
+out <-perd[perd > d1]
+
+
+
+```
 
 \printbibliography
