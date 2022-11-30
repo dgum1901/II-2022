@@ -1,0 +1,27 @@
+---
+title: "Cap20"
+author: "Maria Jose Corea"
+date: "2022-11-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r }
+qnorm(0.5398)
+qnorm(0.1151)
+qnorm(0.0013)
+qnorm(0.7881)
+```
+
+20.12
+
+```{r}
+qnorm(0.1587)
+qnorm(0.9332)
+```
+
