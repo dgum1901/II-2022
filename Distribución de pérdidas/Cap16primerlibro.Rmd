@@ -1,0 +1,210 @@
+---
+title: "Capitulo16"
+author: "Maria Jose Corea"
+date: "2022-11-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 16.9
+
+```{r cars}
+F<-function(t){
+  F<-(t*(t+1))/20
+}
+
+probs<-diff(F(0:4))
+Esperada<-probs*150#es la suma de todas las observaciones
+obs<-c(21,27,39,63)
+
+chicuadrado<-sum((Esperada-obs)^2/Esperada)
+
+pchisq(q=chicuadrado,df=3,lower.tail = FALSE)
+qchisq(0.95,df=3)#valor crítico
+```
+## Ejercicio 16.17
+Poisson
+
+```{r}
+pchisq(q=0.14,df=2,lower.tail = FALSE)
+qchisq(0.95,df=2)#valor crítico
+```
+Geométrica
+
+```{r}
+pchisq(q=23.77,df=2,lower.tail = FALSE)
+qchisq(0.95,df=2)#valor crítico
+```
+Binomial Negativa
+```{r}
+qchisq(0.11,df=1)#valor crítico
+```
+Binomial 
+
+```{r}
+qchisq(0.95,df=1)#valor crítico
+```
+
+## Ejercicio 16.23
+
+Distribución weibull
+
+```{r}
+library(fitdistrplus)
+library(actuar)
+x<- c(27, 82, 115, 126, 155, 161, 243, 294, 340, 384, 457, 680, 855, 877, 974, 1193, 1340, 1884, 2558, 3476 )
+
+fit_weibull<- fitdist(data =x, distr="weibull",method="mle")
+cdfcomp(fit_weibull)
+denscomp(fit_weibull)
+plot(fit_weibull)
+```
+Distribución exponencial
+```{r}
+
+#fit_Exponencial<- fitdist(data =x, distr="exp", method="mle", start = list(rate= 1/mean(x)), lower=0, upper=1)
+
+lambda=1/mean(x)
+
+y<-dexp(x,rate=lambda)
+hist(x,probability=T)
+lines(y~x,col="red")
+#exponencial2 <- fitdist(x, 'exp')
+exp<-mledist(data=x,distr = "exp",start = list(rate=9))
+```
+
+
+Distribución transformada
+
+```{r}
+#dtrgamma(shape1 = ,shape2 =, scale =)
+fit_gammatransfor <- fitdist(data = x, distr = "trgamma", method = "mle", start = list(shape1=10,shape2=10,scale=15), lower=c(0,0,0),upper=c(Inf,Inf,Inf))
+
+cdfcomp(fit_gammatransfor)
+denscomp(fit_gammatransfor)
+plot(fit_gammatransfor)
+```
+Kolmodorov-smirnov
+
+```{r}
+comparacion <- gofstat(f = list(fit_gammatransfor , fit_weibull))
+
+```
+Falta calcular el Kolmodorov-Smirnov de la exponencial
+
+```{r}
+Fx<-function(theta,datos){
+  1-exp(-datos/theta)
+}
+
+x<- c(27, 82, 115, 126, 155, 161, 243, 294, 340, 384, 457, 680, 855, 877, 974, 1193, 1340, 1884, 2558, 3476 )
+
+lambda<-mean(x)
+
+FX<-Fx(lambda,x)
+
+Fn<- c(1/20, 2/20, 3/20, 4/20, 5/20, 6/20, 7/20, 8/20, 9/20, 10/20, 11/20, 12/20, 13/20, 14/20, 15/20, 16/20, 17/20, 18/20, 19/20, 20/20 )
+
+Fnmenos<- c(0, 1/20, 2/20, 3/20, 4/20, 5/20, 6/20, 7/20, 8/20, 9/20, 10/20, 11/20, 12/20, 13/20, 14/20, 15/20, 16/20, 17/20, 18/20, 19/20 )
+
+
+diffmax<-pmax(abs(FX - Fn),abs(FX-Fnmenos))
+max(diffmax)
+#lapply(x, function(e) Fx(lambda, e))
+
+```
+
+16.31
+
+```{r}
+library(kableExtra)
+```
+a)
+```{r}
+N<-rep(c(0:7),c(529,146,169,137,99,87,41,25))
+```
+
+```{r}
+binomial_loglik <- data.frame(
+  size = numeric(0),
+  prob = numeric(0),
+  loglik = numeric(0)
+)
+
+for (s in 7:120) {
+  fit_binom <- fitdist(
+    data = N,
+    dist = "binom",
+    fix.arg = list(size = s),
+    start = list(prob = 0.3)
+  )
+  binomial_loglik <- rbind(
+    binomial_loglik,
+    data.frame(
+      size = s,
+      prob = fit_binom$estimate,
+      fit = dbinom(
+        x = s,
+        size = s,
+        prob = fit_binom$estimate["prob"]
+      ),
+      loglik = fit_binom$loglik
+    )
+  )
+}
+
+plot(binomial_loglik$loglik)
+#knitr::kable(binomial_loglik, row.names = FALSE)
+```
+
+
+
+```{r}
+fit_binom <- fitdist(
+    data = N,
+    dist = "binom",
+    fix.arg = list(size = 80),
+    start = list(prob = 0.3)
+  )
+
+cdfcomp(fit_binom)
+```
+
+```{r}
+fit_Pois <- fitdist(
+    data = N,
+    dist = "pois"
+  )
+
+cdfcomp(fit_Pois)
+```
+
+```{r}
+fit_BinNeg <- fitdist(
+    data = N,
+    dist = "nbinom",
+    start=list(size=7, prob=0.5)
+  )
+
+cdfcomp(fit_BinNeg)
+```
+
+```{r}
+fit_Geom <- fitdist(
+    data = N,
+    dist = "geom"
+  )
+
+cdfcomp(fit_Geom)
+```
+
+```{r}
+gofstat(list(fit_binom, fit_Pois, fit_BinNeg, fit_Geom))
+```
+
+Entonces con chi cuadrado no se rechaza la hip nula del modelo 3m elnegativo binomial
+Con AKAIKEsE y Bayesian no se rechaza el modelo binomial 
+Entonces se escoge el modelo binomial
