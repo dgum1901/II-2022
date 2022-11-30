@@ -1,0 +1,377 @@
+---
+title: "EjerciciosCópilas"
+author: "Maria Jose Corea"
+date: "2022-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Ejercicios practicos de Copulas
+
+Ejercicio 1) Use the normalCopula() function from the copula package to create a two dimensional Gaussian copula with a parameter of 0.9. Then create another Gaussian copula of parameter 0.2 and
+look at the structure of both copulas.
+
+```{r}
+# Parte 1) 
+
+normal_0.9 <- normalCopula(param = 0.9, dim = 2)
+normal_0.2 <- normalCopula(param = 0.2, dim = 2)
+
+```
+Exercise 2
+Use the rCopula() function to generate two samples of 500 points which distribution is the copulas from exercise 1.
+
+```{r}
+# Parte 2) 
+
+norm_0.9 <- rCopula(500, copula = normal_0.9)
+norm_0.2 <- rCopula(500, copula = normal_0.2)
+```
+
+Exercise 3
+Make a plot of the two samples from exercise 2. Having in mind that copula determine the dependence structure of a multivariate joint distribution, by looking at those plots,
+can you tell which of those two copulas you should use to simulate a distribution with a strong dependence between the margins?
+
+```{r}
+# Parte 3) 
+
+plot(norm_0.9)
+plot(norm_0.2)
+```
+Con el de 0.9?
+
+Exercise 4
+The copula package offer two other ways to visualise a copula: the function persp() give you the ability of doing a 3d plot of the copula and contour() generate a
+contour plot of a copula. Use those two functions to visualise the copula from exercise 1.
+
+```{r}
+# Parte 4) 
+
+persp(normal_0.9,dCopula) #3d plot of copula
+contour(normal_0.9,dCopula) #contour plot of copula
+
+persp(normal_0.2,dCopula)
+contour(normal_0.2,dCopula)
+```
+Parece ser mejor la cúpula 2.
+
+Exercise 5
+Use the mvdc() function to create two multivariate joint distributions from the copula from exercise 1 with normal margins. Those margins should have a mean of 2 and 5 and a standard deviation of 3 and 1 respectively.
+Then apply the persp() and contour() to visualise the two distributions. Do the margins of the two distribution change in the two plots?
+
+```{r}
+# Parte 5) 
+
+norm_dist <- mvdc(copula = normal_0.2, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+
+persp(norm_dist, dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(norm_dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+
+norm_dist <- mvdc(copula = normal_0.9, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+
+persp(norm_dist, dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(norm_dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+```
+No cambia
+
+Exercise 6
+Repeat the steps of exercise 5, but this time creates two multivariate joint distributions with different margins. The first one must be a student distribution with 9 degrees of freedom and the second one should be an exponential distribution with a rate of 0.3.
+How those plots different from those of exercise 5?
+```{r}
+# Parte 6) 
+
+t.exp.dist <- mvdc(copula = normal_0.9, margins = c("t", "exp"), paramMargins = list(list(df = 9), list(rate =0.3)))
+
+persp(t.exp.dist, dMvdc, xlim = c(-10,10), ylim=c(-10, 10), main ="Density")
+contour(t.exp.dist,dMvdc, xlim = c(-10,10), ylim=c(-10, 10), main ="Density")
+
+t.exp.dist <- mvdc(copula = normal_0.2, margins = c("t", "exp"), paramMargins = list(list(df = 9), list(rate =0.3)))
+
+persp(t.exp.dist, dMvdc, xlim = c(-10,10), ylim=c(-10, 10), main ="Density")
+contour(t.exp.dist,dMvdc, xlim = c(-10,10), ylim=c(-10, 10), main ="Density")
+```
+Si cambia, no?
+Exercise 7
+Sample 500 points from the multivariate joint distribution made with a Gaussian copula of parameter 0.9 you did in the exercise 5. Then use the hist3D() and image2D() function from the plot3d package to
+plot the distribution of those points.
+
+```{r}
+# Parte 7) 
+
+sample.norm.dist <- rMvdc(500, norm_dist)
+library(plot3D)
+
+x.cut <- cut(sample.norm.dist[,1], 20)
+y.cut <- cut(sample.norm.dist[,2], 20)
+z <- table(x.cut, y.cut)
+
+hist3D(x=seq(-5,10,length.out= nrow(z)), y=seq(0,10,length.out= nrow(z)),z=z, border="black")
+
+image2D(x=seq(-5,10,length.out= nrow(z)),y=seq(0,10,length.out= nrow(z)),z=z, border="black")
+```
+
+Exercise 8
+Create a two dimensional Clayton copula with a parameter of 15, then plot it using persp() and contour(). Sample 500 points from this copula and plot them using qplot(). Then follow the step of the exercise 5, but
+this time use the Clayton copula you just created. Repeat this process, this time with a two dimensional Clayton copula with parameter of 1.
+
+```{r}
+# Parte 8) 
+
+clayton.15 <- claytonCopula(param = 15, dim = 2 )
+
+persp(clayton.15, dCopula)
+contour(clayton.15, dCopula)
+
+sample.clayton.15 <- rCopula(500, clayton.15)
+qplot(sample.clayton.15[,1], sample.clayton.15[,2], colour = sample.clayton.15[,1])
+
+
+clayton.15.dist <- mvdc(copula = clayton.15, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(clayton.15.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(clayton.15.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+
+#############################
+
+clayton.1 <- claytonCopula(param = 1, dim = 2 )
+
+persp(clayton.1, dCopula)
+contour(clayton.1, dCopula)
+
+sample.clayton.1 <- rCopula(500, clayton.1)
+qplot(sample.clayton.1[,1], sample.clayton.1[,2], colour = sample.clayton.1[,1])
+
+
+clayton.1.dist <- mvdc(copula = clayton.1, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(clayton.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(clayton.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+```
+Exercise 9
+Repeat the exercise 8, but use a two dimensional Frank copula of parameter 19 and another of parameter 1. Take time to notice how the parameter affect the shape of the multivariate joint distribution
+```{r}
+# Parte 9) 
+
+frank.19 <- frankCopula(param = 19, dim = 2 )
+
+persp(frank.19, dCopula)
+contour(frank.19, dCopula)
+
+sample.frank.19 <- rCopula(500, frank.19)
+qplot(sample.frank.19[,1], sample.frank.19[,2], colour = sample.frank.19[,1])
+
+
+frank.19.dist <- mvdc(copula = frank.19, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(frank.19.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(frank.19.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+
+#############################
+
+frank.1 <- frankCopula(param = 1, dim = 2 )
+
+persp(frank.1, dCopula)
+contour(frank.1, dCopula)
+
+sample.frank.1 <- rCopula(500, frank.1)
+qplot(sample.frank.1[,1], sample.frank.1[,2], colour = sample.frank.1[,1])
+
+
+frank.1.dist <- mvdc(copula = frank.1, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(frank.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(frank.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+```
+Exercise 10
+Repeat the exercise 8, but use a two dimensional Gumbel copula of parameter 7 and another of parameter 1.1.
+
+```{r}
+# Parte 10) Lo mismo pera para una Gumbel de param 7 y 11 
+gumbelCopula.7 <- gumbelCopula(param = 7, dim = 2 )
+
+persp(gumbelCopula.7, dCopula)
+contour(gumbelCopula.7, dCopula)
+
+sample.gumbelCopula.7 <- rCopula(500, gumbelCopula.7)
+qplot(sample.gumbelCopula.7[,1], sample.gumbelCopula.7[,2], colour = sample.gumbelCopula.7[,1])
+
+
+gumbelCopula.7.dist <- mvdc(copula = gumbelCopula.7, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(gumbelCopula.7.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(gumbelCopula.7.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+
+#############################
+
+gumbelCopula.1.1 <- gumbelCopula(param = 1, dim = 2 )
+
+persp(gumbelCopula.1.1, dCopula)
+contour(gumbelCopula.1.1, dCopula)
+
+sample.gumbelCopula.1.1 <- rCopula(500, gumbelCopula.1.1)
+qplot(sample.gumbelCopula.1.1[,1], sample.gumbelCopula.1.1[,2], colour = sample.gumbelCopula.1.1[,1])
+
+
+gumbelCopula.1.1.dist <- mvdc(copula = gumbelCopula.1.1, margins = c("norm", "norm"), paramMargins = list(list(mean = 2, sd=3),list(mean = 5, sd=1)) )
+persp(gumbelCopula.1.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+contour(gumbelCopula.1.1.dist,dMvdc, xlim = c(-5,10), ylim=c(0, 10), main ="Density")
+
+```
+
+
+Ejercicio 2) 
+
+Exercise 1
+We’ll start by fitting the margin. First, do a histogram of both Apple and Microsoft returns to see the shape of both distributions.
+
+```{r}
+library(readr)
+base <- read_csv("C:/Users/Maria/Downloads/returns_00_17.csv")
+# Parte 1) 
+
+apple <- base$Apple
+microsoft <- base$Microsoft
+
+hist(apple)
+hist(microsoft)
+```
+Exercise 2
+Both distributions seems symmetric and have a domain which contain positive and negative values.
+Knowing those facts, use the fitdist() function to see how the normal, logistic and Cauchy distribution fit the Apple returns dataset.
+Which of those three distributions is best suited to simulate the Apple return dataset and what are the parameter of this distribution?
+
+```{r}
+# Parte 2) 
+
+apple.norm <- fitdist(apple, distr = "norm")
+plotdist(apple, "norm", para = list(mean = apple.norm$estimate[1], sd = apple.norm$estimate[2]))
+apple.norm$estimate
+
+
+apple.log <- fitdist(apple, distr = "logis")
+plotdist(apple, "logis", para = list(location = apple.norm$estimate[1], scale = apple.norm$estimate[2]))
+apple.log$estimate
+
+
+apple.cauchy <- fitdist(apple, distr = "cauchy")
+plotdist(apple, "cauchy", para = list(location = apple.cauchy$estimate[1], scale = apple.cauchy$estimate[2]))
+apple.cauchy$estimate
+
+apple.norm$aic
+apple.log$aic
+apple.cauchy$aic
+```
+Exercise 3
+Repeat exercise 2 with the Microsoft return.
+
+```{r}
+# Parte 3) 
+
+microsoft.norm <- fitdist(microsoft, distr = "norm")
+plotdist(microsoft, "norm", para = list(mean = microsoft.norm$estimate[1], sd = microsoft.norm$estimate[2]))
+microsoft.norm$estimate
+
+
+microsoft.log <- fitdist(microsoft, distr = "logis")
+plotdist(microsoft, "logis", para = list(location = microsoft.norm$estimate[1], scale = microsoft.norm$estimate[2]))
+microsoft.log$estimate
+
+
+microsoft.cauchy <- fitdist(microsoft, distr = "cauchy")
+plotdist(microsoft, "cauchy", para = list(location = microsoft.cauchy$estimate[1], scale = microsoft.cauchy$estimate[2]))
+microsoft.cauchy$estimate
+
+microsoft.norm$aic
+microsoft.log$aic
+microsoft.cauchy$aic
+```
+
+Exercise 4
+Plot the joint distribution of the Apple and Microsoft daily returns. Add the regression line to the plot and compute the correlation of both variables.
+
+```{r}
+# Parte 4) 
+
+plot(apple, microsoft)
+abline(lm(apple ~ microsoft), col = "red")
+
+cor(apple, microsoft)
+```
+
+Exercise 5
+Use the pobs() from the VineCopula() package to compute the pseudo-observations for both returns values, then use the BiCopSelect() function to select the copula
+which minimise the AIC on the dataset. Which copula is selected and what are his parameters.
+
+```{r}
+# Parte 5)
+
+x.1 <- pobs(as.matrix(base[,2:3]))[,1]
+x.2 <- pobs(as.matrix(base[,2:3]))[,2]
+
+apriori.copula <- BiCopSelect(x.1,x.2, familyset = NA)
+apriori.copula$par
+```
+
+Exercise 6
+Use the appropriate function from the VineCopula() package to create a copula object with the parameter computed in the last exercise. Then, do a three dimensional plot and a contour plot of the copula.
+
+```{r}
+# Parte 6) 
+
+library(VC2copula)
+
+bb8.copula <- BB8Copula(param = c(apriori.copula$par, apriori.copula$par2))
+
+persp(bb8.copula, dCopula, zlim = c(0,10))
+contour(bb8.copula, dCopula)
+```
+
+Exercise 7
+Set the seed to 42 and generate a sample of 1000 points from this copula. Plot the sample and calculate the correlation of this sample.
+Does the correlation of the sample is similar to the correlation between the Apple and Microsoft returns?
+
+```{r}
+# Parte 7)
+
+set.seed(42)
+sample.bb8 <- rCopula(1000, bb8.copula)
+plot(sample.bb8[,1], sample.bb8[,2])
+cor(sample.bb8[,1], sample.bb8[,2])
+```
+
+Exercise 8
+Create a distribution from the copula you selected and the margins you fitted in the exercise 2 and 3
+
+```{r}
+# Parte 8) 
+
+mjd <- mvdc(bb8.copula, margins = c("norm", "norm"), paramMargins = list(list(mean = apple.norm$estimate[1], sd = apple.norm$estimate[2]), list(mean = microsoft.norm$estimate[1], sd = microsoft.norm$estimate[2])))
+```
+
+Exercise 9
+Generate 1000 points from the distribution of exercise 8 and plot those points, with the Apple and Microsoft returns, in the same plot
+
+```{r}
+# Parte 9) 
+
+dist.sample <- rMvdc(1000, mjd)
+plot(apple, microsoft, main = 'Returs')
+points(dist.sample[,1], dist.sample[,2], col = 'red')
+```
+Exercise 10
+Having made a model, let’s make some crude estimation with it! Imagine that this model has been proven to be effective to describe the relation between the apple return and
+the Microsoft return for a considerable amound of time and there’s a spike in the price of Apple stock. Suppose you have another model who describe the Apple stock and who
+lead you to believe that the daily return on this stock has a 90% chance to be between 0.038 and 0.045. Using only this information, compute the range containing the possible
+daily return of the Microsoft stock at the end of the day and the mean of the possible values.
+
+```{r}
+# Parte 10) 
+
+set.seed(42)
+sample.forecast <- rMvdc(10000, mjd)
+value.interest<-sample.forecast[sample.forecast[,1]>0.038 & sample.forecast[,1]<0.045,2]
+
+quantile(value.interest,c(.05,.95))
+
+mean(value.interest)
+
+```

@@ -1,0 +1,41 @@
+---
+title: "Cap10"
+author: "Maria Jose Corea"
+date: "2022-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+10.5
+
+
+
+```{r}
+library(copula)
+library(tidyverse)
+data(loss)
+library(readr)
+
+
+DATOS <- read.table("~/GitHub/II-2022/Distribución de pérdidas/DATOS.txt", dec=",", quote="\"")
+
+
+DATOS <- data.frame(Loss = c(DATOS$Loss1, DATOS$Loss2), ALAE = c(DATOS$ALAE1, DATOS$ALAE2))
+
+
+(rhoTau <- cor(DATOS, method = "kendall")[1,2])
+
+(theta2<-iTau(copula=gumbelCopula(), tau=rhoTau))
+
+(theta <- 1/(1-rhoTau  ))
+
+
+copulaGumbel <- fitCopula(copula = gumbelCopula(param = ), data = DATOS)
+```
+
+
+
+
+

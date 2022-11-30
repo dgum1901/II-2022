@@ -1,0 +1,34 @@
+---
+title: "Cap4"
+author: "Maria Jose Corea"
+date: "2022-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+4.3
+```{r}
+library(actuar)
+
+sigma <- 1000000
+lambda <- 10
+mu <- sigma * log(lambda)
+
+qgumbel(0.99, mu, sigma)
+```
+## Ejercicio 4.4
+```{r}
+qfrechet(0.99, shape = 20, scale = (20-1)/1000000)
+
+qfrechet(0.99, shape = 20, scale = sigma)
+qinvweibull(0.99, shape = 10, scale = sigma)
+qinvweibull(0.99, shape = 5, scale = sigma)
+qinvweibull(0.99, shape = 2, scale = sigma)
+qinvweibull(0.99, shape = 1.5, scale = sigma)
+qinvweibull(0.99, shape = 1.1, scale = sigma)
+
+```
+
