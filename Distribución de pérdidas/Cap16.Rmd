@@ -16,6 +16,9 @@ F<-function(t){
   F<-(t*(t+1))/20
 }
 
+x<-F(0:4)
+x
+
 probs<-diff(F(0:4))
 probs
 Esperada<-probs*150#es la suma de todas las observaciones
@@ -24,7 +27,7 @@ obs<-c(21,27,39,63)
 obs
 
 chicuadrado<-sum((Esperada-obs)^2/Esperada)
-chicuadrado
+#chicuadrado
 
 pchisq(q=chicuadrado,df=3,lower.tail = FALSE) 
 qchisq(0.95,df=3)#valor crítico
