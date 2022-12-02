@@ -291,3 +291,113 @@ sarima.for(log(so2),4,1,1,1)
 acf2(diff(so2), max.lag=2*52)
 ```
 
+3.35 Sea St los datos de ventas mensuales en ventas (n = 150), y sea Lt el indicador líder en adelanto.
+
+(a) Ajuste un modelo ARIMA a St , los datos de ventas mensuales. Analice el ajuste de su modelo paso a paso, presentando su (A) examen inicial de los datos, (B) transformaciones, si es necesario, (C) identificación inicial de los órdenes de dependencia y el grado de diferenciación, (D) parámetro estimación, (E) diagnóstico residual y elección del modelo.
+
+```{r}
+plot(sales)
+```
+parece una caminata aleatoria, por lo que la diferencia d = 1, (puede hacer esto con log(sales) pero no es necesario).
+
+```{r}
+acf2(diff(sales)) 
+```
+Tanto ACF como PACF siguen, así que elija p = q = 1 
+
+```{r}
+sarima(sales,0,1,1, no.constant=TRUE)
+sarima(sales,1,1,1, no.constant=TRUE)
+```
+
+Note que encaja bien, a direncia de un ARIMA(0,1,1)
+
+(b) Use el CCF y las gráficas de retardo entre $\triangledown S_t$ y $ \triangledown L_t$ argumentar que una regresión de $\triangledown S_t$ en $\triangledown L_{t-3}$$ es razonable. [Tenga en cuenta que en lag2.plot(), la primera serie nombrada es la que se retrasa.]
+
+
+```{r}
+ccf(diff(sales),diff(lead))
+```
+
+```{r}
+lag2.plot(diff(lead), diff(sales),8)
+```
+ccf(diff(sales),diff(lead)) y lag2.plot(diff(lead), diff(sales),8) sugieren que existe una fuerte relación lineal entre diff(sales) y lag(diff(lead),-3).
+```{r}
+lag2.plot
+```
+
+Tambien lag2.plot muestra una fuerte relación lineal.
+
+
+(c) Ajuste el modelo de regresión $\triangledown S_t= \beta _0 + \beta _1 \triangledown L_{t−3} + x_t$, donde $x_t$ es un proceso ARMA (explique cómo decidió su modelo para $x_t$). Discuta sus resultados. [Consulte el Ejemplo 3.45 para obtener ayuda sobre la codificación de este problema.]
+
+Después de ajustar la regresión, ACF y PACF indican un AR(1) para los residuos, que se ajusta bien.
+
+
+
+```{r}
+u = ts.intersect(diff(sales), lag(diff(lead),-3))
+ds = u[,1]
+dl3 = u[,2]
+(fit1 = lm(ds~dl3)) # beta1hat is highly significant
+acf2(resid(fit1)) # => an AR(1) for the residuals
+(fit2 = sarima(ds, 1,0,0, xreg=dl3)) # reg with ar1 errors
+plot(resid(fit2$fit))
+acf2(resid(fit2$fit))
+```
+
+3.42 Ajuste un modelo ARIMA estacional de su elección a los datos de desempleo en UnempRate. Utilice el modelo estimado para pronosticar los próximos 12 meses.
+
+Este conjunto de datos es una actualización de unemp, pero en términos de porcentaje de desempleados. Las técnicas son las mismas que en el problema anterior y el modelo es casi el mismo; se necesita un parámetro MA adicional
+
+```{r}
+acf2(diff(diff(unemp),12), 60)
+sarima(UnempRate, 2, 1, 1, 0, 1, 1, 12)
+sarima.for(UnempRate, 12, 2, 1, 1, 0, 1, 1, 12)
+```
+
+
+
+
+EJERCICIOS CAPITULO 4
+
+4.10  Los niveles de concentración de sal que se sabe que ocurrieron sobre las filas, correspondientes a los niveles de temperatura promedio para los datos de la ciencia del suelo considerados en la Figura 1.18 y la Figura 1.19, están en salt y saltemp . Trace la serie y luego identifique las frecuencias dominantes realizando análisis espectrales separados en las dos series. Incluya intervalos de confianza para las frecuencias dominantes e interprete sus hallazgos
+
+
+
+```{r}
+par(mfrow=c(2,1)) # for CIs, remove log="no" below
+mvspec(saltemp, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+mvspec(salt, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+
+```
+
+ 4.15 Repita el problema 4.10 utilizando un procedimiento de estimación espectral no paramétrico. Además de discutir sus hallazgos en detalle, comente su elección de una estimación espectral con respecto al suavizado y la disminución gradual.
+ 
+ 
+ 
+ Problema 4.9.
+ 
+```{r}
+mvspec(sunspotz, taper=0, log="no") # for CI, remove log="no"
+abline(v=3/240, lty="dashed") # 80 year cycle
+abline(v=22/240, lty="dashed") # 11 year cycle
+
+```
+ 
+ Por problema 4.9 se tiene lo anterior, entonces se continua con 
+ 
+```{r}
+par(mfrow=c(2,1))
+mvspec(saltemp, spans=c(1,1), log="no", taper=.5)
+abline(v=1/16, lty="dashed")
+salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+abline(v=1/16, lty="dashed")
+
+```
+ 
+
+
