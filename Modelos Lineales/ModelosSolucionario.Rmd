@@ -249,8 +249,42 @@ $$E(x_{n+1} - x^n _{n+1})^2 = \dfrac{n+2}{n+1} \sigma ^2 _w$$
 
 EJERCICIOS CAPITULO 4
 
-4.10  Deje que la serie observada $x_t$ esté compuesta por una señal periódica y ruido, de modo que pueda escribirse como $x_t = \beta _1 cos(2\pi kt) + β2 sin(2π \omega kt) + \omega _t$, donde $\omega _t$ es un proceso de ruido blanco con varianza $\sigma ^2 _\omega$. Se supone que la frecuencia $\omega _k$ es conocida y de la forma k/n en este problema. Supongamos que consideramos estimar $\beta _1, \beta _2$ y $\sigma ^2 _\omega$ por mínimos cuadrados o, de manera equivalente, por máxima verosimilitud si se supone que $\omega _t$ es gaussiana.
+4.10  Los niveles de concentración de sal que se sabe que ocurrieron sobre las filas, correspondientes a los niveles de temperatura promedio para los datos de la ciencia del suelo considerados en la Figura 1.18 y la Figura 1.19, están en sal y temperatura salina. Trace la serie y luego identifique las frecuencias dominantes realizando análisis espectrales separados en las dos series. Incluya intervalos de confianza para las frecuencias dominantes e interprete sus hallazgos
 
 
+
+```{r}
+par(mfrow=c(2,1)) # for CIs, remove log="no" below
+mvspec(saltemp, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+mvspec(salt, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+
+```
+
+ 4.15 Repita el problema 4.10 utilizando un procedimiento de estimación espectral no paramétrico. Además de discutir sus hallazgos en detalle, comente su elección de una estimación espectral con respecto al suavizado y la disminución gradual.
+ 
+ 
+ 
+ Problema 4.9 
+ 
+```{r}
+mvspec(sunspotz, taper=0, log="no") # for CI, remove log="no"
+abline(v=3/240, lty="dashed") # 80 year cycle
+abline(v=22/240, lty="dashed") # 11 year cycle
+
+```
+ 
+ Por problema 4.9 se tiene lo anterior, entonces se continua con 
+ 
+```{r}
+#par(mfrow=c(2,1))
+#mvspec(saltemp, spans=c(1,1), log="no", taper=.5)
+#abline(v=1/16, lty="dashed")
+#salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+#abline(v=1/16, lty="dashed")
+
+```
+ 
 
 
