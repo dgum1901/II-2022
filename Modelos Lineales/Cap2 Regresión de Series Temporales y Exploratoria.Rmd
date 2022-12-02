@@ -271,18 +271,44 @@ plot(diff(so2))
 plot(diff(log(so2)))
 acf2(diff(so2)) 
 acf2(diff(log(so2)))
-sarima(so2,0,1,1) 
-sarima(log(so2),0,1,1)
-sarima.for(so2,4,0,1,1) 
-sarima.for(log(so2),4,0,1,1)
+#AR--->pacf
+sarima(so2,1,0,0) 
+sarima(log(so2),1,0,0)
+sarima.for(so2,4,1,0,0) 
+sarima.for(log(so2),4,1,0,0)
+#MA--->acf
+sarima(so2,0,0,1) 
+sarima(log(so2),0,0,1)
+sarima.for(so2,4,0,0,1) 
+sarima.for(log(so2),4,0,0,1)
+#ARMA
+sarima(so2,1,0,1) 
+sarima(log(so2),1,0,1)
+sarima.for(so2,4,1,0,1) 
+sarima.for(log(so2),4,1,0,1)
+#ARIMA
+majo<-sarima(so2,0,1,1) 
+majo1<-sarima(log(so2),0,1,1)
+pmajo<-sarima.for(so2,4,0,1,1) 
+pmajo1<-sarima.for(log(so2),4,0,1,1)
+majo1$fit
+majo1$fit
 
-```
-
-```{r}
-sarima(so2,1,1,1) 
-sarima(log(so2),1,1,1)
+#ARIMA
+majoo<-sarima(so2,1,1,1) 
+majooo<-sarima(log(so2),1,1,1)
 sarima.for(so2,4,1,1,1) 
 sarima.for(log(so2),4,1,1,1)
+majoo$fit
+majooo$fit
+#AIC MAS BAJO, MEJOR MODELO
+```
+Por aic es mejor el modelo ARIME(0,1,1)
+```{r}
+#sarima(so2,1,1,1) 
+#sarima(log(so2),1,1,1)
+#sarima.for(so2,4,1,1,1) 
+#sarima.for(log(so2),4,1,1,1)
 ```
 
 
@@ -316,6 +342,8 @@ Note que encaja bien, a direncia de un ARIMA(0,1,1)
 
 
 ```{r}
+data(sales)
+data(lead)
 ccf(diff(sales),diff(lead))
 ```
 
@@ -352,9 +380,17 @@ acf2(resid(fit2$fit))
 Este conjunto de datos es una actualización de unemp, pero en términos de porcentaje de desempleados. Las técnicas son las mismas que en el problema anterior y el modelo es casi el mismo; se necesita un parámetro MA adicional
 
 ```{r}
-acf2(diff(diff(unemp),12), 60)
-sarima(UnempRate, 2, 1, 1, 0, 1, 1, 12)
-sarima.for(UnempRate, 12, 2, 1, 1, 0, 1, 1, 12)
+
+#> ?unemp
+#frequency(unemp)
+data("unemp")
+plot(unemp)
+acf2(unemp,max.lag = 60)
+plot(diff(unemp))
+acf2(diff(unemp),max.lag = 60)
+acf2(diff(diff(unemp),lag = 12), 60)
+sarima(UnempRate, p=2, d=1, q=1, P=0, D=1, Q=1,S= 12)
+sarima.for(UnempRate, n.ahead = 12, p=2,d= 1,q= 1,P= 0,D= 1,Q= 1,S= 12)
 ```
 
 
@@ -365,8 +401,8 @@ EJERCICIOS CAPITULO 4
 4.10  Los niveles de concentración de sal que se sabe que ocurrieron sobre las filas, correspondientes a los niveles de temperatura promedio para los datos de la ciencia del suelo considerados en la Figura 1.18 y la Figura 1.19, están en salt y saltemp . Trace la serie y luego identifique las frecuencias dominantes realizando análisis espectrales separados en las dos series. Incluya intervalos de confianza para las frecuencias dominantes e interprete sus hallazgos
 
 
-
 ```{r}
+data(saltemp)
 par(mfrow=c(2,1)) # for CIs, remove log="no" below
 mvspec(saltemp, taper=0, log="no")
 abline(v=1/16, lty="dashed")
@@ -374,17 +410,27 @@ mvspec(salt, taper=0, log="no")
 abline(v=1/16, lty="dashed")
 
 ```
+un procedimiento de estimación espectral no paramétrico el kernel d daniel
+perilograma, es una fucnion en un espacio de frecuencias, lo que ayuda es a identificar frecuencias importantes, identificar el factor, cada tanto ocurre un factor ciclico o esatcional
 
- 4.15 Repita el problema 4.10 utilizando un procedimiento de estimación espectral no paramétrico. Además de discutir sus hallazgos en detalle, comente su elección de una estimación espectral con respecto al suavizado y la disminución gradual.
+Se ve medio picudo, como sucio. La linea indica la frecuencia que es importante, lo que acompaña el v en el abline, entonces es una frecuencia es importante, hay que entender en qué frecuencia estaban los datos, parece que la linea es un 1/16, es una cada vez diez años
+
  
- 
- 
- Problema 4.9.
- 
+4.15 Repita el problema 4.10 utilizando un procedimiento de estimación espectral no paramétrico. Además de discutir sus hallazgos en detalle, comente su elección de una estimación espectral con respecto al suavizado y la disminución gradual.
 ```{r}
-mvspec(sunspotz, taper=0, log="no") # for CI, remove log="no"
-abline(v=3/240, lty="dashed") # 80 year cycle
-abline(v=22/240, lty="dashed") # 11 year cycle
+data("saltemp")
+par(mfrow=c(2,1))
+mvspec(saltemp, log="no", taper=0.5)
+mvspec(saltemp, spans=c(7,7), log="no", taper=0.5)
+abline(v=1/16, lty="dashed")
+salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+abline(v=1/16, lty="dashed")#kernell("daniell",4)
+
+
+mvspec(sunspotz, log = "no")
+mvspec(sunspotz, spans = c(7,7), taper = 0.1, log = "no")
+abline(v= 1/11, col="blue")
+
 
 ```
  
