@@ -1,0 +1,146 @@
+---
+title: "EjerciciosModelos"
+author: "Cassandra Ramírez Monge"
+date: '2022-12-02'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(astsa)
+library(tidyverse)
+library(ggfortify)
+library(gridExtra)
+library(lubridate)
+library(latex2exp)
+```
+
+2.8 El registro de varvas glaciales representado en figura 2.6. exhibe cierta no estariedad que puede mejorarse mediante la tranformación a logaritmos y alguna no estacionariedad adicional que puede corregirse diferenciando los logaritmos.
+
+(a) Argumente que la serie de varvas glaciales, digamos xt, muestra heteroscedasticidad al calcular la varianza de la muestra sobre la primera mitad y la segunda mitad de los datos. Argumente que la transformación yt=logxt estabiliza la varianza sobre la serie. Trace los histogramas de xt e yt para ver si la aproximacion a la normalidad mejora al transformar los datos. 
+
+
+```{r}
+varv1 = varve[1:317]
+varv2 = varve[318:634]
+var(varv1) # = 133.4574
+var(varv2) # = 594.4904
+var(log(varv1)) # = 0.2707217
+var(log(varv2)) # = 0.451371
+par(mfrow=c(1,2))
+hist(varve)
+hist(log(varve))
+```
+
+
+
+La varianza en la segunda mitad de la serie de varvas es obviamente mayor que la de la primera mitad. Dividiendo los datos por la mitad da $\hat{\gamma} _x(0)= 133, 594$ para la primera y segunda parte respectivamente y la varianza es aproximadamente 4,5 veces mayor en la segunda mitad. La serie transformada $\gamma _t = ln x_t$ tiene $\hat{\gamma} _y(0) = .27, .45$ para las dos mitades, respectivamente, y la varianza de la segunda mitad es solo alrededor de 1.7 veces mayor. 
+
+Los histogramas, calculados para las dos series de la figura 2.1, indican que la transformación mejora la aproximación normal.
+
+
+(b) Trace la serie yt. ¿Existen intervalos de tiempo, del orden de 100 años, en los que se pueda observar un comportamiento comparable al observado en los registros de temperatura global de la figura 1.2?
+
+
+```{r}
+plot(log(varve)) # for part (b)
+
+```
+
+Los datos entre 300 y 450 muestran una tendencia positiva similar a los datos de temperatura global. (Presumiblemente, esto se debe a una diferencia en la rotación de la Tierra).
+
+(c) Examine la muestra ACF de yt y comente.
+
+```{r}
+acf(log(varve)) # for part (c)
+```
+
+El ACF de $y_t$ es positivo para una gran cantidad de rezagos y disminuye de forma lineal 
+
+(d)Calculela diferencia $u_t = y_t - 1$, examine su gráfico de tiempo y muestre ACF, y argumente que la diferenciación de los datos de varva registrados produce una serie razonablemente estacionaria. ¿ Puedes pensar en una interpretación prácticapara $u_t$? 
+Hint: Para $|p|$ cerrada en cero, $log(1+p) \approx p$; sea $p= (y_t - y_{t-1})/ y_{t-1}$
+
+```{r}
+plot(diff(log(varve))) # for part (d)
+acf(diff(log(varve))) # for part (d)
+```
+
+
+La gráfica de $u_t$ y su ACF parecen indicar estacionariedad. El ACF tiene un valor significativo en el desfase 1 (con un valor de −0,3974). Porque $u_t$ se puede escribir en la forma
+
+$$ u_t = log \Big (\dfrac{x_t}{x_{t-1}}\Big) = log \Big ( 1 + \dfrac{x_t - x_{t-1}}{x_{t-1}}\Big) \approx \dfrac{x_t -x_{t-1}}{x_{t-1}},$$
+se puede interpretar como la proporción del cambio anual.
+
+(e) Con base en la muestra ACF de la serie transformada diferenciada calculada en (c), argumente que una generalización del modelo dado por el Ejemplo 1.23 podría ser razonable. Suponga que $u_t = \mu + w_t − \theta w_{t−1}$ es estacionario cuando las entradas $w_t$ se suponen independientes con media 0 y varianza $\sigma ^2 _w w$. Muestra que 
+
+
+![](\Users\50684\Documents\GitHub\II-2022\Modelos Lineales\formula1.PNG){width=width height=height}
+
+
+
+(f) Con base en el inciso (e), use $\hat{\rho} _u(1)$ y la estimación de la varianza de $u_t, \hat{\gamma} _u(0)$, para derivar estimaciones de $\theta$ y $\sigma ^2 _w$. Esta es una aplicación del método de los momentos de la estadística clásica, donde los estimadores de los parámetros se derivan al equiparar los momentos de la muestra con los momentos teóricos.
+
+
+
+2.10 Considere el modelo (2.46) usado en el Ejemplo 2.9,
+
+
+$$ x_t = \displaystyle \sum ^n _{j=10} \beta _1 (j/n) cos(2\pi tj/n) + \beta_2 (j/n)sin(2 \pi tj/n)$$
+
+(a) Muestre la matriz de diseño del modelo Z [ver (2.5)] para n = 4.
+
+
+```{r}
+ts.plot(oil, gas, col=1:2) 
+```
+
+trazará los datos en el mismo gráfico. Los datos se parecen a los paseos aleatorios que se muestran en la figura 1.10. Mostramos en el Capítulo 1, Ejemplo 1.18, que las caminatas aleatorias no son estacionarias [esto también se trata en el Problema 1.8]. Consulte la Figura 2.2. Use la siguiente URL para obtener más detalles sobre el conjunto de datos o más series simultáneas: http://tonto.eia.doe.gov/dnav/pet/pet_pri_spt_s1_w.htm.
+
+
+(b) Muestre numéricamente que las columnas de Z en el inciso (a) satisfacen el inciso (d) y luego mostrar $(Z'Z)^{-1}$ para este caso.
+
+Ver la respuesta a 2.8(d)
+
+(c) Si $x_1, x_2, x_3, x_4$ son cuatro observaciones, escriba las estimaciones de las cuatro betas, $\beta _1(0), \bets_1(1/4), \beta_2(1/4), \beta_1(1/2), en términos de las observaciones.
+
+El código está debajo y sigue las sugerencias. Las series transformadas parecen estacionarias y queda muy poca autocorrelación después de la transformación, por lo que una caminata aleatoria parece plausible para cada serie. Hay algunos valores muy extremos [se indica a los estudiantes que noten los valores atípicos en la parte (e)]. Las dos series parecen estar moviéndose al mismo tiempo [esto se enfatiza en las partes (d) y (e)].
+
+```{r}
+poil = diff(log(oil))
+pgas = diff(log(gas))
+ts.plot(poil, pgas, col=1:2)
+acf(poil)
+acf(pgas)
+```
+
+
+(d) Verifique que para cualquier entero positivo n y j, $k = 0, 1, . . . , [[n/2]]$, donde $[[·]]$ denota la mayor función entera:
+
+(i) Excepto para j = 0 o j = n/2,
+            
+$$\displaystyle \sum ^n _{t=1} cos^2 (2\pi tj/n) = \displaystyle \sum ^n _{t=1} sin^2(2\pi tj/n) = n/2$$
+La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si las incluye. los resultados son
+
+(ii) Cuando j=0 o j=n/2 
+          
+$$\displaystyle \sum ^n _{t=1} cos^2 (2\pi tj/n) = n \ \ \ \ \textit{pero} \ \ \  \displaystyle \sum ^n _{t=1} sin(2\pi tj/n)sin(2\pi tk/n) = 0$$
+            
+(iii) Para $j\neq k$
+
+$$\displaystyle \sum ^n _{t=1} cos (2\pi tj/n)cos(2\pi tk/n)  = \displaystyle \sum ^n _{t=1} sin(2\pi tj/n)sin(2\pi tk/n) = 0$$
+
+
+
+Ejercicio Capitulos 3
+
+3.22 Genere n = 50 observaciones a partir de un modelo gaussiano AR(1) con $phi = 0,99$ y $\sigma _w = 1$. Usando una técnica de estimación de su elección, compare la distribución asintótica aproximada de su estimación (la que usaría para la inferencia) con la resultados de un experimento de arranque (use B = 200).
+
+
+2.28 
+Una de las series recolectadas junto con partículas, temperatura y la mortalidad descrita en el ejemplo 2.2 es la serie del dióxido de azufre, so2. Ajuste un modelo ARIMA(p, d, q) a los datos, realizando todos los diagnósticos necesarios. Después de decidirse por un modelo adecuado, pronostique los datos en el futuro con cuatro períodos de tiempo (alrededor de un mes) y calcule intervalos de predicción del 95 \% para cada uno de los cuatro pronósticos. Comentario.
+
+
+
+
+
+
