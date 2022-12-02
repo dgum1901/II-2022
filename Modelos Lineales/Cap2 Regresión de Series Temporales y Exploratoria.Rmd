@@ -1,0 +1,171 @@
+---
+title: "Examen 2 de Modelos lineales"
+author: "Maria Jose Corea"
+date: "2022-12-01"
+output: html_document
+---
+
+## Ejercicio 2.8 El registro de varvas glaciales representando en la Figura 2.6 exhibe cierta no estacionaridad que pude mejorarse transformandolo a logaritmos y algunos datos adicionales a la no estacionalidad que se puede corregir diferenciado los logaritmos.
+
+(a) Argumente que la serie de varvas glaciales, digamos $x_t$ exhibe heteroeslasticidad por calcular la varianza muestral sobre la primera mitad de los datos. Argumente que la transformación $y_t=log x_t$ estabiliza la varianza sobre la serie. Trace los histogramas de $x_t$ e $y_t$ para ver si la aproximación a la normalidad se mejora transformando los datos.
+
+Solución
+
+(a) La varianza en la segunda mitad de la serie de varvas es obviamente mayor que la de la primera mitad. Dividiendo los datos a la mitad dan $γ_x(0)$ = 133, 594 para la primera y segunda parte respectivamente y la varianza es aproximadamente 4,5 veces más grande en la segunda mitad. La serie transformada $y_t$ = ln xt tiene $γ_y(0)$ = .27, .45 para las dos mitades, respectivamente, y la varianza de la segunda mitad es solo alrededor de 1,7 veces mayor. Los histogramas, calculados para las dos series de la figura 2.1, indican que la transformación mejora la aproximación normal.
+
+```{r}
+library(astsa)
+data(varve)
+data(oil)
+634/2
+317
+varv1 = varve[1:317]
+varv2 = varve[318:634]
+var(varv1) # = 133.4574
+var(varv2) # = 594.4904
+var(log(varv1)) # = 0.2707217
+var(log(varv2)) # = 0.451371
+par(mfrow=c(1,2))
+hist(varve)
+hist(log(varve))
+```
+Logró acomodar mejor los datos. Es mejor ajuste.
+(b) Trace la serie $y_t$ ¿Existen intervalos de tiempo del orden de 100 años donde se puede observar un comportamiento comparable al observado en el mundo de los registros de temperatura en la figura 1.2?
+```{r}
+plot(log(varve)) 
+```
+Estamos comparando dos bases que aparentan correlación.
+Los datos entre 300 y 450 muestran una tendencia positiva que es similar a los datos de temperatura global.
+(Presumiblemente, esto se debe a una diferencia en la rotación de la Tierra).
+
+(c) Examine la muestra ACF de $y_t$ y comente.
+ElACF noa ayuda distinguir la correlaciones a laos ditiontos lags, y nos ayuda a distinguir un posible modelo MA, la dependencia anterior de los recios, correlacion correspecto a los otros lags, la dependencia de los residuos pasados (MA, ES LA CORRELACION CON LOS RESIDUOS PASADOS) si uno quiere ver el modelo AR(Es la correlacion a los mismo observación, no a los residuos del pasado) PACF es el que hace (modela) AR
+```{r}
+acf(log(varve)) 
+```
+
+Aún no podemos diferenciar un ruido blanco puesto que la serie de tiempo no cae exponencialmente a la banda. Se observa una alta correlación en el primer lag, y esto se debe a que se sabe que siempre va a haber alta correlación asimismo. Se observa alta correlación entre los meses.
+El ACF de yt es positivo para una gran cantidad de rezagos y disminuye de forma lineal.
+
+(d) Calcule la diferencia $u_t=y_t-y_{t-1}$ examine su gráfica de los datos de varva registrados produce una serie razonablemente estacionario.¿Puedes pensar en una interpretación práctica para Utah? Pista: Para |p| cerca de cero, log(1+p)$\approx$p: sea
+
+$$P=\dfrac{y_t-y_{t-1}}{y_{t-1}}$$
+```{r}
+
+u_t <- diff(log(varve))
+par(mfrow=c(2,1))
+plot(u_t) 
+abline(h = 0, col="red")
+acf(u_t, lag.max = 50) 
+
+
+
+rhos <- acf(u_t)
+rhos$acf[2] # rho(1)
+round(var(u_t) *( (length(varve)-1)/ length(varve)), 4)
+
+u = as.numeric(u_t)
+round(sum((u-mean(u))^2)/length(u), 4)
+
+```
+
+
+ La argumentación de estacionario viene de que la media es masomenos constante a lo largo de la serie (cero) y que la varianza también es constante
+La aplicación práctica es que como ver rendimiento logaritmicos o tasa de  crecimiento de un punto a otro por lo de que Se observan volatilidades
+
+e) Basado en la muestra ACF de la serie transformada diferenciada calculada en (c), argumente que una generalización del modelo dado por el, Ejempli 1.23 podría ser razonable. Asumir $u_t=\mu+w_t-\theta w_{t-1}$ es estacionario cuando las entradas $w_t$ se suponen independientes con media 0 y varianza $\theta^2w$. Demuestre que:
+
+$$\gamma(h)= \sigma^2_w(1+\theta^2) \text{ si h=0 }$$
+$$\gamma(h)= -\sigma^2_w\theta \text{ si h= +- 1 }$$
+$$\gamma(h)= 0 \text{ si |h|>1 }$$
+
+(f) Con base en la parte (e), use $\rho(1)$ y la varianza estimada de $u_t$, $y_u(0)$, para obtener estimaciones de $\theta$ y $\sigma_w^2$. Esta es una aplicación del método de momentos de la estadística clásica, donde los estimadores de los parámetros son derivado al igular los momentos de la muestra con los momentos teóricos.
+
+2.10.
+a) Trazará los datos en el mismo gráfico. Los datos se asemejan al azar.
+paseos que se muestran en la figura 1.10. Mostramos en el Capítulo 1, Ejemplo 1.18, que las caminatas aleatorias no son estacionarias
+[esto también se trata en el Problema 1.8]. Consulte la Figura 2.2. Utilice la siguiente URL para obtener más detalles sobre los datos
+conjunto o más series concurrentes:
+
+```{r}
+data(gas)
+ts.plot(oil, gas, col=1:2)
+```
+Se asemejan las series de tiempos
+
+b)
+
+c)
+
+El código está debajo y sigue las sugerencias. La serie transformada parece estacionaria y hay muy poco la autocorrelación que queda después de la transformación, por lo que una caminata aleatoria parece plausible para cada serie. Existen
+algunos valores muy extremos [se indica a los estudiantes que observen los valores atípicos en la parte (e)]. Las dos series parecen ser
+moviéndose al mismo tiempo [esto se enfatiza en las partes (d) y (e)].
+
+```{r}
+poil = diff(log(oil))
+pgas = diff(log(gas))
+ts.plot(poil, pgas, col=1:2)
+acf(poil)
+acf(pgas)
+
+```
+
+```{r}
+ccf(poil, pgas)
+# corr[poil(t+Lag), pgas(t)] 
+```
+
+Existe una fuerte correlación cruzada en el desfase cero [.66] y el poil una semana más adelante [.18]. También hay
+retroalimentación para pgas tres semanas antes [.17]. Como se indica en la sugerencia, ccf(poil, pgas) tiene aceite líder
+para valores negativos de Lag; es decir, R calcula corr[poil(t+Lag), pgas(t)] para Lag = 0, ±1, ±2,
+
+e)
+
+
+```{r}
+ lag2.plot(poil, pgas, 3)
+```
+
+Aparte de los valores atípicos extremos antes mencionados (10-30% de cambios en los precios del petróleo/gas en una semana), los datos parecen bastante lineal. Además, puede haber alguna asimetría observada en el gráfico de retraso 1, pero esta apariencia podría ser causada por valores atípicos.
+
+f)
+i. La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si incluye
+a ellos. los resultados son:
+
+```{r}
+plot.ts(resid(fit))
+acf(resid(fit)) 
+```
+
+3.22 Genere n = 50 observaciones a partir de un modelo Gaussiano AR(1) con φ = 0.99 y σw = 1. Usando una técnica de estimación de su elección, compare la distribución asintótica aproximada de su estimación (la que usaría para inferencia) con los resultados de un experimento de arranque (utilice B = 200).
+
+A continuación se muestra el código R para este ejemplo usando Yule-Walker. La distribución asintótica es normal con media .99 y error estándar p(1 − .992)/50 ≈ .02. La distribución de arranque debe ser muy diferente a la distribución asintótica. (Si los estudiantes usan MLE, puede haber problemas porque φ está muy cerca del límite.Puede alertar a los alumnos sobre este hecho o dejar que lo averigüen por sí mismos).
+
+```{r}
+x = arima.sim(list(ar=.99), n=50)
+fit = ar.yw(x, order=1)
+phi = fit$ar # estimate of phi
+nboot = 200 # number of bootstrap replicates
+resids = fit$resid[-1] # the first resid is NA
+x.star = x # x[1] stays the same throughout
+phi.star = rep(NA, nboot)
+for (i in 1:nboot) {
+resid.star = sample(resids, replace=TRUE)
+for (t in 1:49) x.star[t+1] = phi*x.star[t] + resid.star[t]
+phi.star[i] = ar.yw(x.star, order=1)$ar
+}
+summary(phi.star); hist(phi.star); stem(phi.star) # and so on ..
+```
+3.24
+
+Considere la serie estacionaria generada por
+xt = α + φxt−1 + wt + θwt−1, donde E(xt) = µ, |θ| < 1, |φ| < 1 y las wt son variables aleatorias iid con media cero y varianza σ2w.
+(a) Determine la media en función de α para el modelo anterior. Encuentra el
+autocovarianza y ACF del proceso xt, y demuestre que el proceso es
+débilmente estacionario. ¿Es el proceso estrictamente estacionario?
+(b) Demuestre que la distribución límite cuando n → ∞ de la media muestral es normal y encuentre su media límite y su varianza en términos de α, φ, θ y
+σ2w. (Nota: esta parte usa los resultados del Apéndice A).
+
+
+
+3.21

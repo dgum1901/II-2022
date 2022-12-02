@@ -7,6 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(fitdistrplus)
+library(VineCopula)
+library(copula)
+library(plot3D)
+library(flexsurv)
+library(dplyr)
+library(readr)
 ```
 
 
@@ -225,7 +233,7 @@ We’ll start by fitting the margin. First, do a histogram of both Apple and Mic
 
 ```{r}
 library(readr)
-base <- read_csv("C:/Users/Maria/Downloads/returns_00_17.csv")
+base <-  read_csv("returns_00_17.csv")
 # Parte 1) 
 
 apple <- base$Apple
