@@ -62,10 +62,13 @@ acf(u_t, lag.max = 50)
 
 rhos <- acf(u_t)
 rhos$acf[2] # rho(1)
-round(var(u_t) *( (length(varve)-1)/ length(varve)), 4)
+
+#varianza*n-1/n
+
+round(var(u_t) *( (length(varve)-1)/ length(varve)), 4)#gamma(0)=varianza
 
 u = as.numeric(u_t)
-round(sum((u-mean(u))^2)/length(u), 4)
+round(sum((u-mean(u))^2)/length(u), 4)#gamma(0)
 
 ```
 
@@ -93,7 +96,32 @@ ts.plot(oil, gas, col=1:2)
 ```
 Se asemejan las series de tiempos
 
-b)
+b)Muestre numéricamente que las columnas de Z en el inciso (a) satisfacen el inciso (d) y
+luego mostrar (Z'Z)−1 para este caso.
+
+```{r}
+u_t1 <- diff(log(gas))
+u_t2 <- diff(log(oil))
+par(mfrow=c(2,1))
+plot(u_t1) 
+abline(h = 0, col="red")
+acf(u_t1, lag.max = 50) 
+rhos <- acf(u_t1)
+```
+
+
+```{r}
+rhos$acf[2] # rho(1)
+
+#varianza*n-1/n
+
+round(var(u_t) *( (length(varve)-1)/ length(varve)), 4)#gamma(0)=varianza
+
+u = as.numeric(u_t)
+round(sum((u-mean(u))^2)/length(u), 4)#gamma(0)
+
+```
+
 
 c)
 
@@ -118,17 +146,25 @@ ccf(poil, pgas)
 Existe una fuerte correlación cruzada en el desfase cero [.66] y el poil una semana más adelante [.18]. También hay
 retroalimentación para pgas tres semanas antes [.17]. Como se indica en la sugerencia, ccf(poil, pgas) tiene aceite líder
 para valores negativos de Lag; es decir, R calcula corr[poil(t+Lag), pgas(t)] para Lag = 0, ±1, ±2,
-
+Tambien se nota los periodos de mayor volatilidad, pero se ve que la media anda en cero, en general parece que puede no haber una estacionalidad, puesto que depende algo adicional
 e)
 
 
 ```{r}
+install.packages('astsa')
+  library('astsa')
  lag2.plot(poil, pgas, 3)
 ```
 
 Aparte de los valores atípicos extremos antes mencionados (10-30% de cambios en los precios del petróleo/gas en una semana), los datos parecen bastante lineal. Además, puede haber alguna asimetría observada en el gráfico de retraso 1, pero esta apariencia podría ser causada por valores atípicos.
 
 f)
+
+```{r}
+install.packages('tsa3.rda')
+  
+```
+
 i. La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si incluye
 a ellos. los resultados son:
 
