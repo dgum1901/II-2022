@@ -82,13 +82,9 @@ se puede interpretar como la proporción del cambio anual.
 
 
 
-2.10 Considere el modelo (2.46) usado en el Ejemplo 2.9,
+2.10 Considere las dos series de tiempo semanales de petróleo y gas. La serie del petróleo está en dólares por barril, mientras que la serie del gas está en centavos por galón.
 
-
-$$ x_t = \displaystyle \sum ^n _{j=10} \beta _1 (j/n) cos(2\pi tj/n) + \beta_2 (j/n)sin(2 \pi tj/n)$$
-
-(a) Muestre la matriz de diseño del modelo Z [ver (2.5)] para n = 4.
-
+(a) Trace los datos en el mismo gráfico. ¿A cuál de las series simuladas mostradas en la Sección 1.2 se parecen más estas series? ¿Crees que las series son estacionarias (explica tu respuesta)?
 
 ```{r}
 ts.plot(oil, gas, col=1:2) 
@@ -97,11 +93,13 @@ ts.plot(oil, gas, col=1:2)
 trazará los datos en el mismo gráfico. Los datos se parecen a los paseos aleatorios que se muestran en la figura 1.10. Mostramos en el Capítulo 1, Ejemplo 1.18, que las caminatas aleatorias no son estacionarias [esto también se trata en el Problema 1.8]. Consulte la Figura 2.2. Use la siguiente URL para obtener más detalles sobre el conjunto de datos o más series simultáneas: http://tonto.eia.doe.gov/dnav/pet/pet_pri_spt_s1_w.htm.
 
 
-(b) Muestre numéricamente que las columnas de Z en el inciso (a) satisfacen el inciso (d) y luego mostrar $(Z'Z)^{-1}$ para este caso.
+(b) En economía, a menudo es el cambio porcentual en el precio (denominado tasa de crecimiento o rendimiento), más que el cambio absoluto del precio, lo que es importante. Argumente que se podría aplicar una transformación de la forma yt = ∇ log xt a los datos, donde xt es la serie de precios del petróleo o del gas. Sugerencia: recuerde la nota al pie 1.2.
+
 
 Ver la respuesta a 2.8(d)
 
-(c) Si $x_1, x_2, x_3, x_4$ son cuatro observaciones, escriba las estimaciones de las cuatro betas, $\beta _1(0), \bets_1(1/4), \beta_2(1/4), \beta_1(1/2), en términos de las observaciones.
+(c) Transforme los datos como se describe en la parte (b), trace los datos en el mismo gráfico, mire los ACF de muestra de los datos transformados y comente.
+
 
 El código está debajo y sigue las sugerencias. Las series transformadas parecen estacionarias y queda muy poca autocorrelación después de la transformación, por lo que una caminata aleatoria parece plausible para cada serie. Hay algunos valores muy extremos [se indica a los estudiantes que noten los valores atípicos en la parte (e)]. Las dos series parecen estar moviéndose al mismo tiempo [esto se enfatiza en las partes (d) y (e)].
 
@@ -114,33 +112,206 @@ acf(pgas)
 ```
 
 
-(d) Verifique que para cualquier entero positivo n y j, $k = 0, 1, . . . , [[n/2]]$, donde $[[·]]$ denota la mayor función entera:
+(d) Grafique el CCF de los datos transformados y comente Los valores pequeños, pero significativos, cuando el gas lleva al petróleo pueden considerarse como retroalimentación.
 
-(i) Excepto para j = 0 o j = n/2,
-            
-$$\displaystyle \sum ^n _{t=1} cos^2 (2\pi tj/n) = \displaystyle \sum ^n _{t=1} sin^2(2\pi tj/n) = n/2$$
-La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si las incluye. los resultados son
-
-(ii) Cuando j=0 o j=n/2 
-          
-$$\displaystyle \sum ^n _{t=1} cos^2 (2\pi tj/n) = n \ \ \ \ \textit{pero} \ \ \  \displaystyle \sum ^n _{t=1} sin(2\pi tj/n)sin(2\pi tk/n) = 0$$
-            
-(iii) Para $j\neq k$
-
-$$\displaystyle \sum ^n _{t=1} cos (2\pi tj/n)cos(2\pi tk/n)  = \displaystyle \sum ^n _{t=1} sin(2\pi tj/n)sin(2\pi tk/n) = 0$$
+Existe una fuerte correlación cruzada en el desfase cero [.66] y el poil una semana más adelante [.18]. También hay comentarios para pgas dentro de tres semanas [.17]. Como se indica en la sugerencia, ccf(poil, pgas) tiene aceite a la cabeza para valores negativos de Lag; es decir, R calcula $corr[poil(t+Lag), pgas(t)]$ para $Lag = 0, ±1, ±2,$
 
 
+
+(e) Mostrar diagramas de dispersión de las series de tasas de crecimiento del petróleo y el gas para hasta tres semanas de anticipación de los precios del petróleo; incluya un suavizador no paramétrico en cada gráfico y comente los resultados (p. ej., ¿hay valores atípicos? ¿Las relaciones son lineales?).
+
+Usando astsa o tsa3.rda, emitiendo lag2.plot(poil, pgas, 3) dará los gráficos. Aparte de los valores atípicos extremos antes mencionados (10 30% de cambios en los precios del petróleo/gas en una semana), los datos parecen bastante lineales. Además, es posible que se observe cierta asimetría en el gráfico de retraso 1, pero esta apariencia podría deberse a valores atípicos.
+
+
+(f) Ha habido una serie de estudios que cuestionan si los precios de la gasolina responden más rápidamente cuando los precios del petróleo están subiendo que cuando los precios del petróleo están cayendo ("asimetría"). Intentaremos explorar esta cuestión aquí con una regresión retardada simple; ignoraremos algunos problemas obvios, como valores atípicos y errores autocorrelacionados, por lo que este no será un análisis definitivo. Sean Gt y Ot el gas y el petróleo
+las tasas de crecimiento.
+
+(i) Ajuste la regresión (y comente los resultados)
+
+$$ G_t = \alpha _1 + \alpha _2 I_t + \beta _2 O_{t-1} + w_t$$
+
+donde $I_t = 1$ si $O_t \geq 0$ y 0 en caso contrario (Es el indicador de crecimiento nulo o crecimiento positivo del precio del petróleo). 
+
+Hint:
+$$poil = diff(log(oil))$$
+
+$$pgas = diff(log(gas))$$
+
+$$indi = ifelse(poil < 0, 0, 1)$$
+
+$$mess = ts.intersect(pgas, poil, poilL = lag(poil,-1), indi)$$
+
+$$summary(fit <- lm(pgas~ poil + poilL + indi, data=mess))$$
+
+
+La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si incluye
+a ellos. los resultados son
+
+(ii) ¿Cuál es el modelo ajustado cuando hay un crecimiento negativo en el precio del petróleo en el tiempo t? ¿Cuál es el modelo ajustado cuando no hay crecimiento o hay un crecimiento positivo en el precio del petróleo? ¿Estos resultados apoyan la hipótesis de la asimetría?
+
+Note que $ −0.006445 + 0.012368 = .006$. Por lo tanto, los dos modelos son
+
+$$ \hat{G} _t = -0.006 + 0.68O_t + 0.11O_{t-1} \ \ \ \ \ \textit{si} \ \ \ \ \ \ O_t < 0$$
+$$ \hat{G} _t = 0.006 + 0.68O_t + 0.11O_{t-1} \ \ \ \ \ \textit{si} \ \ \ \ \ \ O_t \geq 0$$
+lo que sugiere que no hay asimetría para estos datos. Los precios son FOB (Free On Board: una transacción de venta en la que el vendedor pone el producto a disposición para que lo recoja en un puerto o terminal específico a un precio específico y el comprador paga el transporte y el seguro posteriores), por lo que la asimetría podría ser encontrado en los precios de la bomba de gas
+
+
+(iii) Analizar los residuos del ajuste y comentar.
+
+```{r}
+#plot.ts(resid(fit))
+#acf(resid(fit))
+```
+
+
+plot.ts(resid(fit)) y acf(resid(fit)) parecen sugerir que el ajuste no es malo excepto por los valores atípicos muy extremos.
 
 Ejercicio Capitulos 3
 
 3.22 Genere n = 50 observaciones a partir de un modelo gaussiano AR(1) con $phi = 0,99$ y $\sigma _w = 1$. Usando una técnica de estimación de su elección, compare la distribución asintótica aproximada de su estimación (la que usaría para la inferencia) con la resultados de un experimento de arranque (use B = 200).
 
+A continuación se muestra el código R para este ejemplo usando Yule-Walker. La distribución asintótica es normal con media .99 y error estándar $\sqrt{1 − 0.99^2 /50} \approx 0.02$. La distribución bootstrap debería ser muy diferente a la distribución asintótica. (Si los estudiantes usan MLE, puede haber problemas porque $\phi$ está muy cerca del límite.
+Puede alertar a los alumnos sobre este hecho o dejar que lo averigüen por sí mismos).
 
-2.28 
-Una de las series recolectadas junto con partículas, temperatura y la mortalidad descrita en el ejemplo 2.2 es la serie del dióxido de azufre, so2. Ajuste un modelo ARIMA(p, d, q) a los datos, realizando todos los diagnósticos necesarios. Después de decidirse por un modelo adecuado, pronostique los datos en el futuro con cuatro períodos de tiempo (alrededor de un mes) y calcule intervalos de predicción del 95 \% para cada uno de los cuatro pronósticos. Comentario.
+```{r}
+x = arima.sim(list(ar=.99), n=50)
+fit = ar.yw(x, order=1)
+phi = fit$ar # estimate of phi
+nboot = 200 # number of bootstrap replicates
+resids = fit$resid[-1] # the first resid is NA
+x.star = x # x[1] stays the same throughout
+phi.star = rep(NA, nboot)
+for (i in 1:nboot) {
+resid.star = sample(resids, replace=TRUE)
+for (t in 1:49) x.star[t+1] = phi*x.star[t] + resid.star[t]
+phi.star[i] = ar.yw(x.star, order=1)$ar
+}
+summary(phi.star); hist(phi.star); stem(phi.star) 
+
+```
+
+
+3.34 Adaptar un modelo ARIMA(p, d, q) a la serie anhídrido sulfuroso, so2, realizando todos los diagnósticos necesarios. Después de decidirse por un modelo adecuado, pronostique los datos en el futuro con cuatro períodos de tiempo (alrededor de un mes) y calcule intervalos de predicción del 95 % para cada uno de los cuatro pronósticos. Comentario. (El dióxido de azufre es uno de los contaminantes monitoreados en el estudio de mortalidad descrito en el Ejemplo 2.2.)
+
+Hay tendencia, por lo que consideramos la (primera) serie diferenciada, que parece estacionaria. La investigación de ACF y PACF de los diferenciados sugiere un modelo ARMA(0,1) o ARMA(1,1). Ajustar un ARIMA(0,1,1) y ARIMA(1,1,1) a los datos originales indica el modelo ARIMA(0,1,1); el parámetro AR no es significativo en el ajuste ARIMA(1,1,1). Los residuos parecen ser (en el límite) blancos, pero no normales; hay numerosos valores atípicos. Ajustar ARIMA(0,1,1) a log(so2) elimina los valores atípicos, pero no cambia nada más de forma notable
+
+
+```{r}
+plot(so2); plot(log(so2))
+plot(diff(so2)); plot(diff(log(so2)))
+plot(diff(so2)); plot(diff(log(so2)))
+acf2(diff(so2)); acf2(diff(log(so2)))
+sarima(so2,0,1,1); sarima(log(so2),0,1,1)
+sarima.for(so2,4,0,1,1); sarima.for(log(so2),4,0,1,1)
+
+```
+
+3.35 Sea St los datos de ventas mensuales en ventas (n = 150), y sea Lt el indicador líder en adelanto.
+
+(a) Ajuste un modelo ARIMA a St , los datos de ventas mensuales. Analice el ajuste de su modelo paso a paso, presentando su (A) examen inicial de los datos, (B) transformaciones, si es necesario, (C) identificación inicial de los órdenes de dependencia y el grado de diferenciación, (D) parámetro estimación, (E) diagnóstico residual y elección del modelo.
+
+```{r}
+plot(sales)
+```
+parece una caminata aleatoria, por lo que la diferencia d = 1, (puede hacer esto con log(sales) pero no es necesario).
+
+```{r}
+acf2(diff(sales)) 
+```
+Tanto ACF como PACF siguen, así que elija p = q = 1 
+
+```{r}
+sarima(sales,1,1,1, no.constant=TRUE)
+```
+
+Note que encaja bien
+
+(b) Use el CCF y las gráficas de retardo entre $\triangledown S_t$ y $ \triangledown L_t$ argumentar que una regresión de $\triangledown S_t$ en $\triangledown L_{t-3}$$ es razonable. [Tenga en cuenta que en lag2.plot(), la primera serie nombrada es la que se retrasa.]
+
+
+```{r}
+#ccf(diff(sales),diff(lead))
+```
+
+```{r}
+#lag2.plot(diff(lead), diff(sales),8)
+```
+ccf(diff(sales),diff(lead)) y lag2.plot(diff(lead), diff(sales),8) sugieren que existe una fuerte relación lineal entre diff(sales) y lag(diff(lead),-3).
+```{r}
+lag2.plot
+```
+
+Tambien lag2.plot muestra una fuerte relación lineal.
+
+
+(c) Ajuste el modelo de regresión $\triangledown S_t= \beta _0 + \beta _1 \triangledown L_{t−3} + x_t$, donde $x_t$ es un proceso ARMA (explique cómo decidió su modelo para $x_t$). Discuta sus resultados. [Consulte el Ejemplo 3.45 para obtener ayuda sobre la codificación de este problema.]
+
+Después de ajustar la regresión, ACF y PACF indican un AR(1) para los residuos, que se ajusta bien.
+
+
+
+```{r}
+#u = ts.intersect(diff(sales), lag(diff(lead),-3))
+#ds = u[,1]
+#dl3 = u[,2]
+#(fit1 = lm(ds~dl3)) # beta1hat is highly significant
+#acf2(resid(fit1)) # => an AR(1) for the residuals
+#(fit2 = sarima(ds, 1,0,0, xreg=dl3)) # reg with ar1 errors
+#plot(resid(fit2$fit))
+#acf2(resid(fit2$fit))
+```
+
+3.42 Ajuste un modelo ARIMA estacional de su elección a los datos de desempleo en UnempRate. Utilice el modelo estimado para pronosticar los próximos 12 meses.
+
+Este conjunto de datos es una actualización de unemp, pero en términos de porcentaje de desempleados. Las técnicas son las mismas que en el problema anterior y el modelo es casi el mismo; se necesita un parámetro MA adicional
+
+```{r}
+acf2(diff(diff(unemp),12), 60)
+sarima(UnempRate, 2, 1, 1, 0, 1, 1, 12)
+sarima.for(UnempRate, 12, 2, 1, 1, 0, 1, 1, 12)
+```
 
 
 
 
+EJERCICIOS CAPITULO 4
+
+4.10  Los niveles de concentración de sal que se sabe que ocurrieron sobre las filas, correspondientes a los niveles de temperatura promedio para los datos de la ciencia del suelo considerados en la Figura 1.18 y la Figura 1.19, están en salt y saltemp . Trace la serie y luego identifique las frecuencias dominantes realizando análisis espectrales separados en las dos series. Incluya intervalos de confianza para las frecuencias dominantes e interprete sus hallazgos
+
+
+
+```{r}
+par(mfrow=c(2,1)) # for CIs, remove log="no" below
+mvspec(saltemp, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+mvspec(salt, taper=0, log="no")
+abline(v=1/16, lty="dashed")
+
+```
+
+ 4.15 Repita el problema 4.10 utilizando un procedimiento de estimación espectral no paramétrico. Además de discutir sus hallazgos en detalle, comente su elección de una estimación espectral con respecto al suavizado y la disminución gradual.
+ 
+ 
+ 
+ Problema 4.9 
+ 
+```{r}
+mvspec(sunspotz, taper=0, log="no") # for CI, remove log="no"
+abline(v=3/240, lty="dashed") # 80 year cycle
+abline(v=22/240, lty="dashed") # 11 year cycle
+
+```
+ 
+ Por problema 4.9 se tiene lo anterior, entonces se continua con 
+ 
+```{r}
+#par(mfrow=c(2,1))
+#mvspec(saltemp, spans=c(1,1), log="no", taper=.5)
+#abline(v=1/16, lty="dashed")
+#salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+#abline(v=1/16, lty="dashed")
+
+```
+ 
 
 
