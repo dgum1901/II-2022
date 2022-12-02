@@ -34,7 +34,8 @@ Logró acomodar mejor los datos. Es mejor ajuste.
 ```{r}
 plot(log(varve)) 
 ```
-Estamos comparando dos bases que aparentan correlación.
+Estamos comparando dos bases que aparentan correlación. Se observa que no hay estacionalidad 
+
 Los datos entre 300 y 450 muestran una tendencia positiva que es similar a los datos de temperatura global.
 (Presumiblemente, esto se debe a una diferencia en la rotación de la Tierra).
 
@@ -76,31 +77,36 @@ round(sum((u-mean(u))^2)/length(u), 4)#gamma(0)
  La argumentación de estacionario viene de que la media es masomenos constante a lo largo de la serie (cero) y que la varianza también es constante
 La aplicación práctica es que como ver rendimiento logaritmicos o tasa de  crecimiento de un punto a otro por lo de que Se observan volatilidades
 
-e) Basado en la muestra ACF de la serie transformada diferenciada calculada en (c), argumente que una generalización del modelo dado por el, Ejempli 1.23 podría ser razonable. Asumir $u_t=\mu+w_t-\theta w_{t-1}$ es estacionario cuando las entradas $w_t$ se suponen independientes con media 0 y varianza $\theta^2w$. Demuestre que:
-
-$$\gamma(h)= \sigma^2_w(1+\theta^2) \text{ si h=0 }$$
-$$\gamma(h)= -\sigma^2_w\theta \text{ si h= +- 1 }$$
-$$\gamma(h)= 0 \text{ si |h|>1 }$$
-
-(f) Con base en la parte (e), use $\rho(1)$ y la varianza estimada de $u_t$, $y_u(0)$, para obtener estimaciones de $\theta$ y $\sigma_w^2$. Esta es una aplicación del método de momentos de la estadística clásica, donde los estimadores de los parámetros son derivado al igular los momentos de la muestra con los momentos teóricos.
 
 2.10.
-a) Trazará los datos en el mismo gráfico. Los datos se asemejan al azar.
-paseos que se muestran en la figura 1.10. Mostramos en el Capítulo 1, Ejemplo 1.18, que las caminatas aleatorias no son estacionarias
-[esto también se trata en el Problema 1.8]. Consulte la Figura 2.2. Utilice la siguiente URL para obtener más detalles sobre los datos
-conjunto o más series concurrentes:
+a) Trace los datos en el mismo gráfico. ¿Cuál de las series simuladas mostradas en
+Sección 1.2 ¿A qué se parecen más estas series? ¿Crees que las series son estacionarias?
+(Explica tu respuesta)?
 
 ```{r}
 data(gas)
 ts.plot(oil, gas, col=1:2)
+
 ```
-Se asemejan las series de tiempos
+Se asemejan las series de tiempos, No parecen estacionarias por los picos.
 
-b)Muestre numéricamente que las columnas de Z en el inciso (a) satisfacen el inciso (d) y
-luego mostrar (Z'Z)−1 para este caso.
+b)En economía, a menudo es el cambio porcentual en el precio (denominado tasa de crecimiento o
+retorno), en lugar del cambio de precio absoluto, eso es importante. Argumentar que un
+la transformación de la forma yt = ∇ log xt podría aplicarse a los datos, donde xt
+es la serie de precios del petróleo o del gas.
+c) Transforme los datos como se describe en la parte (b), trace los datos en el mismo gráfico, observe
+en los ACF de muestra de los datos transformados y comente.
 
+Respuesta de b y c
 ```{r}
 u_t1 <- diff(log(gas))
+par(mfrow=c(2,1))
+plot(u_t1) 
+abline(h = 0, col="red")
+acf(u_t1, lag.max = 50) 
+rhos <- acf(u_t1)
+```
+```{r}
 u_t2 <- diff(log(oil))
 par(mfrow=c(2,1))
 plot(u_t1) 
@@ -109,26 +115,38 @@ acf(u_t1, lag.max = 50)
 rhos <- acf(u_t1)
 ```
 
-
 ```{r}
-rhos$acf[2] # rho(1)
-
-#varianza*n-1/n
-
-round(var(u_t) *( (length(varve)-1)/ length(varve)), 4)#gamma(0)=varianza
-
-u = as.numeric(u_t)
-round(sum((u-mean(u))^2)/length(u), 4)#gamma(0)
+ts.plot(u_t1,u_t2)
+abline(h = 0, col="red")
 
 ```
+Se observa una media concentrada en 0, pero picos de volatilidad, lo cual significa que no hay estacionalidad.La serie transformada parece estacionaria y hay muy poco la autocorrelación que queda después de la transformación, por lo que una caminata aleatoria parece plausible para cada serie.
 
+Eso se puede verificar
 
-c)
+```{r}
+data(gas)
+data(oil)
+545/2
+317
+gas1 = gas[1:272]
+gas2 = gas[273:545]
+var(gas1) 
+var(gas2)
+var(log(gas1)) 
+var(log(gas2)) 
+```
 
-El código está debajo y sigue las sugerencias. La serie transformada parece estacionaria y hay muy poco la autocorrelación que queda después de la transformación, por lo que una caminata aleatoria parece plausible para cada serie. Existen
-algunos valores muy extremos [se indica a los estudiantes que observen los valores atípicos en la parte (e)]. Las dos series parecen ser
-moviéndose al mismo tiempo [esto se enfatiza en las partes (d) y (e)].
+```{r}
 
+oil1 = oil[1:272]
+oil2 = oil[273:545]
+var(oil1) 
+var(oil2)
+var(log(oil1)) 
+var(log(oil2)) 
+
+```
 ```{r}
 poil = diff(log(oil))
 pgas = diff(log(gas))
@@ -138,18 +156,26 @@ acf(pgas)
 
 ```
 
+Parece que de fijo si hay estacionalidad en gas y con oil está la variabilidad un poco distanciadas, pero parece que no son similares entre ambas mitades pero no iguales.
+
+d)Trace el CCF de los datos transformados y comente El pequeño, pero significativo
+los valores cuando el gas lleva al petróleo pueden considerarse como retroalimentación.
+Existen algunos valores muy extremos [se indica a los estudiantes que observen los valores atípicos en la parte (e)]. Las dos series parecen ser moviéndose al mismo tiempo [esto se enfatiza en las partes (d) y (e)].
+
+
+
 ```{r}
 ccf(poil, pgas)
 # corr[poil(t+Lag), pgas(t)] 
 ```
+En este ejemplo nos está interesanto el gas, por eso poil está en la primera entradas, son todos los lags respeto a gas
 
 Existe una fuerte correlación cruzada en el desfase cero [.66] y el poil una semana más adelante [.18]. También hay
 retroalimentación para pgas tres semanas antes [.17]. Como se indica en la sugerencia, ccf(poil, pgas) tiene aceite líder
 para valores negativos de Lag; es decir, R calcula corr[poil(t+Lag), pgas(t)] para Lag = 0, ±1, ±2,
 Tambien se nota los periodos de mayor volatilidad, pero se ve que la media anda en cero, en general parece que puede no haber una estacionalidad, puesto que depende algo adicional
-e)
 
-
+e)Mostrar diagramas de dispersión de la serie de tasas de crecimiento del petróleo y el gas durante un máximo de tres semanas del tiempo de entrega de los precios del petróleo; incluir un suavizador no paramétrico en cada gráfico y Comente los resultados (p. ej., ¿hay valores atípicos? ¿Las relaciones son lineales?).
 ```{r}
 install.packages('astsa')
   library('astsa')
@@ -157,29 +183,58 @@ install.packages('astsa')
 ```
 
 Aparte de los valores atípicos extremos antes mencionados (10-30% de cambios en los precios del petróleo/gas en una semana), los datos parecen bastante lineal. Además, puede haber alguna asimetría observada en el gráfico de retraso 1, pero esta apariencia podría ser causada por valores atípicos.
+Lo que se observa es la alta correlación en entre ambas(lag=0) y que en la tercera también es fuerte dicha relación
+ Pero sirve más que nada para identificar eso
+Y la pasar al punto que sigue que es que en el 1 y 3 son muy fuertes, después del lag 0, evidentemente
 
-f)
+
+f) Ha habido una serie de estudios que cuestionan si los precios de la gasolina responden más rápido cuando los precios del petróleo están subiendo que cuando los precios del petróleo están cayendo ("asimetría"). Intentaremos explorar esta cuestión aquí con una regresión retardada simple; ignoraremos algunos problemas obvios, como valores atípicos y errores autocorrelacionados, por lo que este no será un análisis definitivo. Sean Gt y Ot el gas y el petróleo las tasas de crecimiento.
+
+(i) Ajuste la regresión (y comente los resultados)
+Gt = α1 + α2It + β1Ot + β2Ot−1 + peso, donde It = 1 si Ot ≥ 0 y 0 en caso contrario (It es el indicador de no crecimiento o
+crecimiento positivo del precio del petróleo). Insinuación:
 
 ```{r}
-install.packages('tsa3.rda')
-  
+poil = diff(log(oil))
+pgas = diff(log(gas))
+indi = ifelse(poil < 0, 0, 1)
+mess = ts.intersect(pgas, poil, poilL = lag(poil,-1), indi)
+summary(fit <- lm(pgas~ poil + poilL + indi, data=mess))
+
 ```
 
-i. La sugerencia muestra cómo configurar la regresión. Tenga en cuenta que las interacciones no son significativas si incluye
-a ellos. los resultados son:
+Observe que no hay valores significativos
+
+(ii) ¿Cuál es el modelo ajustado cuando hay un crecimiento negativo en el precio del petróleo en el momento
+t? ¿Cuál es el modelo ajustado cuando no hay crecimiento o hay un crecimiento positivo en el precio del petróleo?
+¿Estos resultados apoyan la hipótesis de la asimetría?
+
+Note −0.006445 + 0.012368 = .006. Hence, the two models are
+Gˆt = −.006 + .68Ot + .11Ot−1 if Ot < 0
+Gˆt = .006 + .68Ot + .11Ot−1 if Ot ≥ 0
+No hay asimertría para estos datos
+
+(iii) Analizar los residuos del ajuste y comentar.
+
 
 ```{r}
-plot.ts(resid(fit))
-acf(resid(fit)) 
+plot.ts(resid(fit)) 
+ acf(resid(fit)) 
 ```
+Se ajusta muchísimo mejor, excepto por los outliers.
+
+
 
 3.22 Genere n = 50 observaciones a partir de un modelo Gaussiano AR(1) con φ = 0.99 y σw = 1. Usando una técnica de estimación de su elección, compare la distribución asintótica aproximada de su estimación (la que usaría para inferencia) con los resultados de un experimento de arranque (utilice B = 200).
 
 A continuación se muestra el código R para este ejemplo usando Yule-Walker. La distribución asintótica es normal con media .99 y error estándar p(1 − .992)/50 ≈ .02. La distribución de arranque debe ser muy diferente a la distribución asintótica. (Si los estudiantes usan MLE, puede haber problemas porque φ está muy cerca del límite.Puede alertar a los alumnos sobre este hecho o dejar que lo averigüen por sí mismos).
 
 ```{r}
+set.seed(666)
+
 x = arima.sim(list(ar=.99), n=50)
-fit = ar.yw(x, order=1)
+fit = ar.yw(x, order=1)#.yw por .mle
+m=fit$x.mean
 phi = fit$ar # estimate of phi
 nboot = 200 # number of bootstrap replicates
 resids = fit$resid[-1] # the first resid is NA
@@ -187,21 +242,52 @@ x.star = x # x[1] stays the same throughout
 phi.star = rep(NA, nboot)
 for (i in 1:nboot) {
 resid.star = sample(resids, replace=TRUE)
-for (t in 1:49) x.star[t+1] = phi*x.star[t] + resid.star[t]
-phi.star[i] = ar.yw(x.star, order=1)$ar
+for (t in 1:49) 
+  x.star[t+1] = phi*x.star[t] + resid.star[t]
+phi.star[i] = ar.yw(x.star, order=1)$ar #.yw por .mle
 }
-summary(phi.star); hist(phi.star); stem(phi.star) # and so on ..
+summary(phi.star); 
+hist(phi.star);
+stem(phi.star) # and so on ..
 ```
-3.24
+El objetivo es ver, que hay la approx lineal es mala idea por muestras pequeñas, con bootraping es una tecnica que le perimte utilizar técnica, modelar la distribución del error, sin tomar un supuesto paramétrico, se ven los supuestos de la normalidad, no es tan buena idea, entonces no es correcto usar la ml, ent mejor usar #.yw, se observa en el histograma.
 
-Considere la serie estacionaria generada por
-xt = α + φxt−1 + wt + θwt−1, donde E(xt) = µ, |θ| < 1, |φ| < 1 y las wt son variables aleatorias iid con media cero y varianza σ2w.
-(a) Determine la media en función de α para el modelo anterior. Encuentra el
-autocovarianza y ACF del proceso xt, y demuestre que el proceso es
-débilmente estacionario. ¿Es el proceso estrictamente estacionario?
-(b) Demuestre que la distribución límite cuando n → ∞ de la media muestral es normal y encuentre su media límite y su varianza en términos de α, φ, θ y
-σ2w. (Nota: esta parte usa los resultados del Apéndice A).
+3.34 Ajuste un modelo ARIMA(p, d, q) a la serie de dióxido de azufre, so2, realizando todos
+de los diagnósticos necesarios. Después de decidirse por un modelo apropiado, pronostique el
+datos en el futuro cuatro períodos de tiempo por delante (alrededor de un mes) y calcular el 95%
+intervalos de predicción para cada uno de los cuatro pronósticos. Comentario. (El dióxido de azufre es uno
+de los contaminantes monitoreados en el estudio de mortalidad descrito en el Ejemplo 2.2.)
+
+Hay tendencia, por lo que consideramos la (primera) serie diferenciada, que parece estacionaria. Investigación de la ACF y PACF de los diferenciados sugieren un modelo ARMA(0,1) o ARMA(1,1). Montaje de un ARIMA(0,1,1) y ARIMA(1,1,1) a los datos originales indica el modelo ARIMA(0,1,1); el parámetro AR no es significativo en el ajuste ARIMA(1,1,1). Los residuos parecen ser (en el límite) blancos, pero no normales; hay numerosos valores atípicos Ajustar ARIMA (0,1,1) a log (so2) elimina los valores atípicos, pero no cambia nada notablemente
+más.
+
+```{r}
+data(so2)
+plot(so2); 
+plot(log(so2))
+plot(diff(so2))
+plot(diff(log(so2)))
+plot(diff(so2))
+plot(diff(log(so2)))
+acf2(diff(so2)) 
+acf2(diff(log(so2)))
+sarima(so2,0,1,1) 
+sarima(log(so2),0,1,1)
+sarima.for(so2,4,0,1,1) 
+sarima.for(log(so2),4,0,1,1)
+
+```
+
+```{r}
+sarima(so2,1,1,1) 
+sarima(log(so2),1,1,1)
+sarima.for(so2,4,1,1,1) 
+sarima.for(log(so2),4,1,1,1)
+```
 
 
+```{r}
 
-3.21
+acf2(diff(so2), max.lag=2*52)
+```
+
