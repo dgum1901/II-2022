@@ -412,8 +412,7 @@ xtable(df)
 ```{r}
 descdist(p, discrete = FALSE)
 ```
-\section{Bitácora 3
-}
+\section{Bitácora 4}
 Estamos desarrollando un modelaje POT (Peak Over Threshold), entonces requerimos encontrar el umbral más adecuado para los datos.
 
 Se desarrolla, entonces la función de distribucion sobre exceso de pérdida para toda la función, sin aplicar un primer umbral
@@ -438,7 +437,10 @@ grafico8 <-
   ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() + 
   labs(title = "Gráfico 8: Función media de exceso",
        caption = "Fuente: Elaboración propia")
+
+pdf("graf8.pdf")
 grafico8
+dev.off()
 ```
 Acá se puede observar claramente que la totalidad de los datos en escala regular parecen tener una media de exceso sobre umbral de tipo creciente, con lo cual utilizando lo visto en clase, una pareto generalizada puede ser ideal para el ajuste de la distribución. Ahora, si de manera arbitraria se utiliza un umbral mayor, para tratar de analizar la existencia de un comportamiento distinto en los datos, se obtiene la siguiente funcion de exceso de media.
 
@@ -450,9 +452,12 @@ p <- tibble(Umbral = d, Exceso = e(d))
 
 grafico9 <-
   ggplot(p, aes(x = Umbral, y = Exceso)) + geom_line() + theme_bw() +
-  labs(title = "Gráfico 9: Función media de exceso, iniciando el .95",
+  labs(title = "Gráfico 9: Función media de exceso, iniciando en .95",
        caption = "Fuente: Elaboración propia")
 grafico9
+pdf("graf9.pdf")
+grafico9
+dev.off()
 ```
 Dicho lo anterior, podemos escoger el umbral que maximice algún estadístico de comparación, tomamos el AIC, para cada umbral.
 
@@ -477,6 +482,10 @@ grafico10 <-
   labs(title = "Gráfico 10: AIC en cada umbral",
        caption = "Fuente: Elaboración propia")
 grafico10
+
+pdf("graf10.pdf")
+grafico10
+dev.off()
 ```
 Con lo que, el mejor modelo de ajuste de los datos es el que posea un umbral más grande, para corroborar esto se plantean tres modelos con tres umbrales distintos.
 
@@ -496,6 +505,7 @@ mod.99 <- fit.gpd(pp, threshold = d1)
 df <- data.frame(AIC(mod.85), AIC(mod.95), AIC(mod.99))
 rownames(df) <- 'AIC'
 df
+xtable(df)
 ```
 
 ```{r}
@@ -531,40 +541,61 @@ df <- p %>%
     group_by(mes = lubridate::floor_date(Tiempo, 'month')) %>%
     dplyr::summarise(PerdidaMaxima = max(Perdida))
 
-hist(df$PerdidaMaxima, breaks = 200, xlim = c(0,6e5))
-hist(df$PerdidaMaxima, breaks = 50)
+
+grafico11 <-
+  ggplot(df, aes(x = PerdidaMaxima)) + 
+  geom_histogram(color =
+                   "darkblue", fill = "lightblue") + theme_bw() +
+  labs(
+    y = "Frecuencia",
+    x = "Pérdida maxima",
+    title = "Gráfico 11: Histograma del máximo mensual",
+    caption = "Fuente: Elaboración propia"
+  )
+
+pdf("graf11.pdf")
+grafico11
+dev.off()
+
 ```
 El gráfico está cortado para que pueda reflejar bien los datos.
 ```{r}
+library(evd)
 modGev <- fitdist(df$PerdidaMaxima, 'gev', start = list(loc=0, scale=1, shape=0))
 
 modWei <- fitdist(df$PerdidaMaxima, 'weibull')
 
 modGum <- fitdist(df$PerdidaMaxima, 'gumbel', start = list(loc=0, scale=1))
 
-denscomp(list(modGev, modWei, modGum))
-denscomp(
+#denscomp(list(modGev, modWei, modGum))
+grafico12<- denscomp(
   list(modGev, modWei, modGum),
   fitlty = 1,
   legendtext = c("Generalizado de Valor Extremo", "Weibull", "Gumbel"),
   breaks =75,
-  plotstyle = "ggplot"
+  plotstyle = "ggplot", main = 'Histograma y densidades teóricas', xlab = 'Datos', ylab = 'Densidad'
 ) + theme_bw()
+
+pdf("graf12.pdf")
+grafico12
+dev.off()
 
 p <- tibble('Generalizado de Valor Extremo' = modGev$aic,
             'Weibull' = modWei$aic, 
             'Gumbel' = modGum$aic)
-p
+xtable(p)
 ```
 El mejor modelo para estos datos es el Weibull. Con base en ello se pueden responder preguntas cool como la probabilidad de ver una pérdida mayor a 5 millones de dólares en un mes.
 
 ```{r}
-pweibull(
-  5e6,
+p <- pweibull(
+  quantile(perd,0.99),
   shape = modWei$estimate[1],
   scale = modWei$estimate[2],
   lower.tail = FALSE
 )
+p
+(1/p)
 ```
 
 Esta es la mejor distribución del máximo.
