@@ -457,15 +457,16 @@ grafico9
 Dicho lo anterior, podemos escoger el umbral que maximice algún estadístico de comparación, tomamos el AIC, para cada umbral.
 
 ```{r}
-d<-seq(0,max(perd)-1,length.out=25)
+d<-seq(0,quantile(perd, 0.999),length.out=100)
 p <- data.frame(Umbral = d, AIC = 0)
-#library(mev)
+library(mev)
 library(actuar)
 #gp2 <- fitdist(p, 'genpareto' , start=list(shape1 = 1, shape2=1))
-for (k in 1:nrow(p)) {
+for(k in 1:nrow(p)) {
   d1 <- p$Umbral[k]
   pp <- perd[perd>d1]-d1
-  mod <- fit.gpd(pp)
+  mod <- fit.gpd(pp, threshold = 0)
+  #mod <- fit.gpd(perd, threshold = d1)
   #mod2 <-fitdist(pp, 'genpareto' , start=list(shape1 = 4, shape2=1))
   p$AIC[k] <- AIC(mod)
 }
@@ -477,8 +478,44 @@ grafico10 <-
        caption = "Fuente: Elaboración propia")
 grafico10
 ```
-Con lo que, el mejor modelo de ajuste de los datos es ?
+Con lo que, el mejor modelo de ajuste de los datos es el que posea un umbral más grande, para corroborar esto se plantean tres modelos con tres umbrales distintos.
 
+```{r}
+d1<-quantile(perd, 0.85)
+pp <-perd[perd>d1]-d1
+mod.85 <- fit.gpd(pp, threshold = d1)
+
+d1<-quantile(perd, 0.95)
+pp <-perd[perd>d1]-d1
+mod.95 <- fit.gpd(pp, threshold = d1)
+
+d1 <- quantile(perd, 0.99)
+pp <-perd[perd>d1]-d1
+mod.99 <- fit.gpd(pp, threshold = d1)
+
+df <- data.frame(AIC(mod.85), AIC(mod.95), AIC(mod.99))
+rownames(df) <- 'AIC'
+df
+```
+
+```{r}
+Fn <- ecdf(perd)
+Fx <- function(x, modelo){
+  escala <- modelo$estimate[1]
+  forma <- modelo$estimate[2]
+  evd::pgpd(x, loc=0, scale=escala, shape=forma) 
+}
+m1 <- max(max(abs(Fx(perd, mod.8)-Fn(perd-.Machine$double.eps))), max(abs(Fx(perd, mod.8)-Fn(perd))))
+m2 <- max(max(abs(Fx(perd, mod.95)-Fn(perd-.Machine$double.eps))), max(abs(Fx(perd, mod.95)-Fn(perd))))
+m3 <- max(max(abs(Fx(perd, mod.99)-Fn(perd-.Machine$double.eps))), max(abs(Fx(perd, mod.99)-Fn(perd))))
+
+
+k <- 1.22/sqrt(length(perd))
+k
+
+c(m1,m2,m2)
+```
+Dice kolgomorov smirnoff que ninguno sirve xd pero vale picha porque al final es escoger "el mejorcito"
 
 \section{Modelacion opcional}
 Se puede intentar modelar las pérdidas máximas esperadas al mes con los datos que se tienen, para ello se toma la media diaria de cada dato, eliminando las observaciones cuya pérdida fue de cero, pues la idea es modelar las perdidas dado que hubo alguna. Luego se selecciona el máximo observado en cada mes, y estos datos se modelan.
