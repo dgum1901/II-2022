@@ -420,10 +420,11 @@ Se ve medio picudo, como sucio. La linea indica la frecuencia que es importante,
 ```{r}
 data("saltemp")
 par(mfrow=c(2,1))
-mvspec(saltemp, log="no", taper=0.5)
+mvspec(saltemp, taper=0)
+abline(v=1/16, lty="dashed")
 mvspec(saltemp, spans=c(7,7), log="no", taper=0.5)
 abline(v=1/16, lty="dashed")
-salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+salt.per = mvspec(salt, spans=c(7,7), log="no", taper=.5)
 abline(v=1/16, lty="dashed")#kernell("daniell",4)
 
 
@@ -438,9 +439,9 @@ abline(v= 1/11, col="blue")
  
 ```{r}
 par(mfrow=c(2,1))
-mvspec(saltemp, spans=c(1,1), log="no", taper=.5)
+mvspec(saltemp, spans=c(7,7), log="no", taper=.5)
 abline(v=1/16, lty="dashed")
-salt.per = mvspec(salt, spans=c(1,1), log="no", taper=.5)
+salt.per = mvspec(salt, spans=c(7,7), log="no", taper=.5)
 abline(v=1/16, lty="dashed")
 
 ```
